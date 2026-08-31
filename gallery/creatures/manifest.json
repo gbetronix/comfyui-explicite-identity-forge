@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "gallery": "creatures",
-  "generated": "2026-08-31T22:15:24.526944",
+  "generated": "2026-09-01T01:36:22.909473",
   "version": "2.0.0",
   "releases": [
     "0.5.0",
@@ -123,8 +123,8 @@
     "1.1.0"
   ],
   "total_entries": 253,
-  "entries_with_images": 0,
-  "entries_missing_images": 253,
+  "entries_with_images": 1,
+  "entries_missing_images": 252,
   "missing": [
     "aardvark",
     "albatross",
@@ -226,7 +226,6 @@
     "hippopotamus",
     "hive drone",
     "honeybee",
-    "horned lizard",
     "horse",
     "horseshoe crab",
     "housefly",
@@ -1083,10 +1082,11 @@
     },
     {
       "name": "horned lizard",
-      "has_image": false,
+      "has_image": true,
       "gender": "any",
       "group": "Reptiles & Amphibians",
-      "added": "0.29.0"
+      "added": "0.29.0",
+      "image": "images/horned lizard.jpeg"
     },
     {
       "name": "horse",
