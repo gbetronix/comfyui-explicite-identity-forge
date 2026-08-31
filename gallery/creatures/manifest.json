@@ -1,0 +1,2156 @@
+{
+  "schema_version": 2,
+  "gallery": "creatures",
+  "generated": "2026-08-31T22:15:24.526944",
+  "version": "2.0.0",
+  "releases": [
+    "0.5.0",
+    "0.5.1",
+    "0.5.2",
+    "0.6.0",
+    "0.7.0",
+    "0.7.1",
+    "0.8.0",
+    "0.9.0",
+    "0.10.0",
+    "0.11.0",
+    "0.12.0",
+    "0.13.0",
+    "0.13.1",
+    "0.13.2",
+    "0.14.0",
+    "0.14.1",
+    "0.15.0",
+    "0.15.1",
+    "0.16.0",
+    "0.17.0",
+    "0.18.0",
+    "0.18.1",
+    "0.19.0",
+    "0.20.0",
+    "0.21.0",
+    "0.22.0",
+    "0.23.0",
+    "0.23.1",
+    "0.24.0",
+    "0.25.0",
+    "0.26.0",
+    "0.27.0",
+    "0.28.0",
+    "0.29.0",
+    "0.29.1",
+    "0.30.0",
+    "0.31.0",
+    "0.32.0",
+    "0.33.0",
+    "0.34.0",
+    "0.35.0",
+    "0.36.0",
+    "0.37.0",
+    "0.38.0",
+    "0.39.0",
+    "0.40.0",
+    "0.41.0",
+    "0.41.1",
+    "0.42.0",
+    "0.43.0",
+    "0.44.0",
+    "0.45.0",
+    "0.46.0",
+    "0.46.1",
+    "0.47.0",
+    "0.47.1",
+    "0.48.0",
+    "0.49.0",
+    "0.50.0",
+    "0.51.0",
+    "0.52.0",
+    "0.53.0",
+    "0.54.0",
+    "0.55.0",
+    "0.56.0",
+    "0.57.0",
+    "0.58.0",
+    "0.59.0",
+    "0.60.0",
+    "0.61.0",
+    "0.62.0",
+    "0.63.0",
+    "0.64.0",
+    "0.65.0",
+    "0.66.0",
+    "0.67.0",
+    "0.68.0",
+    "0.69.0",
+    "0.71.0",
+    "0.71.1",
+    "0.71.2",
+    "0.72.0",
+    "0.72.1",
+    "0.73.0",
+    "0.73.1",
+    "0.74.0",
+    "0.75.0",
+    "0.76.0",
+    "0.77.0",
+    "0.78.0",
+    "0.79.0",
+    "0.80.0",
+    "0.80.1",
+    "0.81.0",
+    "0.82.0",
+    "0.83.0",
+    "0.84.0",
+    "0.85.0",
+    "0.86.0",
+    "0.86.1",
+    "0.87.0",
+    "0.88.0",
+    "0.89.0",
+    "0.90.0",
+    "0.90.1",
+    "0.91.0",
+    "0.91.1",
+    "0.92.0",
+    "0.93.0",
+    "0.94.0",
+    "0.95.0",
+    "0.96.0",
+    "0.97.0",
+    "0.98.0",
+    "1.0.0",
+    "1.0.1",
+    "1.1.0"
+  ],
+  "total_entries": 253,
+  "entries_with_images": 0,
+  "entries_missing_images": 253,
+  "missing": [
+    "aardvark",
+    "albatross",
+    "alligator",
+    "alpaca",
+    "android",
+    "anglerfish",
+    "ant",
+    "antlion",
+    "assassin bug",
+    "avian alien",
+    "axolotl",
+    "bamboo folk",
+    "banshee",
+    "basilisk",
+    "bat",
+    "bear",
+    "beaver",
+    "biomechanical alien",
+    "bison",
+    "blob alien",
+    "boar",
+    "bramble folk",
+    "butterfly",
+    "cactus folk",
+    "caddisfly larva",
+    "camel",
+    "capybara",
+    "cardinal",
+    "carnivorous plant",
+    "cassowary",
+    "cat",
+    "caterpillar",
+    "centaur",
+    "centipede",
+    "cephalopod alien",
+    "cerberus",
+    "chameleon",
+    "chimera",
+    "chimpanzee",
+    "chrome-flesh cyborg",
+    "cicada",
+    "clownfish",
+    "cobra",
+    "cockatoo",
+    "cockroach",
+    "cordyceps thrall",
+    "crab",
+    "crane",
+    "crocodile",
+    "crow",
+    "crystalline alien",
+    "cuttlefish",
+    "cyclops",
+    "demon",
+    "djinn",
+    "dolphin",
+    "dove",
+    "dragon",
+    "dragonfly",
+    "dryad",
+    "dullahan",
+    "eagle",
+    "eel",
+    "eldritch horror",
+    "elephant",
+    "emu",
+    "energy being",
+    "fairy",
+    "falcon",
+    "fern folk",
+    "firefly",
+    "flamingo",
+    "flesh golem",
+    "flower folk",
+    "fox",
+    "frog",
+    "fungal alien",
+    "gargoyle",
+    "gaseous alien",
+    "gecko",
+    "ghost",
+    "ghoul",
+    "gila monster",
+    "giraffe",
+    "goat",
+    "goblin",
+    "goblin shark",
+    "gorgon",
+    "gorilla",
+    "grasshopper",
+    "grey alien",
+    "gryphon",
+    "hag",
+    "hammerhead shark",
+    "harpy",
+    "hedgehog",
+    "heron",
+    "hippopotamus",
+    "hive drone",
+    "honeybee",
+    "horned lizard",
+    "horse",
+    "horseshoe crab",
+    "housefly",
+    "hummingbird",
+    "hydra",
+    "hyena",
+    "iguana",
+    "insectoid xeno",
+    "jackalope",
+    "jellyfish",
+    "jiangshi",
+    "kangaroo",
+    "kappa",
+    "kelp folk",
+    "kelpie",
+    "kingfisher",
+    "kitsune",
+    "kiwi",
+    "koala",
+    "koi",
+    "komodo dragon",
+    "kraken",
+    "ladybug",
+    "lemur",
+    "leopard",
+    "leprechaun",
+    "lich",
+    "lichen folk",
+    "lion",
+    "lionfish",
+    "lobster",
+    "lotus folk",
+    "lynx",
+    "magpie",
+    "mallard duck",
+    "mandrake",
+    "mandrill",
+    "manta ray",
+    "manticore",
+    "mantis shrimp",
+    "meerkat",
+    "merfolk",
+    "minotaur",
+    "mole",
+    "monitor lizard",
+    "moose",
+    "mosquito",
+    "moss golem",
+    "moth",
+    "mothman",
+    "mummy",
+    "mushroom folk",
+    "naga",
+    "naked mole rat",
+    "narwhal",
+    "nautilus",
+    "newt",
+    "nudibranch",
+    "octopus",
+    "ogre",
+    "okapi",
+    "oni",
+    "orangutan",
+    "orc",
+    "orca",
+    "ostrich",
+    "otter",
+    "owl",
+    "panda",
+    "pangolin",
+    "parrot",
+    "peacock",
+    "pegasus",
+    "pelican",
+    "penguin",
+    "phoenix",
+    "pitcher plant folk",
+    "plant alien",
+    "platypus",
+    "poison dart frog",
+    "porcelain cyborg",
+    "praying mantis",
+    "pteranodon",
+    "pufferfish",
+    "puffin",
+    "pumpkin head",
+    "python",
+    "qilin",
+    "rabbit",
+    "raccoon",
+    "radial alien",
+    "raptor",
+    "rat",
+    "rattlesnake",
+    "raven",
+    "red panda",
+    "reptilian alien",
+    "rhinoceros",
+    "rhinoceros beetle",
+    "rooster",
+    "salamander",
+    "satyr",
+    "scarab beetle",
+    "scorpion",
+    "sea turtle",
+    "seahorse",
+    "seal",
+    "selkie",
+    "shark",
+    "shoebill",
+    "skeleton",
+    "skunk",
+    "slime",
+    "sloth",
+    "snail",
+    "snapping turtle",
+    "sphinx",
+    "squid",
+    "squirrel",
+    "stag",
+    "stag beetle",
+    "star-nosed mole",
+    "starfish",
+    "stick insect",
+    "stone golem",
+    "sunflower folk",
+    "swan",
+    "tarantula",
+    "tengu",
+    "thunderbird",
+    "tiger",
+    "tortoise",
+    "toucan",
+    "treant",
+    "triceratops",
+    "troll",
+    "tyrannosaurus rex",
+    "unicorn",
+    "vampire",
+    "vulture",
+    "walrus",
+    "wasp",
+    "wendigo",
+    "werewolf",
+    "whale",
+    "wolf",
+    "wolverine",
+    "wraith",
+    "wyvern",
+    "yeti",
+    "zebra",
+    "zombie"
+  ],
+  "entries": [
+    {
+      "name": "aardvark",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.93.0"
+    },
+    {
+      "name": "albatross",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.93.0"
+    },
+    {
+      "name": "alligator",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.67.0"
+    },
+    {
+      "name": "alpaca",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "android",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.17.0"
+    },
+    {
+      "name": "anglerfish",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.14.0"
+    },
+    {
+      "name": "ant",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.15.0"
+    },
+    {
+      "name": "antlion",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.94.0"
+    },
+    {
+      "name": "assassin bug",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.94.0"
+    },
+    {
+      "name": "avian alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.87.0"
+    },
+    {
+      "name": "axolotl",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.17.0"
+    },
+    {
+      "name": "bamboo folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.29.0"
+    },
+    {
+      "name": "banshee",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "basilisk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.67.0"
+    },
+    {
+      "name": "bat",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.15.0"
+    },
+    {
+      "name": "bear",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.14.0"
+    },
+    {
+      "name": "beaver",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "biomechanical alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.14.0"
+    },
+    {
+      "name": "bison",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "blob alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.15.0"
+    },
+    {
+      "name": "boar",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.44.0"
+    },
+    {
+      "name": "bramble folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.15.0"
+    },
+    {
+      "name": "butterfly",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.14.0"
+    },
+    {
+      "name": "cactus folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.14.0"
+    },
+    {
+      "name": "caddisfly larva",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.94.0"
+    },
+    {
+      "name": "camel",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.67.0"
+    },
+    {
+      "name": "capybara",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "cardinal",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.67.0"
+    },
+    {
+      "name": "carnivorous plant",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.14.0"
+    },
+    {
+      "name": "cassowary",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.93.0"
+    },
+    {
+      "name": "cat",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.17.0"
+    },
+    {
+      "name": "caterpillar",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.94.0"
+    },
+    {
+      "name": "centaur",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "centipede",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.15.0"
+    },
+    {
+      "name": "cephalopod alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.17.0"
+    },
+    {
+      "name": "cerberus",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.17.0"
+    },
+    {
+      "name": "chameleon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.14.0"
+    },
+    {
+      "name": "chimera",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.17.0"
+    },
+    {
+      "name": "chimpanzee",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.67.0"
+    },
+    {
+      "name": "chrome-flesh cyborg",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.28.0"
+    },
+    {
+      "name": "cicada",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.67.0"
+    },
+    {
+      "name": "clownfish",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.67.0"
+    },
+    {
+      "name": "cobra",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.14.0"
+    },
+    {
+      "name": "cockatoo",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.29.0"
+    },
+    {
+      "name": "cockroach",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.93.0"
+    },
+    {
+      "name": "cordyceps thrall",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "crab",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.14.0"
+    },
+    {
+      "name": "crane",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.44.0"
+    },
+    {
+      "name": "crocodile",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.14.0"
+    },
+    {
+      "name": "crow",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.17.0"
+    },
+    {
+      "name": "crystalline alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.14.0"
+    },
+    {
+      "name": "cuttlefish",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.90.0"
+    },
+    {
+      "name": "cyclops",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.15.0"
+    },
+    {
+      "name": "demon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.14.0"
+    },
+    {
+      "name": "djinn",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.29.0"
+    },
+    {
+      "name": "dolphin",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.15.0"
+    },
+    {
+      "name": "dove",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.67.0"
+    },
+    {
+      "name": "dragon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "dragonfly",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.14.0"
+    },
+    {
+      "name": "dryad",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "dullahan",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.90.0"
+    },
+    {
+      "name": "eagle",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.14.0"
+    },
+    {
+      "name": "eel",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.15.0"
+    },
+    {
+      "name": "eldritch horror",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.14.0"
+    },
+    {
+      "name": "elephant",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.15.0"
+    },
+    {
+      "name": "emu",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.90.0"
+    },
+    {
+      "name": "energy being",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.14.0"
+    },
+    {
+      "name": "fairy",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.15.0"
+    },
+    {
+      "name": "falcon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.14.0"
+    },
+    {
+      "name": "fern folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.29.0"
+    },
+    {
+      "name": "firefly",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.17.0"
+    },
+    {
+      "name": "flamingo",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.17.0"
+    },
+    {
+      "name": "flesh golem",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.15.0"
+    },
+    {
+      "name": "flower folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.14.0"
+    },
+    {
+      "name": "fox",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.14.0"
+    },
+    {
+      "name": "frog",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.14.0"
+    },
+    {
+      "name": "fungal alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.15.0"
+    },
+    {
+      "name": "gargoyle",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.14.0"
+    },
+    {
+      "name": "gaseous alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.29.0"
+    },
+    {
+      "name": "gecko",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.14.0"
+    },
+    {
+      "name": "ghost",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.15.0"
+    },
+    {
+      "name": "ghoul",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "gila monster",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.29.0"
+    },
+    {
+      "name": "giraffe",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.44.0"
+    },
+    {
+      "name": "goat",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.44.0"
+    },
+    {
+      "name": "goblin",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.17.0"
+    },
+    {
+      "name": "goblin shark",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "1.0.0"
+    },
+    {
+      "name": "gorgon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "gorilla",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.15.0"
+    },
+    {
+      "name": "grasshopper",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.17.0"
+    },
+    {
+      "name": "grey alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.14.0"
+    },
+    {
+      "name": "gryphon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "hag",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.87.0"
+    },
+    {
+      "name": "hammerhead shark",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.90.0"
+    },
+    {
+      "name": "harpy",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "hedgehog",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.17.0"
+    },
+    {
+      "name": "heron",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.29.0"
+    },
+    {
+      "name": "hippopotamus",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.67.0"
+    },
+    {
+      "name": "hive drone",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.15.0"
+    },
+    {
+      "name": "honeybee",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.17.0"
+    },
+    {
+      "name": "horned lizard",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.29.0"
+    },
+    {
+      "name": "horse",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.17.0"
+    },
+    {
+      "name": "horseshoe crab",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.93.0"
+    },
+    {
+      "name": "housefly",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.94.0"
+    },
+    {
+      "name": "hummingbird",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.29.0"
+    },
+    {
+      "name": "hydra",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.15.0"
+    },
+    {
+      "name": "hyena",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.44.0"
+    },
+    {
+      "name": "iguana",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.15.0"
+    },
+    {
+      "name": "insectoid xeno",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.14.0"
+    },
+    {
+      "name": "jackalope",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.90.0"
+    },
+    {
+      "name": "jellyfish",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.14.0"
+    },
+    {
+      "name": "jiangshi",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.87.0"
+    },
+    {
+      "name": "kangaroo",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.44.0"
+    },
+    {
+      "name": "kappa",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.90.0"
+    },
+    {
+      "name": "kelp folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.87.0"
+    },
+    {
+      "name": "kelpie",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.67.0"
+    },
+    {
+      "name": "kingfisher",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.67.0"
+    },
+    {
+      "name": "kitsune",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.15.0"
+    },
+    {
+      "name": "kiwi",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.90.0"
+    },
+    {
+      "name": "koala",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.44.0"
+    },
+    {
+      "name": "koi",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.44.0"
+    },
+    {
+      "name": "komodo dragon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.15.0"
+    },
+    {
+      "name": "kraken",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "ladybug",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.44.0"
+    },
+    {
+      "name": "lemur",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "leopard",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.67.0"
+    },
+    {
+      "name": "leprechaun",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.67.0"
+    },
+    {
+      "name": "lich",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.15.0"
+    },
+    {
+      "name": "lichen folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.87.0"
+    },
+    {
+      "name": "lion",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.14.0"
+    },
+    {
+      "name": "lionfish",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.93.0"
+    },
+    {
+      "name": "lobster",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.15.0"
+    },
+    {
+      "name": "lotus folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.15.0"
+    },
+    {
+      "name": "lynx",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.29.0"
+    },
+    {
+      "name": "magpie",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.90.0"
+    },
+    {
+      "name": "mallard duck",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.67.0"
+    },
+    {
+      "name": "mandrake",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "mandrill",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.93.0"
+    },
+    {
+      "name": "manta ray",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.14.0"
+    },
+    {
+      "name": "manticore",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.17.0"
+    },
+    {
+      "name": "mantis shrimp",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.44.0"
+    },
+    {
+      "name": "meerkat",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "merfolk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "minotaur",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "mole",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.93.0"
+    },
+    {
+      "name": "monitor lizard",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.17.0"
+    },
+    {
+      "name": "moose",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "mosquito",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.94.0"
+    },
+    {
+      "name": "moss golem",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.29.0"
+    },
+    {
+      "name": "moth",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.15.0"
+    },
+    {
+      "name": "mothman",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.67.0"
+    },
+    {
+      "name": "mummy",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.15.0"
+    },
+    {
+      "name": "mushroom folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.14.0"
+    },
+    {
+      "name": "naga",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "naked mole rat",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "1.0.0"
+    },
+    {
+      "name": "narwhal",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.67.0"
+    },
+    {
+      "name": "nautilus",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.29.0"
+    },
+    {
+      "name": "newt",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.29.0"
+    },
+    {
+      "name": "nudibranch",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.87.0"
+    },
+    {
+      "name": "octopus",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.14.0"
+    },
+    {
+      "name": "ogre",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.67.0"
+    },
+    {
+      "name": "okapi",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "1.0.0"
+    },
+    {
+      "name": "oni",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "orangutan",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.93.0"
+    },
+    {
+      "name": "orc",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.36.0"
+    },
+    {
+      "name": "orca",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.15.0"
+    },
+    {
+      "name": "ostrich",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.17.0"
+    },
+    {
+      "name": "otter",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.29.0"
+    },
+    {
+      "name": "owl",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.14.0"
+    },
+    {
+      "name": "panda",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.17.0"
+    },
+    {
+      "name": "pangolin",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.87.0"
+    },
+    {
+      "name": "parrot",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.15.0"
+    },
+    {
+      "name": "peacock",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.14.0"
+    },
+    {
+      "name": "pegasus",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.17.0"
+    },
+    {
+      "name": "pelican",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.90.0"
+    },
+    {
+      "name": "penguin",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.15.0"
+    },
+    {
+      "name": "phoenix",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.15.0"
+    },
+    {
+      "name": "pitcher plant folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.29.0"
+    },
+    {
+      "name": "plant alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.17.0"
+    },
+    {
+      "name": "platypus",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "poison dart frog",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.90.0"
+    },
+    {
+      "name": "porcelain cyborg",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.28.0"
+    },
+    {
+      "name": "praying mantis",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.14.0"
+    },
+    {
+      "name": "pteranodon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.87.0"
+    },
+    {
+      "name": "pufferfish",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.17.0"
+    },
+    {
+      "name": "puffin",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.87.0"
+    },
+    {
+      "name": "pumpkin head",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.15.0"
+    },
+    {
+      "name": "python",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.17.0"
+    },
+    {
+      "name": "qilin",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.90.0"
+    },
+    {
+      "name": "rabbit",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.14.0"
+    },
+    {
+      "name": "raccoon",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.15.0"
+    },
+    {
+      "name": "radial alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.87.0"
+    },
+    {
+      "name": "raptor",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.44.0"
+    },
+    {
+      "name": "rat",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.17.0"
+    },
+    {
+      "name": "rattlesnake",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.67.0"
+    },
+    {
+      "name": "raven",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.14.0"
+    },
+    {
+      "name": "red panda",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.44.0"
+    },
+    {
+      "name": "reptilian alien",
+      "has_image": false,
+      "gender": "any",
+      "group": "Aliens",
+      "added": "0.14.0"
+    },
+    {
+      "name": "rhinoceros",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.67.0"
+    },
+    {
+      "name": "rhinoceros beetle",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.14.0"
+    },
+    {
+      "name": "rooster",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.44.0"
+    },
+    {
+      "name": "salamander",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.15.0"
+    },
+    {
+      "name": "satyr",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.14.0"
+    },
+    {
+      "name": "scarab beetle",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.67.0"
+    },
+    {
+      "name": "scorpion",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.14.0"
+    },
+    {
+      "name": "sea turtle",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.17.0"
+    },
+    {
+      "name": "seahorse",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.17.0"
+    },
+    {
+      "name": "seal",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.67.0"
+    },
+    {
+      "name": "selkie",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.90.0"
+    },
+    {
+      "name": "shark",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.14.0"
+    },
+    {
+      "name": "shoebill",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.87.0"
+    },
+    {
+      "name": "skeleton",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.17.0"
+    },
+    {
+      "name": "skunk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "slime",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.14.0"
+    },
+    {
+      "name": "sloth",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.14.0"
+    },
+    {
+      "name": "snail",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.17.0"
+    },
+    {
+      "name": "snapping turtle",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.93.0"
+    },
+    {
+      "name": "sphinx",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.15.0"
+    },
+    {
+      "name": "squid",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.17.0"
+    },
+    {
+      "name": "squirrel",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.67.0"
+    },
+    {
+      "name": "stag",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.14.0"
+    },
+    {
+      "name": "stag beetle",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.87.0"
+    },
+    {
+      "name": "star-nosed mole",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "1.0.0"
+    },
+    {
+      "name": "starfish",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.67.0"
+    },
+    {
+      "name": "stick insect",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.87.0"
+    },
+    {
+      "name": "stone golem",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.90.0"
+    },
+    {
+      "name": "sunflower folk",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "swan",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.15.0"
+    },
+    {
+      "name": "tarantula",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.14.0"
+    },
+    {
+      "name": "tengu",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "thunderbird",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.90.0"
+    },
+    {
+      "name": "tiger",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.15.0"
+    },
+    {
+      "name": "tortoise",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.15.0"
+    },
+    {
+      "name": "toucan",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.17.0"
+    },
+    {
+      "name": "treant",
+      "has_image": false,
+      "gender": "any",
+      "group": "Plant & Fungal",
+      "added": "0.14.0"
+    },
+    {
+      "name": "triceratops",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.44.0"
+    },
+    {
+      "name": "troll",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.17.0"
+    },
+    {
+      "name": "tyrannosaurus rex",
+      "has_image": false,
+      "gender": "any",
+      "group": "Reptiles & Amphibians",
+      "added": "0.67.0"
+    },
+    {
+      "name": "unicorn",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.15.0"
+    },
+    {
+      "name": "vampire",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.14.0"
+    },
+    {
+      "name": "vulture",
+      "has_image": false,
+      "gender": "any",
+      "group": "Birds",
+      "added": "0.15.0"
+    },
+    {
+      "name": "walrus",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.87.0"
+    },
+    {
+      "name": "wasp",
+      "has_image": false,
+      "gender": "any",
+      "group": "Insects & Arachnids",
+      "added": "0.15.0"
+    },
+    {
+      "name": "wendigo",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.44.0"
+    },
+    {
+      "name": "werewolf",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.14.0"
+    },
+    {
+      "name": "whale",
+      "has_image": false,
+      "gender": "any",
+      "group": "Marine Life",
+      "added": "0.17.0"
+    },
+    {
+      "name": "wolf",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.14.0"
+    },
+    {
+      "name": "wolverine",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.90.0"
+    },
+    {
+      "name": "wraith",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.17.0"
+    },
+    {
+      "name": "wyvern",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.67.0"
+    },
+    {
+      "name": "yeti",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mythic & Fantasy",
+      "added": "0.17.0"
+    },
+    {
+      "name": "zebra",
+      "has_image": false,
+      "gender": "any",
+      "group": "Mammals",
+      "added": "0.67.0"
+    },
+    {
+      "name": "zombie",
+      "has_image": false,
+      "gender": "any",
+      "group": "Monsters",
+      "added": "0.14.0"
+    }
+  ]
+}

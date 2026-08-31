@@ -1,0 +1,4510 @@
+"""Archetype templates for IdentityForgeArchetype node.
+
+Each template is a dictionary of field names to concrete values.
+Fields not listed default to "Random" when the template is applied.
+Values must match options defined in data.fields.FIELD_DEFINITIONS, except
+``outfit_description``, which is a free-form costume string and may contain
+``{slot}`` placeholders filled from :data:`COSTUME_SLOTS`.
+"""
+from __future__ import annotations
+
+import re
+
+#: Wildcard pools used to vary costume descriptions. A costume string may
+#: reference any of these as ``{slot}``; the archetype node fills each slot with
+#: a seeded random pick, so the same costume varies in colour/fabric/etc.
+COSTUME_SLOTS: dict[str, list[str]] = {
+    "color": ["crimson", "scarlet", "burgundy", "emerald", "forest green", "teal",
+              "sapphire", "midnight blue", "royal purple", "plum", "charcoal",
+              "ivory", "gold", "silver", "bronze", "rust orange", "ochre"],
+    "dark_color": ["black", "charcoal", "midnight blue", "deep purple", "blood red",
+                   "oxblood", "dark green", "obsidian grey"],
+    "jewel_tone": ["emerald", "sapphire", "ruby red", "amethyst", "deep teal",
+                   "garnet", "royal purple", "topaz gold"],
+    "pastel": ["blush pink", "lavender", "mint", "baby blue", "peach", "lilac",
+               "seafoam", "pale rose"],
+    "earth_tone": ["moss green", "russet brown", "tan", "olive", "ochre",
+                   "forest green", "bark brown", "fawn"],
+    "metal": ["gold", "silver", "bronze", "brass", "copper", "blackened steel",
+              "pewter", "burnished iron"],
+    "gem": ["emerald", "ruby", "sapphire", "amethyst", "opal", "onyx", "topaz",
+            "moonstone", "garnet"],
+    "fabric": ["silk", "satin", "velvet", "brocade", "damask", "linen", "wool"],
+    "sheer_fabric": ["chiffon", "organza", "tulle", "gossamer silk", "voile"],
+    "fur": ["wolf fur", "bear pelt", "fox fur", "shaggy hide", "white fox fur"],
+    "flower": ["rose", "lily", "orchid", "peony", "daisy", "wildflower", "lotus"],
+    "accent": ["gold thread", "silver filigree", "intricate embroidery",
+               "glinting studs", "delicate beading", "runic etching"],
+    # Constrained pools that keep a signature look intact while still varying by seed:
+    # 80s neon activewear, sports-team colourways, denim washes, and everyday
+    # menswear shades (flannel, argyle, dress shirts — no jewel/metallic outliers).
+    "menswear_color": ["burgundy", "forest green", "navy", "charcoal", "mustard",
+                       "rust", "slate blue", "chocolate brown"],
+    "neon": ["neon pink", "neon green", "electric blue", "hot magenta",
+             "neon yellow", "electric purple", "neon orange"],
+    "team_color": ["red", "royal blue", "green", "gold", "purple", "orange",
+                   "crimson", "navy", "scarlet", "teal"],
+    "denim_wash": ["light-wash", "medium-wash", "dark-wash", "acid-wash",
+                   "faded black", "stonewashed"],
+    # Real medical-scrub colourways. The generic `color` pool carries gold, ivory,
+    # bronze and silver — fine on a ball gown, wrong on a hospital ward — so the
+    # medical archetypes draw from this instead (same rationale as menswear_color).
+    "scrub_color": ["teal", "ceil blue", "navy blue", "hunter green", "wine",
+                    "charcoal grey", "royal blue", "plum", "pewter grey"],
+}
+
+
+def _article(value: str) -> str:
+    """Return the indefinite article ("a"/"an") that fits ``value``.
+
+    Naive vowel-letter test -- sufficient for every COSTUME_SLOTS value (the pools
+    contain no silent-h or "unicorn"/"hour" exceptions). Mirrors
+    ``nodes.identity_forge._a``; kept local so this data module never imports the
+    nodes package.
+    """
+    return "an" if value[:1].lower() in "aeiou" else "a"
+
+
+def fill_costume(template: str, rng) -> str:
+    """Replace ``{slot}`` placeholders in a costume string with seeded picks.
+
+    Each distinct slot is resolved once, so repeated ``{color}`` reads the same.
+    Unknown placeholders are left untouched. An indefinite article written directly
+    before a slot ("a {color}", "an {earth_tone}") is recomputed from the resolved
+    value so it always agrees ("an emerald", "a tan"); an article governed by an
+    intervening adjective ("an aristocratic {dark_color}") is left untouched.
+    """
+    chosen: dict[str, str] = {}
+
+    def _pick(slot: str) -> str | None:
+        if slot not in COSTUME_SLOTS:
+            return None
+        if slot not in chosen:
+            chosen[slot] = rng.choice(COSTUME_SLOTS[slot])
+        return chosen[slot]
+
+    def _article_slot(match: "re.Match[str]") -> str:
+        article, slot = match.group(1), match.group(2)
+        value = _pick(slot)
+        if value is None:
+            return match.group(0)
+        fixed = _article(value)
+        if article[:1].isupper():
+            fixed = fixed.capitalize()
+        return f"{fixed} {value}"
+
+    def _plain_slot(match: "re.Match[str]") -> str:
+        value = _pick(match.group(1))
+        return value if value is not None else match.group(0)
+
+    # First resolve "a/an {slot}" pairs, recomputing the article from the value;
+    # then fill any remaining slots. The shared ``chosen`` cache keeps repeated
+    # slots equal regardless of which pass resolves them first.
+    filled = re.sub(r"\b([Aa]n?)\s+\{(\w+)\}", _article_slot, template)
+    return re.sub(r"\{(\w+)\}", _plain_slot, filled)
+
+
+ARCHETYPES: dict[str, dict[str, str]] = {
+    # Fantasy
+    "Elven Ranger": {
+        "ethnicity": "Swedish",
+        "body_type": "lean",
+        "height": "tall",
+        "eye_color": ["emerald", "bright green", "green"],
+        "eye_shape": "almond",
+        "hair_color": ["golden blonde", "strawberry blonde", "dark blonde"],
+        "hair_length": "mid back",
+        "hair_texture": "sleek straight",
+        "hair_style": "side braid",
+        "skin_tone": "porcelain",
+        "complexion": "clear",
+        "outfit_style": "bohemian",
+        "accessories": "woven hat",
+        "expression": "serene",
+        "location": "sunlit sunroom",
+        "lighting": "dappled sunlight through forest canopy",
+        "shot_type": "medium shot from waist up",
+        "mood": "dreamy",
+    },
+    "Dwarven Blacksmith": {
+        "gender": "Male",
+        "ethnicity": "German",
+        "body_type": "stocky",
+        "height": "short",
+        "fitness_level": "very fit",
+        "facial_hair": "full beard",
+        "hair_color": ["copper", "auburn", "bright red"],
+        "hair_length": "ear length",
+        "hair_texture": "thick and voluminous",
+        "hair_style": "messy bun",
+        "skin_tone": "fair",
+        "complexion": "ruddy",
+        "outfit_style": "edgy alternative",
+        "accessories": "western belt",
+        "expression": "confident",
+        "location": "factory floor",
+        "lighting": "warm incandescent lamp glow",
+        "shot_type": "low angle looking up",
+        "mood": "self-assured",
+    },
+    "Human Knight": {
+        "gender": "Male",
+        "ethnicity": "English",
+        "body_type": "athletic",
+        "height": "tall",
+        "fitness_level": "very fit",
+        "hair_color": ["dark blonde", "dirty blonde", "golden blonde"],
+        "hair_length": "shoulder length",
+        "hair_texture": "wavy",
+        "hair_style": "worn down",
+        "facial_hair": "stubble",
+        "skin_tone": "light",
+        "outfit_style": "business formal",
+        "accessories": "no accessories",
+        "expression": "serious",
+        "location": "grand cathedral interior",
+        "lighting": "harsh overhead midday sun",
+        "shot_type": "full body shot",
+        "mood": "intense",
+    },
+    "Dark Sorceress": {
+        "gender": "Female",
+        "ethnicity": "Russian",
+        "body_type": "slender",
+        "height": "slightly above average height",
+        "eye_color": "violet-gray",
+        "eye_shape": "almond",
+        "hair_color": ["raven black", "jet black", "near black"],
+        "hair_length": "waist length",
+        "hair_texture": "sleek straight",
+        "hair_style": "worn down",
+        "skin_tone": "porcelain",
+        "skin_finish": "matte finish",
+        "makeup_style": "gothic dark makeup",
+        "lips_makeup": "deep red",
+        "necklace": "velvet choker",
+        "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "expression": "intense gaze",
+        "location": "grand cathedral interior",
+        "lighting": "low key moody single light source",
+        "shot_type": "close-up portrait",
+        "mood": "mysterious",
+    },
+    "Halfling Rogue": {
+        "ethnicity": "Irish",
+        "body_type": "chubby",
+        "height": "very petite",
+        "eye_color": ["hazel", "warm hazel", "dark hazel"],
+        "eye_shape": "round",
+        "hair_color": ["auburn", "copper", "deep red"],
+        "hair_length": "chin length bob",
+        "hair_texture": "loosely wavy",
+        "hair_style": "messy bun",
+        "skin_tone": "light medium",
+        "freckles_density": "moderate",
+        "outfit_style": "casual",
+        "accessories": "no accessories",
+        "expression": "playful",
+        "location": "dusty second-hand thrift store",
+        "lighting": "soft window light from the side",
+        "shot_type": "three-quarter angle facing left",
+        "mood": "carefree",
+    },
+    "Fairy Princess": {
+        "accessories": "no accessories",
+        "gender": "Female",
+        "ethnicity": "French",
+        "body_type": "slender",
+        "height": "petite",
+        "eye_color": ["bright blue", "deep blue", "ice blue"],
+        "eye_shape": "large and expressive",
+        "hair_color": ["baby pink", "lavender", "mint green"],
+        "hair_length": "long",
+        "hair_texture": "loosely curled",
+        "hair_style": "half up half down",
+        "skin_tone": "fair",
+        "skin_finish": "dewy skin",
+        "makeup_style": "soft glam",
+        "lips_makeup": "pink",
+        "outfit_style": "evening formal",
+        "hair_accessory": "silk headband",
+        "expression": "warm smile",
+        "location": "sunlit sunroom",
+        "lighting": "soft morning light",
+        "shot_type": "medium close-up from chest up",
+        "mood": "dreamy",
+    },
+    "Vampire Noble": {
+        "gender": "Male",
+        "ethnicity": "Ukrainian",
+        "body_type": "lean",
+        "height": "tall",
+        "eye_color": ["ice blue", "pale blue", "bright blue"],
+        "eye_shape": "deep-set",
+        "hair_color": ["raven black", "jet black", "near black"],
+        "hair_length": "shoulder length",
+        "hair_texture": "sleek straight",
+        "hair_style": "worn down",
+        "skin_tone": "porcelain",
+        "skin_finish": "matte finish",
+        "makeup_style": "gothic dark makeup",
+        "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "expression": "intense gaze",
+        "location": "grand hotel suite",
+        "lighting": "warm candlelight",
+        "shot_type": "close-up portrait",
+        "mood": "mysterious",
+    },
+    "Werewolf Hunter": {
+        "gender": "Male",
+        "ethnicity": "Polish",
+        "body_type": "athletic",
+        "height": "slightly above average height",
+        "fitness_level": "very fit",
+        "facial_hair": "short beard",
+        "hair_color": ["dark brown", "medium brown", "near black"],
+        "hair_length": "ear length",
+        "hair_texture": "slightly wavy",
+        "hair_style": "worn down",
+        "skin_tone": "light",
+        "complexion": "ruddy",
+        "outfit_style": "edgy alternative",
+        "accessories": "no accessories",
+        "expression": "serious",
+        "location": "parking garage",
+        "lighting": "moonlight with cool blue tones",
+        "shot_type": "medium shot from waist up",
+        "mood": "tense",
+    },
+    "Celestial Cleric": {
+        "gender": "Female",
+        "ethnicity": "Greek",
+        "body_type": "average",
+        "height": "average height",
+        "eye_color": ["golden brown", "amber", "honey"],
+        "eye_shape": "almond",
+        "hair_color": ["silver", "platinum white", "white"],
+        "hair_length": "long",
+        "hair_texture": "softly curled",
+        "hair_style": "updo",
+        "skin_tone": "light",
+        "skin_finish": "dewy skin",
+        "makeup_style": "soft glam",
+        "necklace": "pearl necklace",
+        "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "expression": "serene",
+        "location": "small chapel interior",
+        "lighting": "light through stained glass casting colors",
+        "shot_type": "medium shot from waist up",
+        "mood": "tranquil",
+    },
+    # Modern / jobs
+    "Corporate Executive": {
+        "gender": "Female",
+        "ethnicity": "English",
+        "body_type": "average",
+        "height": "average height",
+        "hair_color": ["dark brown", "medium brown", "near black"],
+        "hair_length": "shoulder length",
+        "hair_texture": "sleek straight",
+        "hair_style": "sleek bun",
+        "eye_color": ["dark brown", "nearly black", "medium brown"],
+        "skin_tone": "light medium",
+        "makeup_style": "soft everyday glam",
+        "outfit_style": "business formal",
+        "bag": "structured top handle bag in black",
+        "necklace": "delicate gold chain",
+        "accessories": "no accessories",
+        "expression": "confident",
+        "location": "corner executive office",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up",
+        "mood": "self-assured",
+    },
+    "Graduate": {
+        "age": "28",
+        "outfit_style": "smart casual",
+        "outfit_description": "a black graduation gown and mortarboard cap with a {jewel_tone} tassel over smart clothing, holding a rolled diploma tied with ribbon",
+        "accessories": "no accessories",
+        "expression": "beaming",
+        "location": "outdoor amphitheater",
+        "lighting": "late afternoon warm sunlight",
+        "shot_type": "medium shot from waist up",
+        "mood": "triumphant",
+    },
+    "Barista": {
+        "ethnicity": "Colombian",
+        "body_type": "slim",
+        "height": "average height",
+        "hair_color": ["chestnut", "light chestnut", "warm brown"],
+        "hair_length": "chin length bob",
+        "hair_texture": "wavy",
+        "hair_style": "half up half down",
+        "skin_tone": "olive",
+        "outfit_style": "casual",
+        "accessories": "no accessories",
+        "expression": "warm smile",
+        "location": "cozy corner coffee shop",
+        "lighting": "soft window light from the side",
+        "shot_type": "medium close-up from chest up",
+        "mood": "cheerful",
+    },
+    "Doctor": {
+        "gender": "Male",
+        "ethnicity": "Indian",
+        "body_type": "average",
+        "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "very short",
+        "hair_texture": "sleek straight",
+        "hair_style": "worn down",
+        "skin_tone": "medium",
+        "outfit_style": "business casual",
+        "accessories": "no accessories",
+        "expression": "serious",
+        "location": "doctor's examination room",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up",
+        "mood": "tranquil",
+    },
+    "Firefighter": {
+        "gender": "Male",
+        "ethnicity": "Italian",
+        "body_type": "athletic",
+        "height": "tall",
+        "fitness_level": "very fit",
+        "hair_color": ["warm brown", "chestnut", "medium brown"],
+        "hair_length": "very short",
+        "hair_texture": "thick and voluminous",
+        "hair_style": "natural and unstyled",
+        "skin_tone": "tan",
+        "complexion": "ruddy",
+        "outfit_style": "athletic",
+        "accessories": "no accessories",
+        "expression": "confident",
+        "location": "warehouse interior",
+        "lighting": "harsh overhead midday sun",
+        "shot_type": "full body shot",
+        "mood": "self-assured",
+    },
+    "Teacher": {
+        "gender": "Female",
+        "ethnicity": "English",
+        "body_type": "softly curved",
+        "height": "average height",
+        "hair_color": ["auburn", "copper", "deep red"],
+        "hair_length": "shoulder length",
+        "hair_texture": "wavy",
+        "hair_style": "low ponytail",
+        "skin_tone": "fair",
+        "outfit_style": "smart casual",
+        "accessories": "reading glasses pushed up on head",
+        "expression": "warm smile",
+        "location": "elementary school classroom",
+        "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up",
+        "mood": "cheerful",
+    },
+    "Police Officer": {
+        "gender": "Male",
+        "ethnicity": "Nigerian",
+        "body_type": "athletic",
+        "height": "slightly above average height",
+        "fitness_level": "very fit",
+        "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "very short",
+        "hair_texture": "tightly curled",
+        "hair_style": "natural and unstyled",
+        "skin_tone": "dark brown",
+        "outfit_style": "business casual",
+        "accessories": "no accessories",
+        "expression": "serious",
+        "location": "police station bullpen",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up",
+        "mood": "intense",
+    },
+    "Chef": {
+        "gender": "Male",
+        "ethnicity": "French",
+        "body_type": "stocky",
+        "height": "average height",
+        "facial_hair": "short beard",
+        "hair_color": ["warm brown", "chestnut", "medium brown"],
+        "hair_length": "very short",
+        "hair_texture": "slightly wavy",
+        "hair_style": "worn down",
+        "skin_tone": "light medium",
+        "complexion": "ruddy",
+        "outfit_style": "casual",
+        "accessories": "no accessories",
+        "expression": "confident",
+        "location": "sleek modern kitchen with marble countertops",
+        "lighting": "warm incandescent lamp glow",
+        "shot_type": "medium shot from waist up",
+        "mood": "self-assured",
+    },
+    "Librarian": {
+        "gender": "Female",
+        "ethnicity": "English",
+        "body_type": "slender",
+        "height": "average height",
+        "hair_color": ["salt and pepper", "gray-streaked dark hair", "silver"],
+        "hair_length": "chin length bob",
+        "hair_texture": "slightly wavy",
+        "hair_style": "low ponytail",
+        "skin_tone": "fair",
+        "outfit_style": "smart casual",
+        "accessories": "reading glasses pushed up on head",
+        "expression": "pensive and thoughtful",
+        "location": "public library with tall bookshelves",
+        "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up",
+        "mood": "tranquil",
+    },
+    "Athlete": {
+        "gender": "Female",
+        "ethnicity": "Kenyan",
+        "body_type": "athletic",
+        "height": "tall",
+        "fitness_level": "very fit",
+        "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "very short",
+        "hair_texture": "coily",
+        "hair_style": "high ponytail",
+        "skin_tone": "dark brown",
+        "outfit_style": "athletic",
+        "accessories": "no accessories",
+        "expression": "confident",
+        "location": "local gym weight room",
+        "lighting": "harsh overhead midday sun",
+        "shot_type": "full body shot",
+        "mood": "self-assured",
+    },
+    "Musician": {
+        "ethnicity": "Korean",
+        "body_type": "slim",
+        "height": "average height",
+        "hair_color": ["platinum blonde", "white blonde", "light blonde"],
+        "hair_length": "shoulder length",
+        "hair_texture": "sleek straight",
+        "hair_style": "worn down",
+        "skin_tone": "light medium",
+        "outfit_style": "streetwear",
+        "accessories": "no accessories",
+        "expression": "pensive and thoughtful",
+        "location": "recording studio",
+        "lighting": "neon sign glow in multiple colors",
+        "shot_type": "medium close-up from chest up",
+        "mood": "dreamy",
+    },
+    "Artist": {
+        "ethnicity": "Italian",
+        "body_type": "average",
+        "height": "average height",
+        "hair_color": ["auburn", "copper", "deep red"],
+        "hair_length": "mid back",
+        "hair_texture": "loosely wavy",
+        "hair_style": "messy bun",
+        "skin_tone": "olive",
+        "complexion": "rosy",
+        "outfit_style": "bohemian",
+        "accessories": "no accessories",
+        "expression": "pensive and thoughtful",
+        "location": "art gallery opening night",
+        "lighting": "soft studio three-point lighting",
+        "shot_type": "medium close-up from chest up",
+        "mood": "dreamy",
+    },
+    "Pilot": {
+        "gender": "Male",
+        "ethnicity": "German",
+        "body_type": "fit",
+        "height": "tall",
+        "hair_color": ["dark blonde", "dirty blonde", "golden blonde"],
+        "hair_length": "very short",
+        "hair_texture": "sleek straight",
+        "hair_style": "worn down",
+        "skin_tone": "light",
+        "outfit_style": "business formal",
+        "accessories": "aviator sunglasses",
+        "expression": "confident",
+        "location": "airport departure gate",
+        "lighting": "soft morning light",
+        "shot_type": "medium shot from waist up",
+        "mood": "self-assured",
+    },
+    "Scientist": {
+        "gender": "Female",
+        "ethnicity": "Chinese",
+        "body_type": "slender",
+        "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "shoulder length",
+        "hair_texture": "sleek straight",
+        "hair_style": "low ponytail",
+        "skin_tone": "light medium",
+        "outfit_style": "business casual",
+        "accessories": "reading glasses pushed up on head",
+        "expression": "pensive and thoughtful",
+        "location": "university lecture hall",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up",
+        "mood": "tranquil",
+    },
+    "Farmer": {
+        "gender": "Male",
+        "ethnicity": "English",
+        "body_type": "stocky",
+        "height": "average height",
+        "facial_hair": "stubble",
+        "hair_color": ["light chestnut", "chestnut", "warm brown"],
+        "hair_length": "very short",
+        "hair_texture": "slightly wavy",
+        "hair_style": "worn down",
+        "skin_tone": "tan",
+        "complexion": "ruddy",
+        "outfit_style": "casual",
+        "accessories": "baseball cap",
+        "expression": "warm smile",
+        "location": "farmers market indoor stall",
+        "lighting": "golden hour sunlight",
+        "shot_type": "medium shot from waist up",
+        "mood": "cheerful",
+    },
+    "Mechanic": {
+        "gender": "Male",
+        "ethnicity": "Mexican",
+        "body_type": "athletic",
+        "height": "average height",
+        "fitness_level": "very fit",
+        "facial_hair": "five o'clock shadow",
+        "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "very short",
+        "hair_texture": "thick and voluminous",
+        "hair_style": "natural and unstyled",
+        "skin_tone": "medium olive",
+        "complexion": "ruddy",
+        "outfit_style": "edgy alternative",
+        "accessories": "no accessories",
+        "expression": "serious",
+        "location": "home garage workshop",
+        "lighting": "harsh fluorescent lighting",
+        "shot_type": "medium shot from waist up",
+        "mood": "intense",
+    },
+
+    # --- Tabletop / fantasy classes (costume via outfit_description) -------
+    "Holy Paladin": {
+        "gender": "Male", "ethnicity": "German", "body_type": "athletic", "height": "tall",
+        "fitness_level": "very fit",
+        "hair_color": ["golden blonde", "strawberry blonde", "dark blonde"], "hair_length": "short pixie", "hair_texture": "wavy",
+        "hair_style": "slicked back", "facial_hair": "short beard", "skin_tone": "light",
+        "outfit_style": "business formal",
+        "outfit_description": "polished silver plate armor over a white tabard with a heavy hanging cloak",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "determined", "location": "grand cathedral interior",
+        "lighting": "light through stained glass casting colors",
+        "shot_type": "full body shot", "mood": "self-assured",
+    },
+    "Forest Druid": {
+        "ethnicity": "Irish", "body_type": "lean", "height": "average height",
+        "hair_color": ["warm brown", "chestnut", "medium brown"], "hair_length": "mid back", "hair_texture": "wavy",
+        "hair_style": "loose braids", "skin_tone": "fair", "complexion": "clear",
+        "outfit_style": "bohemian",
+        "outfit_description": "layered leaf-green and bark-brown robes with a fur mantle and a carved wooden staff",
+        "bag": "no bag", "accessories": "woven hat",
+        "expression": "serene", "location": "sunlit sunroom",
+        "lighting": "dappled sunlight through forest canopy",
+        "shot_type": "medium shot from waist up", "mood": "dreamy",
+    },
+    "Shadow Monk": {
+        "gender": "Male", "ethnicity": "Tibetan", "body_type": "lean", "height": "average height",
+        "fitness_level": "athletic",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "buzzed very short", "hair_texture": "sleek straight",
+        "hair_style": "natural and unstyled", "skin_tone": "light medium",
+        "outfit_style": "loungewear",
+        "outfit_description": "simple wrapped grey linen robes tied with a wide cloth belt and cloth hand wraps",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "serene", "location": "small chapel interior",
+        "lighting": "soft window light from the side",
+        "shot_type": "full body shot", "mood": "tranquil",
+    },
+    "Berserker Barbarian": {
+        "gender": "Male", "ethnicity": "Norwegian", "body_type": "athletic", "height": "very tall",
+        "fitness_level": "muscular",
+        "facial_hair": "full beard", "hair_color": ["auburn", "copper", "deep red"], "hair_length": "shoulder length",
+        "hair_texture": "thick and voluminous", "hair_style": "loose braids", "skin_tone": "fair",
+        "complexion": "ruddy", "outfit_style": "edgy alternative",
+        "outfit_description": "fur-trimmed leather harness over a bare muscular chest with iron bracers and a wide belt",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "stern", "location": "rustic log cabin interior",
+        "lighting": "fire and flame warm flicker",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "intense",
+    },
+    "Necromancer": {
+        "ethnicity": "Russian", "body_type": "slender", "height": "tall",
+        "eye_color": ["nearly black", "dark brown"], "hair_color": ["charcoal gray", "salt and pepper", "jet black"], "hair_length": "long",
+        "hair_texture": "sleek straight", "hair_style": "worn down", "skin_tone": "very pale",
+        "complexion": "sallow", "makeup_style": "gothic dark makeup", "lips_makeup": "dark brown",
+        "outfit_style": "edgy alternative",
+        "outfit_description": "tattered black robes with bone clasps and a deep hooded cowl",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "intense gaze", "location": "dark moody Victorian parlor",
+        "lighting": "low key moody single light source",
+        "shot_type": "close-up portrait", "mood": "mysterious",
+    },
+    "Arcane Wizard": {
+        "gender": "Male", "ethnicity": "English", "body_type": "slim", "height": "tall",
+        "facial_hair": "full beard", "hair_color": ["white", "silver", "salt and pepper"], "hair_length": "long",
+        "hair_texture": "fine and wispy", "hair_style": "worn down", "skin_tone": "fair",
+        "outfit_style": "bohemian",
+        "outfit_description": "star-embroidered deep blue robes with wide sleeves and a tall wide-brimmed pointed hat",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "contemplative", "location": "cozy home library",
+        "lighting": "warm candlelight",
+        "shot_type": "medium shot from waist up", "mood": "mysterious",
+    },
+    "Battle Bard": {
+        # Soft Female preference; costume lives in the variants (not _COSTUMES).
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "Welsh", "body_type": "curvy", "height": "average height",
+                "eye_color": ["emerald", "bright green", "green"], "hair_color": ["copper", "auburn", "bright red"], "hair_length": "mid back",
+                "hair_texture": "beachy waves", "hair_style": "half up half down", "skin_tone": "fair",
+                "freckles_density": "moderate", "makeup_style": "soft glam",
+                "outfit_style": "bohemian",
+                "outfit_description": [
+                    "an embroidered {color} velvet doublet over a ruffled blouse with a feathered cap and a lute on a strap",
+                    "a laced {color} velvet vest over a billowing blouse with a feathered cap and a lute on a strap",
+                ],
+                "bag": "no bag", "accessories": "no accessories",
+                "expression": "playful", "location": "speakeasy-style basement bar",
+                "lighting": "warm string lights bokeh background",
+                "shot_type": "medium shot from waist up", "mood": "cheerful",
+            },
+            "Male": {
+                "ethnicity": "Welsh", "body_type": "lean", "height": "average height",
+                "eye_color": ["emerald", "bright green", "green"], "hair_color": ["copper", "auburn", "bright red"], "hair_length": "ear length",
+                "hair_texture": "wavy", "hair_style": "natural and unstyled", "skin_tone": "fair",
+                "freckles_density": "moderate", "facial_hair": "stubble",
+                "outfit_style": "bohemian",
+                "outfit_description": [
+                    "an embroidered {color} velvet doublet over a billowing shirt with a feathered cap and a lute on a strap",
+                    "a laced {color} leather jerkin over a loose linen shirt with a feathered cap and a lute on a strap",
+                ],
+                "bag": "no bag", "accessories": "no accessories",
+                "expression": "playful", "location": "speakeasy-style basement bar",
+                "lighting": "warm string lights bokeh background",
+                "shot_type": "medium shot from waist up", "mood": "cheerful",
+            },
+        },
+    },
+
+    # --- Costume / themed -------------------------------------------------
+    "Swashbuckling Pirate": {
+        "gender": "Male", "ethnicity": "Spanish", "body_type": "athletic", "height": "tall",
+        "facial_hair": "short beard", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "shoulder length",
+        "hair_texture": "wavy", "hair_style": "worn down", "skin_tone": "warm tan",
+        "complexion": "ruddy", "outfit_style": "edgy alternative",
+        "outfit_description": "weathered brown leather coat over a loose linen shirt, a wide red sash, and a tricorn hat",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "smirking", "location": "dimly lit cocktail lounge",
+        "lighting": "warm candlelight",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "carefree",
+    },
+    "Stealth Ninja": {
+        "ethnicity": "Japanese", "body_type": "lean", "height": "average height",
+        "fitness_level": "very fit",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "ear length", "hair_texture": "sleek straight",
+        "hair_style": "natural and unstyled", "skin_tone": "light medium",
+        "outfit_style": "edgy alternative",
+        "outfit_description": "matte black shinobi garb with a face wrap, hood, and split-toe tabi boots",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "intense gaze", "location": "dark moody Victorian parlor",
+        "lighting": "moonlight with cool blue tones",
+        "shot_type": "full body shot", "mood": "tense",
+    },
+    "French Maid": {
+        "gender": "Female", "ethnicity": "French", "body_type": "hourglass", "height": "petite",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "shoulder length", "hair_texture": "loosely curled",
+        "hair_style": "pigtails", "skin_tone": "fair", "makeup_style": "soft glam",
+        "lips_makeup": "classic red", "outfit_style": "smart casual",
+        "outfit_description": "frilly black-and-white maid dress with a lace apron, ruffled headpiece, and stockings",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "slightly bashful", "location": "dark moody Victorian parlor",
+        "lighting": "warm incandescent lamp glow",
+        "shot_type": "full body shot", "mood": "carefree",
+    },
+    "Cheerleader": {
+        "gender": "Female", "ethnicity": "English", "body_type": "athletic", "height": "average height",
+        "fitness_level": "very fit", "hair_color": ["golden blonde", "strawberry blonde", "dark blonde"], "hair_length": "mid back",
+        "hair_texture": "loosely curled", "hair_style": "high ponytail",
+        "skin_tone": "light", "makeup_style": "soft everyday glam",
+        "outfit_style": "athletic",
+        "outfit_description": "pleated cheer uniform in red and white with a fitted shell top and pom-poms",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "bright smile", "location": "high school gymnasium",
+        "lighting": "high key bright even lighting",
+        "shot_type": "full body shot", "mood": "cheerful",
+    },
+    "Roaring Flapper": {
+        "gender": "Female", "ethnicity": "Italian", "body_type": "slim", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "chin length bob", "hair_texture": "sleek straight",
+        "hair_style": "wet look", "skin_tone": "light medium",
+        "makeup_style": "vintage 1950s pin-up makeup", "lips_makeup": "deep red",
+        "outfit_style": "vintage retro",
+        "outfit_description": "beaded fringe flapper dress with a feathered headband and long satin gloves",
+        "bag": "beaded evening clutch", "accessories": "no accessories",
+        "expression": "flirtatious", "location": "speakeasy-style basement bar",
+        "lighting": "warm string lights bokeh background",
+        "shot_type": "medium shot from waist up", "mood": "carefree",
+    },
+    "Wild West Gunslinger": {
+        "gender": "Male", "ethnicity": "Mexican", "body_type": "lean", "height": "tall",
+        "facial_hair": "stubble", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "ear length",
+        "hair_texture": "wavy", "hair_style": "worn down", "skin_tone": "tan",
+        "complexion": "ruddy", "outfit_style": "vintage retro",
+        "outfit_description": "fringed western shirt with a leather duster, denim, chaps, and a worn cowboy hat",
+        "bag": "no bag", "accessories": "western belt",
+        "expression": "stern", "location": "wood-paneled pub",
+        "lighting": "harsh overhead midday sun",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "tense",
+    },
+    "Noir Detective": {
+        # Soft Male preference; costume lives in the variants (not _COSTUMES) so
+        # the Female pick gets a period skirt suit instead of the loosened tie.
+        "gender": "Male",
+        "variants": {
+            "Male": {
+                "ethnicity": "Irish", "body_type": "average", "height": "tall",
+                "facial_hair": "five o'clock shadow", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short",
+                "hair_texture": "sleek straight", "hair_style": "slicked back", "skin_tone": "fair",
+                "outfit_style": "business casual",
+                "outfit_description": "a rumpled {earth_tone} trench coat over a wrinkled shirt and loosened tie with a felt fedora",
+                "bag": "no bag", "accessories": "no accessories",
+                "expression": "serious", "location": "police station bullpen",
+                "lighting": "light through venetian blinds casting stripes",
+                "shot_type": "close-up portrait", "mood": "mysterious",
+            },
+            "Female": {
+                "ethnicity": "Irish", "body_type": "average", "height": "average height",
+                "hair_color": ["auburn", "dark brown", "near black"], "hair_length": "shoulder length",
+                "hair_texture": "loosely curled", "hair_style": "worn down", "skin_tone": "fair",
+                "makeup_style": "vintage 1950s pin-up makeup", "lips_makeup": "classic red",
+                "outfit_style": "business casual",
+                "outfit_description": "a belted {earth_tone} trench coat over a 1940s skirt suit with seamed stockings and a small tilted felt hat",
+                "bag": "no bag", "accessories": "no accessories",
+                "expression": "serious", "location": "police station bullpen",
+                "lighting": "light through venetian blinds casting stripes",
+                "shot_type": "close-up portrait", "mood": "mysterious",
+            },
+        },
+    },
+    "ER Nurse": {
+        "ethnicity": "Filipino", "body_type": "average", "height": "average height",
+        "hair_color": ["near black", "jet black", "dark brown"], "hair_length": "shoulder length", "hair_texture": "sleek straight",
+        "hair_style": "low ponytail", "skin_tone": "warm tan",
+        "outfit_style": "loungewear",
+        "outfit_description": "teal medical scrubs with a lanyard ID badge and a stethoscope around the neck",
+        "bag": "no bag", "accessories": "no accessories",
+        "expression": "warm smile", "location": "hospital room",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+        # Unisex archetype (no gender lock). makeup_style is the ONLY per-gender
+        # difference, so it lives in a costume-less variants block rather than a
+        # base lock: women wear the curated soft look; men stay bare-faced. A base
+        # makeup_style lock would override the male-default "no makeup" cascade and
+        # paint a male nurse in randomized eyeshadow + lipstick (0.67.0 fix). The
+        # five-look costume rotation stays on the base via _COSTUMES — the variants
+        # define no outfit_description, so there is no competing costume source.
+        "variants": {
+            "Female": {"makeup_style": "soft natural makeup"},
+            "Male": {"makeup_style": "no makeup"},
+        },
+    },
+    "Flight Attendant": {
+        "gender": "Female", "ethnicity": "Korean", "body_type": "slim", "height": "tall",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "shoulder length", "hair_texture": "sleek straight",
+        "hair_style": "sleek bun", "skin_tone": "light medium", "makeup_style": "soft everyday glam",
+        "lips_makeup": "classic red", "outfit_style": "business casual",
+        "outfit_description": "a tailored {dark_color} airline uniform with a silk neck scarf and a pillbox cap",
+        "bag": "no bag", "accessories": "silk neck scarf",
+        "expression": "warm smile", "location": "airport departure gate",
+        "lighting": "soft morning light",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Tattoo Artist": {
+        "ethnicity": "German", "body_type": "athletic", "height": "average height",
+        "hair_color": ["electric blue", "magenta", "teal", "purple"], "hair_length": "short pixie", "hair_texture": "sleek straight",
+        "hair_style": "slicked back", "skin_tone": "fair", "makeup_style": "gothic dark makeup",
+        "piercings": "nose stud", "outfit_style": "edgy alternative",
+        "expression": "confident", "location": "tattoo parlor",
+        "lighting": "single neon light from one side",
+        "shot_type": "medium close-up from chest up", "mood": "self-assured",
+    },
+
+    # --- Lean costume archetypes (costume comes from _COSTUMES; body/face left
+    #     to randomize so each run is a different person in the same getup) ----
+    "Stage Magician": {
+        "accessories": "no accessories",
+        # Soft Male preference; costume lives in the variants (not _COSTUMES) so
+        # each gender gets its own coherent stage look.
+        "gender": "Male",
+        "variants": {
+            "Male": {
+                "facial_hair": "short beard", "hair_color": ["jet black", "raven black", "near black"],
+                "hair_length": "very short", "hair_style": "slicked back",
+                "outfit_style": "business formal",
+                "outfit_description": "a sharp {dark_color} tailcoat with a {color} satin waistcoat, white gloves, and a top hat",
+                "expression": "smirking",
+                "location": "concert hall backstage", "lighting": "stage spotlight from above",
+                "shot_type": "medium shot from waist up", "mood": "mysterious",
+            },
+            "Female": {
+                "hair_color": ["jet black", "raven black", "near black"],
+                "hair_length": "long", "hair_style": "low ponytail",
+                "makeup_style": "bold glam", "lips_makeup": "classic red",
+                "outfit_style": "business formal",
+                "outfit_description": "a fitted {dark_color} tailcoat with a {color} satin waistcoat, white gloves, and a top hat",
+                "expression": "smirking",
+                "location": "concert hall backstage", "lighting": "stage spotlight from above",
+                "shot_type": "medium shot from waist up", "mood": "mysterious",
+            },
+        },
+    },
+    "Masquerade Guest": {
+        "accessories": "no accessories",
+        # Soft Female preference; costume lives in the variants (not _COSTUMES).
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "hair_length": ["long", "mid back"], "hair_style": "updo", "makeup_style": "bold glam",
+                "outfit_style": "evening formal",
+                "outfit_description": "an opulent {jewel_tone} {fabric} ball gown with {accent} and an ornate feathered mask",
+                "expression": "flirtatious",
+                "location": "grand hotel suite", "lighting": "warm candlelight",
+                "shot_type": "medium close-up from chest up", "mood": "mysterious",
+            },
+            "Male": {
+                "hair_style": "slicked back", "facial_hair": "clean shaven",
+                "outfit_style": "evening formal",
+                "outfit_description": "a {dark_color} velvet tailcoat with a {jewel_tone} brocade waistcoat, white gloves, and an ornate {metal} filigree half-mask",
+                "expression": "smirking",
+                "location": "grand hotel suite", "lighting": "warm candlelight",
+                "shot_type": "medium close-up from chest up", "mood": "mysterious",
+            },
+        },
+    },
+    "Steampunk Inventor": {
+        "accessories": "no accessories",
+        "hair_length": ["shoulder length", "long"], "hair_style": "messy bun", "outfit_style": "vintage retro",
+        "expression": "determined", "location": "home garage workshop",
+        "lighting": "warm incandescent lamp glow",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Cyberpunk Netrunner": {
+        "accessories": "no accessories",
+        "hair_color": ["electric blue", "magenta", "teal", "purple"], "hair_style": "slicked back",
+        "outfit_style": "streetwear", "expression": "intense gaze",
+        "location": "neon-lit nightclub", "lighting": "neon sign glow in multiple colors",
+        "shot_type": "medium close-up from chest up", "mood": "intense",
+    },
+    "Space Knight": {
+        "accessories": "no accessories",
+        "gender": "Male", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short",
+        "outfit_style": "bohemian", "expression": "serene",
+        "location": "grand cathedral interior", "lighting": "backlit silhouette against bright window",
+        "shot_type": "full body shot", "mood": "mysterious",
+    },
+    "Gladiator": {
+        "accessories": "no accessories",
+        "gender": "Male", "body_type": "athletic", "fitness_level": "muscular", "hair_color": ["dark brown", "medium brown", "near black"], "hair_style": "natural and unstyled",
+        "outfit_style": "athletic", "expression": "determined",
+        "location": "museum gallery with white walls", "lighting": "dramatic chiaroscuro side lighting",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "intense",
+    },
+    "Viking Shieldmaiden": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "Norwegian", "hair_color": ["dark blonde", "dirty blonde", "golden blonde"],
+        "hair_length": "long", "hair_style": "dutch braids", "outfit_style": "edgy alternative",
+        "expression": "stern", "location": "rustic log cabin interior",
+        "lighting": "fire and flame warm flicker",
+        "shot_type": "medium shot from waist up", "mood": "intense",
+    },
+    "Tavern Wench": {
+        "gender": "Female",
+        "ethnicity": "Irish",
+        "body_type": "curvy",
+        "height": "average height",
+        "eye_color": ["hazel", "green", "warm hazel"],
+        "hair_color": ["auburn", "chestnut", "dark brown"],
+        "hair_length": "mid back",
+        "hair_texture": "wavy",
+        "hair_style": "loose braids",
+        "skin_tone": "fair",
+        "complexion": "rosy",
+        "outfit_style": "casual",
+        "accessories": "no accessories",
+        "outfit_description": [
+            "a cleavage-baring white chemise blouse with a plunging neckline and puffed sleeves under a tightly laced {dark_color} corset bodice, a long layered {earth_tone} skirt with a white apron, and worn brown leather ankle boots",
+            "a loose cream linen blouse with a deep plunging neckline under a snugly laced {color} bodice, a full gathered skirt with a stained apron, and scuffed knee-high boots",
+        ],
+        "expression": "warm smile", "location": "wood-paneled pub",
+        "lighting": "warm candlelight",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Samurai": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Japanese", "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "shoulder length", "hair_style": "top knot", "facial_hair": "goatee",
+        "outfit_style": "edgy alternative", "expression": "stern",
+        "location": "photography studio with backdrop", "lighting": "soft studio three-point lighting",
+        "shot_type": "full body shot", "mood": "tense",
+    },
+    "Cabaret Witch": {
+        "accessories": "no accessories",
+        "gender": "Female", "hair_color": ["raven black", "jet black", "near black"], "hair_length": "long",
+        "hair_style": "worn down", "makeup_style": "gothic dark makeup", "lips_makeup": "deep red",
+        "outfit_style": "evening formal", "expression": "sultry",
+        "location": "speakeasy-style basement bar", "lighting": "low key moody single light source",
+        "shot_type": "medium close-up from chest up", "mood": "mysterious",
+    },
+    "Fortune Teller": {
+        "accessories": "no accessories",
+        # Soft Female preference; costume lives in the variants (not _COSTUMES).
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "Romani", "hair_color": ["dark brown", "medium brown", "near black"],
+                "hair_length": "very long", "hair_style": "loose braids", "makeup_style": "bold glam",
+                "outfit_style": "bohemian",
+                "outfit_description": "layered {jewel_tone} shawls and skirts with jangling {metal} coins, bangles, and a headscarf",
+                "expression": "sultry",
+                "location": "dimly lit cocktail lounge", "lighting": "warm candlelight",
+                "shot_type": "medium close-up from chest up", "mood": "mysterious",
+            },
+            "Male": {
+                "ethnicity": "Romani", "hair_color": ["dark brown", "medium brown", "near black"],
+                "hair_length": "shoulder length", "hair_style": "worn down", "facial_hair": "short beard",
+                "outfit_style": "bohemian",
+                "outfit_description": "a {jewel_tone} patterned vest over a loose open-collared shirt with a wide sash, {metal} rings and pendants, and a knotted headscarf",
+                "expression": "smirking",
+                "location": "dimly lit cocktail lounge", "lighting": "warm candlelight",
+                "shot_type": "medium close-up from chest up", "mood": "mysterious",
+            },
+        },
+    },
+    "Disco Diva": {
+        "gender": "Female", "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": ["shoulder length", "slightly past shoulders"], "hair_style": "afro",
+        "makeup_style": "club makeup",
+        "outfit_style": "vintage retro", "expression": "flirtatious",
+        "location": "neon-lit nightclub", "lighting": "club strobe lighting",
+        "shot_type": "full body shot", "mood": "cheerful",
+    },
+    "Punk Rocker": {
+        "hair_color": ["magenta", "electric blue", "hot pink"], "hair_length": "short pixie", "hair_style": "slicked back",
+        "makeup_style": "gothic dark makeup", "outfit_style": "edgy alternative",
+        "expression": "smirking", "location": "concert hall backstage",
+        "lighting": "single neon light from one side",
+        "shot_type": "medium close-up from chest up", "mood": "intense",
+    },
+    "Renaissance Noble": {
+        "accessories": "no accessories",
+        "hair_length": ["long", "mid back"], "hair_style": "half up half down", "makeup_style": "soft glam",
+        "outfit_style": "evening formal", "expression": "confident",
+        "location": "museum gallery with white walls", "lighting": "soft window light from the side",
+        "shot_type": "close-up portrait", "mood": "tranquil",
+    },
+    "Pop Star": {
+        "gender": "Female", "hair_color": ["platinum blonde", "white blonde", "light blonde"],
+        "hair_length": ["long", "very long"], "hair_style": "high ponytail",
+        "makeup_style": "full glam", "outfit_style": "cocktail semi-formal",
+        "expression": "bright smile", "location": "recording studio",
+        "lighting": "warm string lights bokeh background",
+        "shot_type": "medium close-up from chest up", "mood": "cheerful",
+    },
+    "Ballerina": {
+        "accessories": "no accessories",
+        "gender": "Female", "body_type": "slender", "hair_color": ["chestnut", "light chestnut", "warm brown"],
+        "hair_length": ["long", "mid back"], "hair_style": "sleek bun",
+        "makeup_style": "soft glam", "outfit_style": "athletic",
+        "expression": "serene", "location": "backstage dressing room",
+        "lighting": "soft window light from the side",
+        "shot_type": "full body shot", "mood": "dreamy",
+    },
+    "Bridal Portrait": {
+        "accessories": "no accessories",
+        "gender": "Female", "hair_length": ["long", "mid back"], "hair_style": "updo",
+        "makeup_style": "soft glam",
+        "outfit_style": "evening formal", "expression": "warm smile",
+        "location": "small chapel interior", "lighting": "light through stained glass casting colors",
+        "shot_type": "medium close-up from chest up", "mood": "dreamy",
+    },
+    "Astronaut": {
+        "accessories": "no accessories",
+        "hair_style": "natural and unstyled", "outfit_style": "athletic",
+        "expression": "determined", "location": "mission control room with monitor banks",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Angelic Being": {
+        "accessories": "no accessories",
+        "gender": "Female", "hair_color": ["platinum blonde", "white blonde", "light blonde"], "hair_length": "long",
+        "hair_texture": "loosely curled", "hair_style": "half up half down",
+        "makeup_style": "soft glam", "outfit_style": "evening formal",
+        "expression": "serene", "location": "grand cathedral interior",
+        "lighting": "light through stained glass casting colors",
+        "shot_type": "medium close-up from chest up", "mood": "dreamy",
+    },
+    "Nun": {
+        "accessories": "no accessories",
+        "gender": "Female", "makeup_style": "no makeup",
+        "hair_length": ["shoulder length", "long"], "hair_style": "sleek bun",
+        "outfit_style": "business formal", "expression": "serene",
+        "location": "small chapel interior", "lighting": "soft window light from the side",
+        "shot_type": "medium close-up from chest up", "mood": "tranquil",
+    },
+    "Valkyrie": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "Norwegian", "body_type": "athletic",
+        "hair_color": ["golden blonde", "strawberry blonde", "dark blonde"], "hair_length": "long", "hair_style": "dutch braids",
+        "outfit_style": "edgy alternative", "expression": "stern",
+        "location": "rustic log cabin interior", "lighting": "dramatic chiaroscuro side lighting",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "intense",
+    },
+    "Gothic Doll": {
+        "accessories": "no accessories",
+        "gender": "Female", "hair_color": ["jet black", "raven black", "near black"], "hair_length": "long",
+        "hair_texture": "softly curled", "hair_style": "pigtails",
+        "makeup_style": "gothic dark makeup", "outfit_style": "edgy alternative",
+        "expression": "slightly bashful", "location": "dark moody Victorian parlor",
+        "lighting": "soft window light from the side",
+        "shot_type": "full body shot", "mood": "mysterious",
+    },
+    "Belly Dancer": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "Egyptian", "body_type": "curvy",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very long", "hair_texture": "wavy",
+        "hair_style": "worn down", "makeup_style": "bold glam",
+        "outfit_style": "edgy alternative", "expression": "flirtatious",
+        "location": "dimly lit cocktail lounge", "lighting": "warm candlelight",
+        "shot_type": "full body shot", "mood": "carefree",
+    },
+
+    # --- More modern professions (costume from _COSTUMES where apt) --------
+    "Surgeon": {
+        "accessories": "no accessories",
+        "hair_length": ["shoulder length", "long"], "hair_style": ["sleek bun", "low ponytail"],
+        "outfit_style": "business casual",
+        "expression": ["determined", "calm and composed"], "location": ["hospital room", "emergency room"],
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium close-up from chest up", "mood": "intense",
+    },
+    "Judge": {
+        "accessories": "no accessories",
+        "hair_length": ["shoulder length", "long"], "hair_style": "low ponytail",
+        "outfit_style": "business formal",
+        "expression": "stern", "location": "courtroom",
+        "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up", "mood": "tranquil",
+    },
+    "Bartender": {
+        "hair_style": "slicked back", "outfit_style": "smart casual",
+        "expression": "confident", "location": "dimly lit cocktail lounge",
+        "lighting": "warm string lights bokeh background",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "News Anchor": {
+        "hair_style": "freshly blown out", "makeup_style": "full glam",
+        "outfit_style": "business formal", "expression": "confident",
+        "location": "photography studio with backdrop", "lighting": "soft studio three-point lighting",
+        "shot_type": "medium close-up from chest up", "mood": "self-assured",
+    },
+    "Orchestra Conductor": {
+        "hair_style": ["windswept", "slicked back"], "outfit_style": "evening formal",
+        "expression": ["intense gaze", "focused"], "location": "concert hall backstage",
+        "lighting": "dramatic single overhead spotlight",
+        "shot_type": "medium shot from waist up", "mood": "intense",
+    },
+    "Veterinarian": {
+        "hair_length": ["shoulder length", "long"], "hair_style": "low ponytail",
+        "outfit_style": "business casual",
+        "expression": "warm smile", "location": "doctor's examination room",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Sommelier": {
+        "hair_length": ["shoulder length", "long"], "hair_style": "sleek bun",
+        "outfit_style": "business formal",
+        "expression": "subtle soft smile", "location": "wine bar with exposed brick",
+        "lighting": "warm incandescent lamp glow",
+        "shot_type": "medium close-up from chest up", "mood": "tranquil",
+    },
+    "Glassblower": {
+        "outfit_style": "casual", "expression": "determined",
+        "location": "factory floor", "lighting": "fire and flame warm flicker",
+        "shot_type": "medium shot from waist up", "mood": "intense",
+    },
+
+    # --- More tabletop / fantasy classes (costume via _COSTUMES) -----------
+    "Warlock": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "Romanian", "body_type": "slender", "height": "tall",
+        "eye_color": "violet-gray", "hair_color": ["deep purple", "purple", "raven black"], "hair_length": "very long",
+        "hair_texture": "wavy", "hair_style": "worn down", "skin_tone": "porcelain",
+        "makeup_style": "gothic dark makeup", "lips_makeup": "plum", "outfit_style": "edgy alternative",
+        "expression": "intense gaze", "location": "dark moody Victorian parlor",
+        "lighting": "low key moody single light source", "shot_type": "close-up portrait",
+        "mood": "mysterious",
+    },
+    "Artificer": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "German", "body_type": "average", "height": "average height",
+        "hair_color": ["copper", "auburn", "bright red"], "hair_length": "very short", "hair_style": "natural and unstyled",
+        "facial_hair": "short beard", "skin_tone": "fair", "outfit_style": "vintage retro",
+        "expression": "determined", "location": "home garage workshop",
+        "lighting": "warm incandescent lamp glow", "shot_type": "medium shot from waist up",
+        "mood": "self-assured",
+    },
+    "Sorcerer": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Italian", "body_type": "lean", "height": "tall",
+        "eye_color": ["amber", "golden brown", "honey"], "hair_color": ["jet black", "raven black", "near black"], "hair_length": "shoulder length",
+        "hair_texture": "wavy", "hair_style": "slicked back", "facial_hair": "van dyke",
+        "skin_tone": "olive", "outfit_style": "evening formal", "expression": "confident",
+        "location": "grand cathedral interior", "lighting": "dramatic chiaroscuro side lighting",
+        "shot_type": "medium shot from waist up", "mood": "intense",
+    },
+    "Alchemist": {
+        "accessories": "no accessories",
+        "ethnicity": "Dutch", "body_type": "slim", "height": "average height",
+        "hair_color": ["ash brown", "medium brown", "dark blonde"], "hair_length": "ear length", "hair_style": "messy bun",
+        "skin_tone": "fair", "outfit_style": "vintage retro", "expression": "contemplative",
+        "location": "cozy home library", "lighting": "warm candlelight",
+        "shot_type": "medium shot from waist up", "mood": "mysterious",
+    },
+    "Witch Hunter": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Polish", "body_type": "athletic", "height": "tall",
+        "facial_hair": "stubble", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short",
+        "hair_style": "slicked back", "skin_tone": "light", "outfit_style": "edgy alternative",
+        "expression": "stern", "location": "misty moor", "lighting": "moonlight with cool blue tones",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "tense",
+    },
+    "Plague Doctor": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Austrian", "body_type": "lean", "height": "tall",
+        "hair_color": ["charcoal gray", "salt and pepper", "jet black"], "hair_length": "very short", "skin_tone": "pale",
+        "outfit_style": "edgy alternative", "expression": "serious",
+        "location": "crumbling stone ruin", "lighting": "fog-diffused streetlamp glow",
+        "shot_type": "full body shot", "mood": "mysterious",
+    },
+
+    # --- More professions --------------------------------------------------
+    "Soldier": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "English", "body_type": "athletic", "height": "tall",
+        "fitness_level": "very fit", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "buzzed very short",
+        "hair_style": "natural and unstyled", "skin_tone": "tan", "outfit_style": "athletic",
+        "expression": "determined", "location": "warehouse interior",
+        "lighting": "harsh overhead midday sun", "shot_type": "medium shot from waist up",
+        "mood": "intense",
+    },
+    "Construction Worker": {
+        "gender": "Male", "ethnicity": "Mexican", "body_type": "stocky", "height": "average height",
+        "fitness_level": "very fit", "facial_hair": "stubble", "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "very short", "skin_tone": "medium olive", "outfit_style": "casual",
+        "expression": "confident", "location": "factory floor",
+        "lighting": "harsh overhead midday sun", "shot_type": "medium shot from waist up",
+        "mood": "self-assured",
+    },
+    "Electrician": {
+        "gender": "Male", "ethnicity": "Irish", "body_type": "average", "height": "average height",
+        "hair_color": ["warm brown", "chestnut", "medium brown"], "hair_length": "very short", "skin_tone": "fair",
+        "outfit_style": "casual", "accessories": "no accessories", "expression": "serious",
+        "location": "home garage workshop", "lighting": "harsh fluorescent lighting",
+        "shot_type": "medium shot from waist up", "mood": "tranquil",
+    },
+    "Photographer": {
+        "ethnicity": "Japanese", "body_type": "slim", "height": "average height",
+        "hair_color": ["near black", "jet black", "dark brown"], "hair_length": "ear length", "hair_style": "messy bun",
+        "skin_tone": "light medium", "outfit_style": "smart casual",
+        "accessories": "no accessories", "expression": "pensive and thoughtful",
+        "location": "art gallery opening night", "lighting": "soft studio three-point lighting",
+        "shot_type": "medium close-up from chest up", "mood": "dreamy",
+    },
+    "Personal Trainer": {
+        "gender": "Female", "ethnicity": "Brazilian", "body_type": "athletic", "height": "tall",
+        "fitness_level": "very fit", "hair_color": ["dark brown", "medium brown", "near black"],
+        "hair_length": "long", "hair_style": "high ponytail", "skin_tone": "warm tan",
+        "outfit_style": "athletic", "expression": "confident", "location": "local gym weight room",
+        "lighting": "high key bright even lighting", "shot_type": "full body shot",
+        "mood": "self-assured",
+    },
+    "Lifeguard": {
+        "gender": "Male", "ethnicity": "English", "body_type": "athletic",
+        "height": "tall", "fitness_level": "very fit",
+        "hair_color": ["dark blonde", "dirty blonde", "golden blonde"], "hair_length": "very short", "skin_tone": "golden tan",
+        "outfit_style": "athletic", "expression": "confident", "location": "wide sandy beach",
+        "lighting": "golden hour sunlight", "shot_type": "cowboy shot from mid-thigh up",
+        "mood": "cheerful",
+    },
+    "Park Ranger": {
+        "ethnicity": "Native American", "body_type": "fit", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "long", "hair_style": "low ponytail",
+        "skin_tone": "warm tan", "outfit_style": "casual", "accessories": "wide brim sun hat",
+        "expression": "warm smile", "location": "forest trail", "lighting": "dappled sunlight through forest canopy",
+        "shot_type": "medium shot from waist up", "mood": "tranquil",
+    },
+    "Marine Biologist": {
+        "gender": "Female", "ethnicity": "Filipino",
+        "body_type": "athletic", "height": "average height", "hair_color": ["near black", "jet black", "dark brown"],
+        "hair_length": "shoulder length", "hair_style": "low ponytail", "skin_tone": "warm tan",
+        "outfit_style": "casual", "expression": "curious", "location": "rocky coastal cliff",
+        "lighting": "overcast diffused daylight", "shot_type": "medium shot from waist up",
+        "mood": "tranquil",
+    },
+    "Archaeologist": {
+        "gender": "Female", "ethnicity": "English", "body_type": "fit", "height": "average height",
+        "hair_color": ["warm brown", "chestnut", "medium brown"], "hair_length": "long", "hair_style": "low ponytail",
+        "skin_tone": "tan", "outfit_style": "casual", "accessories": "wide brim sun hat",
+        "expression": "determined", "location": "crumbling stone ruin",
+        "lighting": "golden hour sunlight", "shot_type": "cowboy shot from mid-thigh up",
+        "mood": "self-assured",
+    },
+    "Software Developer": {
+        "ethnicity": "Indian", "body_type": "slim", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short", "skin_tone": "medium",
+        "outfit_style": "loungewear", "accessories": "no accessories",
+        "expression": "pensive and thoughtful", "location": "co-working space",
+        "lighting": "cool LED overhead lighting", "shot_type": "medium shot from waist up",
+        "mood": "tranquil",
+    },
+    "Lumberjack": {
+        # Soft Male preference; costume lives in the variants (not _COSTUMES).
+        "gender": "Male",
+        "variants": {
+            "Male": {
+                "ethnicity": "Norwegian", "body_type": "stocky",
+                "height": "tall", "fitness_level": "very fit", "facial_hair": "full beard",
+                "hair_color": ["auburn", "copper", "deep red"], "hair_length": "very short", "skin_tone": "fair", "complexion": "ruddy",
+                "outfit_style": "casual",
+                "outfit_description": "a {color} checked flannel shirt with suspenders, work trousers, and heavy boots",
+                "expression": "confident", "location": "snowy pine forest",
+                "lighting": "overcast diffused daylight", "shot_type": "cowboy shot from mid-thigh up",
+                "mood": "self-assured",
+            },
+            "Female": {
+                "ethnicity": "Norwegian", "body_type": "fit",
+                "height": "tall", "fitness_level": "athletic",
+                "hair_color": ["auburn", "copper", "strawberry blonde"], "hair_length": "long",
+                "hair_texture": "wavy", "hair_style": "side braid", "skin_tone": "fair",
+                "outfit_style": "casual",
+                "outfit_description": "a {color} checked flannel shirt tucked into high-waisted work trousers with suspenders and heavy boots",
+                "expression": "confident", "location": "snowy pine forest",
+                "lighting": "overcast diffused daylight", "shot_type": "cowboy shot from mid-thigh up",
+                "mood": "self-assured",
+            },
+        },
+    },
+
+    # --- Hobbies -----------------------------------------------------------
+    "Surfer": {
+        "gender": "Male", "ethnicity": "Hawaiian", "body_type": "athletic", "height": "tall",
+        "fitness_level": "very fit", "hair_color": ["dirty blonde", "dark blonde", "light blonde"], "hair_length": "ear length",
+        "hair_texture": "beachy waves", "hair_style": "windswept", "skin_tone": "golden tan",
+        "outfit_style": "resort vacation", "expression": "warm smile",
+        "location": "wide sandy beach", "lighting": "golden hour sunlight",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "cheerful",
+    },
+    "Skateboarder": {
+        "ethnicity": "Filipino", "body_type": "lean", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short", "skin_tone": "light medium",
+        "outfit_style": "streetwear", "accessories": "baseball cap", "expression": "smirking",
+        "location": "urban alley with graffiti", "lighting": "harsh overhead midday sun",
+        "shot_type": "full body shot", "mood": "carefree",
+    },
+    "Rock Climber": {
+        "gender": "Female", "ethnicity": "Korean", "body_type": "athletic", "height": "average height",
+        "fitness_level": "athletic", "hair_color": ["near black", "jet black", "dark brown"],
+        "hair_length": "long", "hair_style": "French braid", "skin_tone": "light medium",
+        "outfit_style": "athletic", "expression": "determined", "location": "mountain overlook",
+        "lighting": "harsh overhead midday sun", "shot_type": "full body shot", "mood": "intense",
+    },
+    "Cyclist": {
+        "gender": "Male", "ethnicity": "Colombian", "body_type": "lean", "height": "average height",
+        "fitness_level": "very fit", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short",
+        "skin_tone": "tan", "outfit_style": "athletic", "expression": "determined",
+        "location": "country dirt road", "lighting": "golden hour sunlight",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "self-assured",
+    },
+    "Boxer": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Cuban", "body_type": "athletic", "height": "tall",
+        "fitness_level": "muscular", "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "very short", "skin_tone": "warm brown", "outfit_style": "athletic",
+        "expression": "intense gaze", "location": "local gym weight room",
+        "lighting": "dramatic chiaroscuro side lighting", "shot_type": "cowboy shot from mid-thigh up",
+        "mood": "intense",
+    },
+    "Yoga Instructor": {
+        "gender": "Female", "ethnicity": "Indian", "body_type": "toned", "height": "average height",
+        "fitness_level": "athletic", "hair_color": ["near black", "jet black", "dark brown"], "hair_length": "very long",
+        "hair_style": "messy bun", "skin_tone": "medium", "outfit_style": "athletic",
+        "expression": "serene", "location": "yoga studio with wood floors",
+        "lighting": "soft morning light", "shot_type": "full body shot", "mood": "tranquil",
+    },
+    "DJ": {
+        "ethnicity": "Nigerian", "body_type": "average", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short", "hair_style": "natural and unstyled",
+        "skin_tone": "dark brown", "outfit_style": "streetwear", "expression": "confident",
+        "location": "neon-lit nightclub", "lighting": "club strobe lighting",
+        "shot_type": "medium close-up from chest up", "mood": "cheerful",
+    },
+
+    # --- More themed (costume via _COSTUMES) -------------------------------
+    "Superhero": {
+        "accessories": "no accessories",
+        "body_type": "athletic", "fitness_level": "very fit",
+        "outfit_style": "athletic", "expression": "confident",
+        "location": ["rooftop terrace overlooking the skyline", "busy city crosswalk"],
+        "lighting": "rim lighting from setting sun", "shot_type": "low angle looking up",
+        "mood": "self-assured",
+    },
+    "Supervillain": {
+        "accessories": "no accessories",
+        "outfit_style": "evening formal", "expression": "smirking",
+        "location": "upscale penthouse living room with city view",
+        "lighting": ["low key moody single light source", "dramatic chiaroscuro side lighting"],
+        "shot_type": "low angle looking up",
+        "mood": "intense",
+    },
+    "Mad Scientist": {
+        "accessories": "no accessories",
+        # Soft Male preference; costume lives in the variants (not _COSTUMES).
+        "gender": "Male",
+        "variants": {
+            "Male": {
+                "ethnicity": "German", "body_type": "slim", "height": "tall",
+                "hair_color": ["white", "silver", "salt and pepper"], "hair_length": "ear length", "hair_texture": "fine and wispy",
+                "hair_style": "windswept", "skin_tone": "pale", "outfit_style": "business casual",
+                "outfit_description": "a stained white lab coat over a waistcoat with rubber gloves and cracked goggles",
+                "expression": "surprised", "location": "university chemistry laboratory",
+                "lighting": "harsh fluorescent lighting", "shot_type": "medium shot from waist up",
+                "mood": "tense",
+            },
+            "Female": {
+                "ethnicity": "German", "body_type": "slim", "height": "average height",
+                "hair_color": ["white", "silver", "salt and pepper"], "hair_length": "shoulder length", "hair_texture": "fine and wispy",
+                "hair_style": "messy bun", "skin_tone": "pale", "outfit_style": "business casual",
+                "outfit_description": "a stained white lab coat over a high-collared blouse with rubber gloves and cracked goggles",
+                "expression": "surprised", "location": "university chemistry laboratory",
+                "lighting": "harsh fluorescent lighting", "shot_type": "medium shot from waist up",
+                "mood": "tense",
+            },
+        },
+    },
+    "Court Jester": {
+        "accessories": "no accessories",
+        "outfit_style": "edgy alternative", "makeup_style": "club makeup", "expression": "playful",
+        "location": "castle courtyard", "lighting": "warm string lights bokeh background",
+        "shot_type": "full body shot", "mood": "carefree",
+    },
+    "Egyptian Pharaoh": {
+        "accessories": "no accessories",
+        "ethnicity": "Egyptian", "body_type": "lean", "skin_tone": "caramel",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_style": "blunt bangs", "makeup_style": "bold glam",
+        "eyeliner": "dramatic winged", "outfit_style": "evening formal", "expression": "stern",
+        "location": "natural history museum hall", "lighting": "dramatic single overhead spotlight",
+        "shot_type": "medium shot from waist up", "mood": "mysterious",
+    },
+    "Geisha": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "Japanese", "body_type": "slender", "height": "petite",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": ["long", "very long"],
+        "hair_style": "updo", "skin_tone": "porcelain",
+        "lips_makeup": "classic red", "outfit_style": "evening formal", "expression": "serene",
+        "location": "cherry blossom grove", "lighting": "soft window light from the side",
+        "shot_type": "medium close-up from chest up", "mood": "tranquil",
+    },
+    "Greek Goddess": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "Greek", "body_type": "hourglass", "height": "tall",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very long", "hair_texture": "softly curled",
+        "hair_style": "updo", "skin_tone": "olive", "makeup_style": "soft glam",
+        "outfit_style": "evening formal", "expression": "serene", "location": "outdoor amphitheater",
+        "lighting": "golden hour sunlight", "shot_type": "full body shot", "mood": "dreamy",
+    },
+    "Roman Centurion": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Italian", "body_type": "athletic", "height": "tall",
+        "fitness_level": "very fit", "facial_hair": "stubble",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short", "skin_tone": "olive",
+        "outfit_style": "athletic", "expression": "stern", "location": "crumbling stone ruin",
+        "lighting": "harsh overhead midday sun", "shot_type": "cowboy shot from mid-thigh up",
+        "mood": "intense",
+    },
+    "Grim Reaper": {
+        "accessories": "no accessories",
+        "body_type": "very slim", "height": "very tall", "skin_tone": "very pale",
+        "outfit_style": "edgy alternative", "expression": "serious",
+        "location": ["misty moor", "crumbling stone ruin"],
+        "lighting": ["fog-diffused streetlamp glow", "moonlight with cool blue tones"],
+        "shot_type": "full body shot",
+        "mood": "mysterious",
+    },
+    "Snow Queen": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "Icelandic", "body_type": "slender", "height": "tall",
+        "eye_color": ["ice blue", "pale blue", "bright blue"], "hair_color": ["platinum white", "white blonde", "silver"], "hair_length": "waist length",
+        "hair_style": "crown braid", "skin_tone": "porcelain", "makeup_style": "soft glam",
+        "outfit_style": "evening formal", "expression": "serene", "location": "snowy pine forest",
+        "lighting": "moonlight with cool blue tones", "shot_type": "full body shot",
+        "mood": "mysterious",
+    },
+    "Sea Captain": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Scottish", "body_type": "stocky", "height": "tall",
+        "facial_hair": ["full beard", "short beard", "mutton chops"], "hair_color": ["salt and pepper", "gray-streaked dark hair", "silver"], "hair_length": "very short",
+        "skin_tone": "warm tan", "complexion": "ruddy", "outfit_style": "vintage retro",
+        "expression": "confident", "location": "working harbor dock",
+        "lighting": "soft morning light", "shot_type": "medium shot from waist up",
+        "mood": "tranquil",
+    },
+    "Wasteland Survivor": {
+        "accessories": "no accessories",
+        "ethnicity": "Greek", "body_type": "lean", "height": "average height",
+        "skin_tone": "tan", "complexion": "ruddy", "outfit_style": "edgy alternative",
+        "expression": "stern", "location": ["rolling desert dune", "urban alley with graffiti"],
+        "lighting": "dramatic stormy sky light", "shot_type": "cowboy shot from mid-thigh up",
+        "mood": "tense",
+    },
+
+    # --- Sports / performers (costume via _COSTUMES) -----------------------
+    "Pro Wrestler": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Samoan", "body_type": "athletic", "height": "tall",
+        "fitness_level": "muscular",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "shoulder length", "hair_texture": "wavy",
+        "hair_style": ["worn down", "mullet", "slicked back"], "skin_tone": "warm tan", "outfit_style": "athletic",
+        "expression": "intense gaze", "location": "high school gymnasium",
+        "lighting": "dramatic single overhead spotlight", "shot_type": "cowboy shot from mid-thigh up",
+        "mood": "intense",
+    },
+    "Luchador": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Mexican", "body_type": "athletic", "height": "average height",
+        "fitness_level": "very fit",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short", "hair_style": "natural and unstyled",
+        "skin_tone": "tan", "outfit_style": "athletic", "expression": "confident",
+        "location": "high school gymnasium", "lighting": "dramatic single overhead spotlight",
+        "shot_type": "full body shot", "mood": "self-assured",
+    },
+    "Swim Instructor": {
+        "gender": "Female", "ethnicity": "Hawaiian", "body_type": "athletic", "height": "average height",
+        "fitness_level": "very fit",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "long", "hair_style": "high ponytail",
+        "skin_tone": "golden tan", "outfit_style": "athletic", "expression": "warm smile",
+        "location": "indoor swimming pool", "lighting": "high key bright even lighting",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Race Car Driver": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Brazilian", "body_type": "fit", "height": "average height",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short", "hair_style": "natural and unstyled",
+        "skin_tone": "tan", "outfit_style": "athletic", "expression": "confident",
+        "location": "parking garage", "lighting": "harsh fluorescent lighting",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Flamenco Dancer": {
+        "accessories": "no accessories",
+        # Soft Female preference; costume lives in the variants (not _COSTUMES)
+        # so the Male pick gets an authentic bailaor look, not the dress.
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "Spanish", "body_type": "curvy", "height": "average height",
+                "hair_color": ["jet black", "raven black", "near black"], "hair_length": "long", "hair_texture": "sleek straight",
+                "hair_style": "sleek bun", "skin_tone": "olive", "makeup_style": "bold glam",
+                "lips_makeup": "classic red", "outfit_style": "evening formal",
+                "outfit_description": "a ruffled {jewel_tone} flamenco dress with a fringed shawl and a flower tucked in the hair",
+                "expression": "intense gaze",
+                "location": "outdoor amphitheater", "lighting": "dramatic single overhead spotlight",
+                "shot_type": "full body shot", "mood": "intense",
+            },
+            "Male": {
+                "ethnicity": "Spanish", "body_type": "lean", "height": "tall",
+                "facial_hair": "clean shaven",
+                "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short", "hair_texture": "sleek straight",
+                "hair_style": "slicked back", "skin_tone": "olive", "outfit_style": "evening formal",
+                "outfit_description": "high-waisted black flamenco trousers with a short fitted {dark_color} bolero jacket over a white ruffled shirt, a wide {jewel_tone} waist sash, and heeled flamenco boots",
+                "expression": "intense gaze",
+                "location": "outdoor amphitheater", "lighting": "dramatic single overhead spotlight",
+                "shot_type": "full body shot", "mood": "intense",
+            },
+        },
+    },
+    "Drag Performer": {
+        "accessories": "no accessories",
+        "gender": "Female", "body_type": "curvy", "height": "tall",
+        "hair_color": ["platinum blonde", "white blonde", "light blonde"], "hair_length": "very long", "hair_texture": "loosely curled",
+        "hair_style": "freshly blown out", "makeup_style": "bold glam",
+        "eye_makeup": "colorful bold eyeshadow", "eyeliner": "dramatic winged",
+        "lashes": "dramatic falsies", "lips_makeup": "classic red",
+        "outfit_style": "evening formal", "expression": "confident",
+        "location": "neon-lit nightclub", "lighting": "club strobe lighting",
+        "shot_type": "full body shot", "mood": "cheerful",
+    },
+    "Ringmaster": {
+        "accessories": "no accessories",
+        "ethnicity": "English", "body_type": "average", "height": "tall",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short", "hair_style": "slicked back",
+        "outfit_style": "evening formal", "expression": "confident",
+        "location": "outdoor amphitheater", "lighting": "dramatic single overhead spotlight",
+        "shot_type": "full body shot", "mood": "carefree",
+    },
+
+    # --- Time periods / eras (fixed-look presets; costume via _COSTUMES) ---
+    # Each is a coherent era anchor (costume + hair + makeup + setting). They reuse
+    # existing field options only; the person under the look still randomizes. Eras
+    # already covered by a themed archetype are not duplicated (Roaring Flapper =
+    # 1920s women, Disco Diva = 1970s, Cyberpunk Netrunner = future).
+    "Roaring Twenties Gent": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Italian", "body_type": "lean", "height": "average height",
+        "facial_hair": "short beard", "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short",
+        "hair_texture": "sleek straight", "hair_style": "slicked back", "skin_tone": "light medium",
+        "outfit_style": "vintage retro", "earrings": "no earrings", "necklace": "no necklace",
+        "expression": "confident",
+        "location": "speakeasy-style basement bar", "lighting": "warm string lights bokeh background",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "1950s Greaser": {
+        "gender": "Male", "ethnicity": "English", "body_type": "athletic", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short", "hair_texture": "thick and voluminous",
+        "hair_style": "slicked back", "skin_tone": "light",
+        "outfit_style": "vintage retro", "earrings": "no earrings", "necklace": "no necklace",
+        "expression": "smirking",
+        "location": "small-town family diner", "lighting": "warm incandescent lamp glow",
+        "shot_type": "medium shot from waist up", "mood": "carefree",
+    },
+    "1960s Mod": {
+        "gender": "Female", "ethnicity": "English", "age": ["24","26","28","25"],
+        "body_type": "slim", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "chin length bob", "hair_texture": "sleek straight",
+        "hair_style": "blunt bangs", "skin_tone": "fair", "makeup_style": "mod 1960s eye makeup",
+        "eyeliner": "dramatic winged", "lashes": "dramatic falsies", "outfit_style": "vintage retro",
+        "accessories": "no accessories",
+        "outfit_description": [
+            "a {color} A-line minidress with a contrasting white collar and cuffs, sheer tights, and white knee-high go-go boots",
+            "a color-block shift minidress in bold geometric panels, white tights, and patent leather Mary Jane heels",
+            "a geometric-print miniskirt suit with a boxy cropped jacket and low white ankle boots",
+        ],
+        "expression": "playful", "location": "luxury retail boutique",
+        "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "carefree",
+    },
+    "1980s Pop Icon": {
+        "gender": "Female", "ethnicity": "Puerto Rican", "body_type": "slim", "height": "average height",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "long", "hair_texture": "thick and voluminous",
+        "hair_style": "freshly blown out", "skin_tone": "light medium",
+        "makeup_style": "club makeup", "eye_makeup": "colorful bold eyeshadow",
+        "outfit_style": "edgy alternative", "expression": "confident",
+        "location": "neon-lit nightclub", "lighting": "neon sign glow in multiple colors",
+        "shot_type": "medium shot from waist up", "mood": "carefree",
+    },
+    "1990s Grunge": {
+        "gender": "Male", "ethnicity": "English", "body_type": "lean", "height": "tall",
+        "facial_hair": "stubble", "hair_color": ["dark blonde", "dirty blonde", "golden blonde"], "hair_length": "shoulder length",
+        "hair_texture": "slightly wavy", "hair_style": "natural and unstyled", "skin_tone": "fair",
+        "outfit_style": "edgy alternative", "expression": "relaxed",
+        "location": "indie record store", "lighting": "overcast diffused daylight",
+        "shot_type": "medium shot from waist up", "mood": "sorrowful",
+    },
+    "1950s Sock Hop": {
+        "gender": "Female", "ethnicity": "English", "body_type": "slim", "height": "average height",
+        "hair_color": ["chestnut", "light chestnut", "warm brown"], "hair_length": "shoulder length", "hair_texture": "loosely curled",
+        "hair_style": "high ponytail", "skin_tone": "fair", "makeup_style": "vintage 1950s pin-up makeup",
+        "lips_makeup": "classic red", "outfit_style": "vintage retro", "expression": "bright smile",
+        "location": "small-town family diner", "lighting": "warm incandescent lamp glow",
+        "shot_type": "full body shot", "mood": "cheerful",
+    },
+    "1950s Diner Waitress": {
+        "gender": "Female", "ethnicity": "English", "body_type": "slim", "height": "average height",
+        "hair_color": ["chestnut", "strawberry blonde", "warm brown", "dark blonde"],
+        "hair_length": "shoulder length", "hair_texture": "loosely curled",
+        "hair_style": ["high ponytail", "updo"], "skin_tone": "fair",
+        "makeup_style": "vintage 1950s pin-up makeup", "lips_makeup": "classic red",
+        "hair_accessory": ["hair bow", "satin ribbon tied in hair", "no hair accessory"],
+        "bag": "no bag", "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": [
+            "a cherry-red 1950s diner waitress dress with a white peter-pan collar, white cuffed sleeves, a crisp white half-apron, and a name tag, with bobby socks and saddle shoes",
+            "a butter-yellow diner waitress dress with a white rounded collar, a ruffled white half-apron, a name tag, and a small folded waitress cap pinned in place",
+            "a powder-blue diner waitress dress with white piping, a white half-apron with an order pad tucked in the pocket, a name tag, and cat-eye glasses",
+            "a mint-green diner waitress dress with a white peter-pan collar, a crisp white half-apron, a name tag, and a small folded waitress cap pinned in place",
+            "a red-and-white polka-dot swing waitress dress with a white collar, a crisp white half-apron, a name tag, and cat-eye glasses",
+        ],
+        "expression": "bright smile", "location": "small-town family diner",
+        "lighting": "warm incandescent lamp glow", "shot_type": "full body shot", "mood": "cheerful",
+    },
+    "1950s Soda Jerk": {
+        "gender": "Male", "ethnicity": "English", "body_type": "slim", "height": "average height",
+        "facial_hair": "clean shaven", "hair_color": ["medium brown", "chestnut", "dark blonde"],
+        "hair_length": "very short", "hair_texture": "sleek straight",
+        "hair_style": ["slicked back", "natural and unstyled"], "skin_tone": "fair",
+        "bag": "no bag", "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": [
+            "a crisp white soda-jerk uniform shirt with a red bow tie, a white paper garrison cap, a white half-apron, and pressed white trousers",
+            "a red-and-white striped soda-fountain vest over a white shirt with a black bow tie, a white paper cap, and black trousers",
+            "a pale-blue soda-jerk jacket over a white shirt with a red bow tie, a white paper garrison cap, and a white half-apron",
+        ],
+        "expression": "bright smile", "location": "small-town family diner",
+        "lighting": "warm incandescent lamp glow", "shot_type": "full body shot", "mood": "cheerful",
+    },
+    "1960s Hippie": {
+        "body_type": "slim", "height": "average height", "hair_color": ["warm brown", "chestnut", "medium brown"],
+        "hair_length": "very long", "hair_texture": "wavy", "hair_style": "worn down",
+        "skin_tone": "light", "outfit_style": "bohemian", "expression": "relaxed",
+        "location": "flower field in bloom", "lighting": "golden hour sunlight",
+        "shot_type": "full body shot", "mood": "dreamy",
+    },
+    "1990s Goth": {
+        "body_type": "slim", "height": "average height", "hair_color": ["jet black", "raven black", "near black"],
+        "hair_length": "shoulder length", "hair_texture": "thick and voluminous",
+        "hair_style": "natural and unstyled", "skin_tone": "very pale",
+        "makeup_style": "gothic dark makeup", "eyeliner": "smudged kohl", "lips_makeup": "deep red",
+        "outfit_style": "edgy alternative", "expression": "serious",
+        "location": "dimly lit cocktail lounge", "lighting": "low key moody single light source",
+        "shot_type": "medium shot from waist up", "mood": "sorrowful",
+    },
+    "1980s Preppy": {
+        "body_type": "athletic", "height": "average height", "hair_color": ["golden blonde", "strawberry blonde", "dark blonde"],
+        "hair_length": "ear length", "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+        "skin_tone": "fair", "outfit_style": "preppy", "expression": "confident",
+        "location": "university lecture hall", "lighting": "high key bright even lighting",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "1980s New Wave": {
+        "body_type": "slim", "height": "average height", "hair_color": ["platinum blonde", "white blonde", "light blonde"],
+        "hair_length": "short pixie", "hair_texture": "sleek straight", "hair_style": "slicked back",
+        "skin_tone": "pale", "eyeliner": "dramatic winged", "outfit_style": "edgy alternative",
+        "expression": "confident", "location": "neon-lit nightclub",
+        "lighting": "neon sign glow in multiple colors", "shot_type": "medium shot from waist up",
+        "mood": "carefree",
+    },
+    "Victorian Lady": {
+        "accessories": "no accessories",
+        "gender": "Female", "ethnicity": "English", "body_type": "hourglass", "height": "average height",
+        "hair_color": ["chestnut", "light chestnut", "warm brown"], "hair_length": "very long", "hair_texture": "softly curled",
+        "hair_style": "updo", "skin_tone": "porcelain", "makeup_style": "soft natural makeup",
+        "outfit_style": "evening formal", "expression": "serene",
+        "location": "dark moody Victorian parlor", "lighting": "warm candlelight",
+        "shot_type": "full body shot", "mood": "mysterious",
+    },
+    "Ancient Roman Patrician": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Italian", "body_type": "average", "height": "average height",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short", "hair_texture": "loosely curled",
+        "hair_style": "natural and unstyled", "skin_tone": "olive", "outfit_style": "evening formal",
+        "expression": "stern", "location": "outdoor amphitheater",
+        "lighting": "harsh overhead midday sun", "shot_type": "full body shot", "mood": "tranquil",
+    },
+    "Prehistoric Hunter": {
+        "accessories": "no accessories",
+        "gender": "Male", "ethnicity": "Mongolian", "body_type": "athletic", "height": "average height",
+        "fitness_level": "very fit", "facial_hair": "full beard",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "shoulder length", "hair_texture": "coily",
+        "hair_style": "loose braids", "skin_tone": "warm tan", "complexion": "ruddy",
+        "outfit_style": "edgy alternative", "expression": "stern",
+        "location": "forest trail", "lighting": "fire and flame warm flicker",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "intense",
+    },
+
+    # Everyday / sports (v0.28.0) -- gender-neutral unless strongly coded
+    "Tennis Player": {
+        "ethnicity": "Brazilian", "body_type": "athletic", "height": "tall",
+        "fitness_level": "very fit",
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "shoulder length", "hair_style": "high ponytail",
+        "skin_tone": "warm tan", "outfit_style": "athletic", "accessories": "no accessories",
+        "expression": "determined", "location": "sunny city park",
+        "lighting": "harsh overhead midday sun", "shot_type": "full body shot", "mood": "self-assured",
+    },
+    "Gymnast": {
+        "ethnicity": "Korean", "body_type": "lean", "height": "petite",
+        "fitness_level": "very fit",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "shoulder length", "hair_style": "high ponytail",
+        "skin_tone": "light", "outfit_style": "athletic", "accessories": "no accessories",
+        "expression": "determined", "location": "high school gymnasium",
+        "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "intense",
+    },
+    "Baker": {
+        "ethnicity": "French", "body_type": "average", "height": "average height",
+        "hair_color": ["warm brown", "chestnut", "medium brown"], "hair_length": "very short", "hair_style": "worn down",
+        "skin_tone": "light medium", "outfit_style": "casual", "accessories": "no accessories",
+        "expression": "warm smile", "location": "farmhouse kitchen with open shelving",
+        "lighting": "warm incandescent lamp glow", "shot_type": "medium shot from waist up",
+        "mood": "cheerful",
+    },
+    "Florist": {
+        "ethnicity": "English", "body_type": "slim", "height": "average height",
+        "hair_color": ["chestnut", "light chestnut", "warm brown"], "hair_length": "shoulder length", "hair_texture": "wavy",
+        "hair_style": "half up half down", "skin_tone": "fair", "outfit_style": "casual",
+        "accessories": "no accessories", "expression": "warm smile",
+        "location": "farmers market indoor stall", "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Plumber": {
+        "ethnicity": "Irish", "body_type": "stocky", "height": "average height",
+        "hair_color": ["light chestnut", "chestnut", "warm brown"], "hair_length": "very short", "skin_tone": "fair",
+        "outfit_style": "casual", "accessories": "no accessories", "expression": "confident",
+        "location": "suburban basement", "lighting": "harsh fluorescent lighting",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Retail Cashier": {
+        "ethnicity": "Colombian", "body_type": "average", "height": "average height",
+        "hair_color": ["near black", "jet black", "dark brown"], "hair_length": "shoulder length", "hair_style": "worn down",
+        "skin_tone": "olive", "outfit_style": "smart casual", "accessories": "no accessories",
+        "expression": "warm smile", "location": "small-town grocery store aisle",
+        "lighting": "cool LED overhead lighting", "shot_type": "medium shot from waist up",
+        "mood": "cheerful",
+    },
+    "Rancher": {
+        "ethnicity": "Mexican", "body_type": "athletic", "height": "tall",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short", "skin_tone": "tan",
+        "complexion": "ruddy", "outfit_style": "vintage retro", "accessories": "no accessories",
+        "expression": "confident", "location": "country dirt road", "lighting": "golden hour sunlight",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "tranquil",
+    },
+    "Navy Sailor": {
+        "ethnicity": "Scottish", "body_type": "fit", "height": "average height",
+        "fitness_level": "very fit", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short",
+        "skin_tone": "light medium", "outfit_style": "smart casual", "accessories": "no accessories",
+        "expression": "confident", "location": "working harbor dock", "lighting": "soft morning light",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Pin-up Model": {
+        "gender": "Female", "ethnicity": "Kenyan", "body_type": "voluptuous", "height": "average height",
+        "hair_color": ["jet black", "raven black", "near black"], "hair_length": "shoulder length", "hair_texture": "wavy",
+        "hair_style": "half up half down", "skin_tone": "dark brown", "makeup_style": "full glam",
+        "outfit_style": "vintage retro", "expression": "flirtatious", "location": "retro diner-style kitchen",
+        "lighting": "warm string lights bokeh background", "shot_type": "medium shot from waist up",
+        "mood": "carefree",
+    },
+    "Streamer": {
+        "ethnicity": "Indian", "body_type": "slim", "height": "average height",
+        "hair_color": ["platinum blonde", "white blonde", "light blonde"], "hair_length": "shoulder length", "hair_style": "worn down",
+        "skin_tone": "medium", "outfit_style": "streetwear", "accessories": "no accessories",
+        "expression": "playful", "location": "co-working space",
+        "lighting": "neon sign glow in multiple colors", "shot_type": "medium close-up from chest up",
+        "mood": "carefree",
+    },
+
+    # --- More crafts, trades, fields & personas ---------------------------
+    "Astronomer": {
+        "hair_length": ["shoulder length", "long"], "hair_style": "messy bun",
+        "outfit_style": "smart casual",
+        "expression": ["contemplative", "curious"],
+        "location": ["planetarium dome interior", "rooftop terrace overlooking the skyline"],
+        "lighting": ["low key moody single light source", "moonlight with cool blue tones"],
+        "shot_type": "medium shot from waist up", "mood": "dreamy",
+    },
+    "Beekeeper": {
+        "accessories": "no accessories",
+        "outfit_style": "casual", "expression": ["relaxed", "gentle smile"],
+        "location": ["flower field in bloom", "quiet suburban backyard"],
+        "lighting": "golden hour sunlight",
+        "shot_type": "medium shot from waist up", "mood": "tranquil",
+    },
+    "Carpenter": {
+        "outfit_style": "casual", "expression": "focused",
+        "location": "woodworking workshop", "lighting": "warm incandescent lamp glow",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Welder": {
+        "accessories": "no accessories",
+        "outfit_style": "casual", "expression": ["determined", "focused"],
+        "location": ["factory floor", "home garage workshop"],
+        "lighting": "fire and flame warm flicker",
+        "shot_type": "medium close-up from chest up", "mood": "intense",
+    },
+    "Falconer": {
+        "accessories": "no accessories",
+        "outfit_style": "smart casual", "expression": ["calm and composed", "focused"],
+        "location": ["misty moor", "open meadow"], "lighting": "overcast diffused daylight",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "tranquil",
+    },
+    "Cartographer": {
+        "accessories": "no accessories",
+        "outfit_style": "vintage retro", "expression": ["contemplative", "curious"],
+        "location": ["cozy home library", "cluttered antique shop"], "lighting": "warm candlelight",
+        "shot_type": "medium shot from waist up", "mood": "mysterious",
+    },
+    "Paramedic": {
+        "outfit_style": "athletic", "expression": ["determined", "calm and composed"],
+        "location": ["emergency room", "busy city crosswalk"], "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up", "mood": "tense",
+    },
+    "Train Conductor": {
+        "outfit_style": "business casual", "expression": "warm smile",
+        "location": "train station waiting area", "lighting": "soft morning light",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Jeweler": {
+        "outfit_style": "business casual", "expression": "focused",
+        "location": "luxury retail boutique", "lighting": "soft studio three-point lighting",
+        "shot_type": "medium close-up from chest up", "mood": "tranquil",
+    },
+    "Watchmaker": {
+        "outfit_style": "business casual", "expression": "focused",
+        "location": "cluttered antique shop", "lighting": "warm incandescent lamp glow",
+        "shot_type": "close-up portrait", "mood": "tranquil",
+    },
+    "Potter": {
+        "outfit_style": "casual", "expression": "at ease",
+        "location": "artist's painting studio", "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up", "mood": "peaceful",
+    },
+    "Tailor": {
+        "outfit_style": "smart casual", "expression": "subtle soft smile",
+        "location": "luxury retail boutique", "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up", "mood": "tranquil",
+    },
+    "Calligrapher": {
+        "outfit_style": "smart casual", "expression": ["lost in thought", "focused"],
+        "location": ["cozy home library", "artist's painting studio"],
+        "lighting": "soft window light from the side",
+        "shot_type": "close-up portrait", "mood": "peaceful",
+    },
+    "Stonemason": {
+        "outfit_style": "casual", "expression": "steely",
+        "location": "crumbling stone ruin", "lighting": "harsh overhead midday sun",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Winemaker": {
+        "outfit_style": "casual", "expression": "warm smile",
+        "location": "sunlit vineyard", "lighting": "golden hour sunlight",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Desert Nomad": {
+        "accessories": "no accessories",
+        "ethnicity": "Moroccan", "outfit_style": "bohemian",
+        "expression": ["serene", "calm and composed"],
+        "location": ["rolling desert dune", "cracked salt flats"], "lighting": "harsh desert sun",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "mysterious",
+    },
+    "Tribal Shaman": {
+        "accessories": "no accessories",
+        "outfit_style": "bohemian", "expression": "intense gaze",
+        "location": "forest trail", "lighting": "dappled sunlight through forest canopy",
+        "shot_type": "medium shot from waist up", "mood": "mysterious",
+    },
+    "Trapeze Artist": {
+        "accessories": "no accessories",
+        "body_type": "athletic", "outfit_style": "athletic", "expression": "bright smile",
+        "location": "outdoor amphitheater", "lighting": "dramatic single overhead spotlight",
+        "shot_type": "full body shot", "mood": ["carefree", "triumphant"],
+    },
+    "Deep Sea Diver": {
+        "accessories": "no accessories",
+        "outfit_style": "athletic", "expression": "determined",
+        "location": ["aquarium tunnel", "harbor with moored boats"], "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up", "mood": "mysterious",
+    },
+    "Arctic Explorer": {
+        "outfit_style": "athletic", "expression": "determined",
+        "location": "snowy pine forest", "lighting": "snow-reflected daylight",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "intense",
+    },
+    "Safari Guide": {
+        "outfit_style": "casual", "expression": ["confident", "warm smile"],
+        "location": "golden savanna with acacia trees",
+        "lighting": ["harsh overhead midday sun", "golden hour sunlight"],
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "Toymaker": {
+        "outfit_style": "vintage retro", "expression": "gentle smile",
+        "location": "woodworking workshop", "lighting": "warm incandescent lamp glow",
+        "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+
+    # --- More eras & subculture looks (gendered pairs where the look diverges).
+    # Inline outfit_description strings are honoured as costume overrides. Values in
+    # every other field are real FIELD_DEFINITIONS options (validate_data enforces);
+    # jewellery/headwear described in the prose is suppressed on its own field so a
+    # randomized piece does not double it.
+    "1970s Boho It-Girl": {
+        "gender": "Female", "ethnicity": "English", "body_type": "slim", "height": "average height",
+        "hair_color": ["golden blonde", "strawberry blonde", "dark blonde"], "hair_length": "long", "hair_texture": "beachy waves",
+        "hair_style": "curtain bangs", "skin_tone": "golden tan", "complexion": "clear",
+        "makeup_style": "soft everyday glam", "eye_makeup": "warm earth tones", "lips_makeup": "nude lipstick",
+        "blush": "bronzed sun-kissed", "outfit_style": "bohemian", "accessories": "no accessories",
+        "outfit_description": "a tan suede fringe vest over a wide-collar floral blouse, high-waisted flared denim jeans, and tall platform sandals",
+        "expression": "playful", "location": "flower field in bloom", "lighting": "golden hour sunlight",
+        "shot_type": "full body shot", "mood": "dreamy",
+    },
+    "1970s Leisure Lounge": {
+        "gender": "Male", "ethnicity": "Italian", "body_type": "lean", "height": "tall",
+        "facial_hair": "mustache", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "ear length",
+        "hair_texture": "softly curled", "hair_style": "worn down", "skin_tone": "golden tan",
+        "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": "an open-collar wide-lapel patterned shirt unbuttoned at the chest, a fitted {earth_tone} leisure suit jacket, flared trousers, and stacked-heel boots",
+        "expression": "confident", "location": "dimly lit cocktail lounge",
+        "lighting": "warm string lights bokeh background", "shot_type": "medium shot from waist up",
+        "mood": "self-assured",
+    },
+    "1940s Factory Worker": {
+        "gender": "Female", "ethnicity": "English", "body_type": "fit", "height": "average height",
+        "fitness_level": "moderately fit", "hair_color": ["chestnut", "light chestnut", "warm brown"], "hair_length": "shoulder length",
+        "hair_texture": "loosely curled", "hair_style": "updo", "hair_accessory": "thin scarf tied in hair",
+        "skin_tone": "fair", "makeup_style": "vintage 1950s pin-up makeup", "lips_makeup": "classic red",
+        "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": "a blue denim button-up work shirt with the sleeves rolled to the elbow and knotted at the waist, over high-waisted work trousers",
+        "expression": "determined", "location": "factory floor", "lighting": "harsh fluorescent lighting",
+        "shot_type": "medium shot from waist up", "mood": "triumphant",
+    },
+    "1940s Swing Dancer": {
+        # Soft Male preference: the original male look; the gender widget picks
+        # the variant, so Female gets a period swing dress instead of the tie.
+        "gender": "Male",
+        "variants": {
+            "Male": {
+                "ethnicity": "Italian", "body_type": "lean", "height": "average height",
+                "facial_hair": "clean shaven", "hair_color": ["near black", "jet black", "dark brown"], "hair_length": "very short",
+                "hair_texture": "sleek straight", "hair_style": "slicked back", "skin_tone": "light medium",
+                "outfit_style": "vintage retro", "accessories": "no accessories",
+                "earrings": "no earrings", "necklace": "no necklace",
+                "outfit_description": "a crisp white dress shirt with the sleeves rolled up, suspenders over high-waisted pleated trousers, a loosened tie, and two-tone leather shoes",
+                "expression": "confident", "location": "speakeasy-style basement bar",
+                "lighting": "warm incandescent lamp glow", "shot_type": "medium shot from waist up", "mood": "lighthearted",
+            },
+            "Female": {
+                "ethnicity": "Italian", "body_type": "slender", "height": "average height",
+                "hair_color": ["near black", "dark brown", "auburn"], "hair_length": "shoulder length",
+                "hair_texture": "loosely curled", "hair_style": ["updo", "half up half down"],
+                "skin_tone": "light medium", "makeup_style": "vintage 1950s pin-up makeup", "lips_makeup": "classic red",
+                "outfit_style": "vintage retro", "accessories": "no accessories",
+                "outfit_description": [
+                    "a knee-length polka-dot swing dress with a full circle skirt and short puffed sleeves, seamed stockings, and low-heeled two-tone dance shoes",
+                    "a fitted short-sleeve blouse tucked into a high-waisted knee-length circle skirt, seamed stockings, ankle socks, and flat leather dance shoes",
+                ],
+                "expression": "bright smile", "location": "speakeasy-style basement bar",
+                "lighting": "warm incandescent lamp glow", "shot_type": "medium shot from waist up", "mood": "lighthearted",
+            },
+        },
+    },
+    "Game-Day Fan": {
+        # Soft Female preference: gender "Any" resolves to the female look; the main
+        # node's gender widget overrides it to the male look. See variants.
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "Nigerian", "body_type": "fit", "height": "average height",
+                "hair_color": ["jet black", "raven black", "near black"], "hair_length": "long", "hair_texture": "kinky coily",
+                "hair_style": "box braids", "skin_tone": "warm brown", "makeup_style": "soft glam",
+                "lips_makeup": "high shine gloss", "blush": "soft pink blush", "outfit_style": "streetwear",
+                "accessories": "no accessories",
+                "outfit_description": "a {team_color} team jersey knotted and cropped over a fitted tank top, high-waisted denim shorts, knee-high socks, and chunky sneakers, with two bold stripes of team-colour paint across each cheek",
+                "expression": "bright smile", "location": "high school gymnasium",
+                "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "joyful",
+            },
+            "Male": {
+                "ethnicity": "English", "body_type": "athletic", "height": "tall",
+                "fitness_level": "athletic", "facial_hair": "stubble", "hair_color": ["dark brown", "medium brown", "near black"],
+                "hair_length": "very short", "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+                "skin_tone": "light", "outfit_style": "streetwear", "accessories": "no accessories",
+                "outfit_description": "a {team_color} team jersey over a long-sleeve tee, athletic shorts, and sneakers, a backwards baseball cap, and two stripes of team-colour paint across each cheek",
+                "expression": "confident", "location": "high school gymnasium",
+                "lighting": "high key bright even lighting", "shot_type": "medium shot from waist up", "mood": "triumphant",
+            },
+        },
+    },
+    "Kawaii Street Fashion": {
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "Japanese", "body_type": "petite and slim", "height": "petite",
+                "hair_color": ["baby pink", "lavender", "mint green"], "hair_length": "long", "hair_texture": "softly curled",
+                "hair_style": "high pigtails", "hair_accessory": "oversized hair bow", "skin_tone": "fair",
+                "makeup_style": "soft glam", "blush": "soft pink blush", "lips_makeup": "pink",
+                "lashes": "wispy false lashes", "outfit_style": "streetwear", "accessories": "no accessories",
+                "outfit_description": "a {pastel} ruffled blouse under a pleated tulle skirt, layered with a cropped cardigan, striped thigh-high socks, and chunky platform Mary-Jane shoes",
+                "expression": "playful", "location": "pedestrian shopping street",
+                "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "cheerful",
+            },
+            "Male": {
+                "ethnicity": "Japanese", "body_type": "slim", "height": "slightly below average height",
+                "facial_hair": "clean shaven", "hair_color": ["lavender", "baby pink", "mint green"], "hair_length": "ear length",
+                "hair_texture": "softly curled", "hair_style": "worn down", "skin_tone": "fair",
+                "outfit_style": "streetwear", "accessories": "no accessories",
+                "outfit_description": "an oversized {pastel} graphic hoodie over a collared shirt, cuffed cropped trousers, striped socks, chunky platform sneakers, and layered enamel-pin accessories",
+                "expression": "playful", "location": "pedestrian shopping street",
+                "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "cheerful",
+            },
+        },
+    },
+    "Classic Hollywood Starlet": {
+        "gender": "Female", "ethnicity": "English", "body_type": "hourglass", "height": "tall",
+        "hair_color": ["platinum blonde", "white blonde", "light blonde"], "hair_length": "shoulder length", "hair_texture": "loosely curled",
+        "hair_style": "worn down", "skin_tone": "porcelain", "complexion": "clear",
+        "makeup_style": "vintage 1950s pin-up makeup", "eye_makeup": "smoky gray", "eyeliner": "dramatic winged",
+        "lashes": "dramatic falsies", "lips_makeup": "classic red", "earrings": "chandelier earrings",
+        "bag": "beaded evening clutch", "outfit_style": "evening formal", "accessories": "no accessories",
+        "outfit_description": "a floor-length bias-cut {jewel_tone} satin gown with a plunging back and elbow-length silk gloves",
+        "expression": "sultry", "location": "art gallery opening night",
+        "lighting": "dramatic single overhead spotlight", "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Classic Hollywood Leading Man": {
+        "gender": "Male", "ethnicity": "Italian", "body_type": "athletic", "height": "tall",
+        "facial_hair": "clean shaven", "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short",
+        "hair_texture": "sleek straight", "hair_style": "slicked back", "skin_tone": "light medium",
+        "outfit_style": "evening formal", "accessories": "no accessories",
+        "earrings": "no earrings", "necklace": "no necklace",
+        "outfit_description": "a sharply tailored {dark_color} tuxedo with satin lapels, a crisp white dress shirt, a black bow tie, and a white pocket square",
+        "expression": "confident", "location": "art gallery opening night",
+        "lighting": "dramatic chiaroscuro side lighting", "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Backyard Country Casual": {
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "English", "body_type": "curvy", "height": "average height",
+                "hair_color": ["dirty blonde", "dark blonde", "light blonde"], "hair_length": "long", "hair_texture": "loosely wavy",
+                "hair_style": "messy bun", "skin_tone": "light", "makeup_style": "soft natural makeup",
+                "lips_makeup": "tinted lip balm", "earrings": "large bold gold hoops", "nails": "long nails",
+                "outfit_style": "casual", "accessories": "no accessories",
+                "outfit_description": [
+                    "a fitted ribbed {color} tank top tied at the midriff, cut-off high-waisted {denim_wash} denim shorts, and worn flip-flops",
+                    "a fitted ribbed {pastel} tank top tied at the midriff, cut-off high-waisted {denim_wash} denim shorts, worn flip-flops, and a small floral tattoo on the outer thigh",
+                    "a red-and-white gingham shirt knotted at the waist over a white tank top, cut-off high-waisted {denim_wash} denim shorts, and worn flip-flops",
+                    "a {pastel} cropped tee with a faded print, cut-off high-waisted {denim_wash} denim shorts, worn flip-flops, and a delicate vine tattoo circling one ankle",
+                    "a white ribbed tank top tied at the midriff, cut-off high-waisted {denim_wash} denim shorts, and scuffed white sneakers with low socks",
+                ],
+                "expression": "relaxed", "location": "quiet suburban backyard", "lighting": "harsh overhead midday sun",
+                "shot_type": "full body shot", "mood": "lighthearted",
+            },
+            "Male": {
+                "ethnicity": "English", "body_type": "stocky", "height": "average height",
+                "facial_hair": "short beard", "hair_color": ["medium brown", "warm brown", "ash brown"], "hair_length": "very short",
+                "hair_texture": "slightly wavy", "hair_style": "natural and unstyled", "skin_tone": "warm tan",
+                "outfit_style": "casual", "accessories": "no accessories",
+                "outfit_description": "a sleeveless white ribbed undershirt, loose camouflage cargo shorts, and unlaced work boots",
+                "expression": "relaxed", "location": "quiet suburban backyard", "lighting": "harsh overhead midday sun",
+                "shot_type": "medium shot from waist up", "mood": "lighthearted",
+            },
+        },
+    },
+    "1950s Homemaker": {
+        "gender": "Female", "ethnicity": "English", "body_type": "hourglass", "height": "average height",
+        "hair_color": ["chestnut", "light chestnut", "warm brown"], "hair_length": "shoulder length", "hair_texture": "loosely curled",
+        "hair_style": "freshly blown out", "skin_tone": "fair", "complexion": "peaches and cream",
+        "makeup_style": "vintage 1950s pin-up makeup", "lips_makeup": "classic red", "blush": "soft pink blush",
+        "necklace": "pearl necklace", "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": ["an immaculate belted {color} shirtwaist dress with a full swing skirt and a frilled apron, and low kitten heels",
+     "an immaculate {color} full-circle skirt with a tucked-in white blouse, a frilled apron, and low kitten heels"],
+        "expression": "warm smile", "location": "sunny suburban kitchen", "lighting": "high key bright even lighting",
+        "shot_type": "full body shot", "mood": "cheerful",
+    },
+    "1950s Suburban Dad": {
+        "gender": "Male", "ethnicity": "English", "body_type": "average", "height": "tall",
+        "facial_hair": "clean shaven", "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "very short",
+        "hair_texture": "sleek straight", "hair_style": "slicked back", "skin_tone": "light",
+        "outfit_style": "smart casual", "accessories": "no accessories",
+        "earrings": "no earrings", "necklace": "no necklace",
+        "outfit_description": "a buttoned {menswear_color} argyle sweater-vest over a collared dress shirt, pressed pleated slacks, a leather belt, and polished loafers",
+        "expression": "gentle smile", "location": "mid-century modern living room",
+        "lighting": "warm incandescent lamp glow", "shot_type": "medium shot from waist up", "mood": "cheerful",
+    },
+    "1980s Aerobics": {
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "English", "body_type": "toned", "height": "average height",
+                "fitness_level": "athletic", "hair_color": ["chestnut", "light chestnut", "warm brown"], "hair_length": "long",
+                "hair_texture": "thick and voluminous", "hair_style": "high ponytail", "hair_accessory": "knotted headband",
+                "skin_tone": "fair", "makeup_style": "club makeup", "eye_makeup": "colorful bold eyeshadow",
+                "blush": "coral blush", "outfit_style": "athletic", "accessories": "no accessories",
+                "outfit_description": "a high-cut {neon} spandex leotard over shiny footless tights, slouchy legwarmers bunched at the ankles, and white high-top sneakers",
+                "expression": "bright smile", "location": "dance studio with mirrors",
+                "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "carefree",
+            },
+            "Male": {
+                "ethnicity": "English", "body_type": "athletic", "height": "tall",
+                "fitness_level": "muscular", "facial_hair": "mustache", "hair_color": ["dark brown", "medium brown", "near black"],
+                "hair_length": "very short", "hair_texture": "thick and voluminous", "hair_style": "natural and unstyled",
+                "hair_accessory": "thin headband", "skin_tone": "light", "outfit_style": "athletic",
+                "accessories": "no accessories",
+                "outfit_description": "a tight sleeveless tank top, {neon}-striped spandex shorts over footless tights, slouchy legwarmers, and white high-top sneakers",
+                "expression": "confident", "location": "local gym weight room",
+                "lighting": "high key bright even lighting", "shot_type": "medium shot from waist up", "mood": "carefree",
+            },
+        },
+    },
+    "Martial Artist": {
+        "body_type": "athletic", "fitness_level": "athletic", "hair_style": "natural and unstyled",
+        "outfit_style": "athletic", "accessories": "no accessories",
+        "outfit_description": [
+            "a heavyweight white cotton martial-arts gi with a wrapped black belt knotted at the waist, worn barefoot",
+            "a sleeveless {dark_color} training top with loose black kung-fu trousers, wrapped hand wraps, and bare feet",
+        ],
+        "expression": "determined", "location": "yoga studio with wood floors",
+        "lighting": "soft window light from the side", "shot_type": "full body shot", "mood": "intense",
+    },
+    "Kendo Practitioner": {
+        "ethnicity": "Japanese",
+        "body_type": "athletic",
+        "height": "average height",
+        "eye_color": ["dark brown", "nearly black"],
+        "hair_color": ["jet black", "dark brown"],
+        "hair_length": "ear length",
+        "hair_texture": "pin straight",
+        "hair_style": "textured crop",
+        "skin_tone": "light",
+        "complexion": "clear",
+        "outfit_style": "athletic",
+        "accessories": "no accessories",
+        "outfit_description": [
+            "a dark navy kendogi jacket under a white do chest plate with red accents, a tare waist guard with a name tag, thick padded kote gauntlets, a men grille mask with a padded fukin head covering, and a dark hakama with suneate shin guards",
+            "a white keikogi under a dark blue do with white trim, padded kote gloves, a men face grille with a tenugui head cloth, a tare waist protector, and dark blue hakama trousers with shin guards",
+        ],
+        "expression": "focused", "location": "yoga studio with wood floors",
+        "lighting": "soft window light from the side",
+        "shot_type": "full body shot", "mood": "intense",
+        "held_item": "a bamboo shinai",
+    },
+    "Trucker": {
+        "body_type": "stocky", "outfit_style": "casual", "accessories": "no accessories",
+        "outfit_description": [
+            "a {menswear_color} plaid flannel shirt worn open over a plain t-shirt, faded straight-leg jeans with a big belt buckle, scuffed leather work boots, and a mesh-back trucker cap",
+            "a {denim_wash} denim jacket with cut-off sleeves over a plain tee, faded jeans with a big western belt buckle, work boots, and a mesh-back trucker cap",
+        ],
+        "expression": "relaxed", "location": "old-school greasy spoon", "lighting": "harsh fluorescent lighting",
+        "shot_type": "medium shot from waist up", "mood": "lighthearted",
+    },
+    "Emo": {
+        "body_type": "slim", "hair_color": ["jet black", "raven black", "near black"], "hair_length": "shoulder length",
+        "hair_texture": "pin straight", "hair_style": "curtain bangs", "skin_tone": "very pale",
+        "eye_makeup": "smoky black", "eyeliner": "smudged kohl", "outfit_style": "edgy alternative",
+        "accessories": "no accessories",
+        "outfit_description": "a fitted band t-shirt under a studded black hoodie, tight black skinny jeans, a chain wallet, and worn canvas high-tops",
+        "expression": "melancholic", "location": "suburban basement", "lighting": "low key moody single light source",
+        "shot_type": "medium shot from waist up", "mood": "moody",
+    },
+    "McBling Socialite": {
+        "gender": "Female", "ethnicity": "English", "body_type": "slim", "height": "tall",
+        "hair_color": ["platinum blonde", "white blonde", "light blonde"], "hair_length": "very long", "hair_texture": "pin straight",
+        "hair_style": "worn down", "skin_tone": "golden tan", "makeup_style": "full glam",
+        "eye_makeup": "glittery", "lips_makeup": "high shine gloss", "nails": "french manicure",
+        "bag": "small quilted chain bag", "outfit_style": "streetwear", "accessories": "no accessories",
+        "outfit_description": "a {pastel} velour tracksuit with a bedazzled logo, a cropped camisole, and oversized rhinestone sunglasses pushed up on the head",
+        "expression": "confident", "location": "luxury retail boutique",
+        "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "carefree",
+    },
+    "Metrosexual": {
+        "gender": "Male", "ethnicity": "Italian", "body_type": "fit", "height": "tall",
+        "fitness_level": "very fit", "facial_hair": "stubble", "hair_color": ["dark brown", "medium brown", "near black"],
+        "hair_length": "very short", "hair_texture": "slightly wavy", "hair_style": "freshly blown out",
+        "skin_tone": "warm tan", "complexion": "clear", "skin_finish": "dewy skin",
+        "outfit_style": "smart casual", "accessories": "no accessories",
+        "outfit_description": "a fitted {menswear_color} designer button-down shirt with the top buttons open, slim tailored chinos, a sleek leather belt, and polished suede loafers",
+        "expression": "confident", "location": "upscale urban cafe", "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Indie Sleaze": {
+        "body_type": "lean", "hair_color": ["near black", "jet black", "dark brown"], "hair_length": "shoulder length",
+        "hair_texture": "slightly wavy", "hair_style": "natural and unstyled", "skin_tone": "pale",
+        "eye_makeup": "smoky black", "eyeliner": "smudged kohl", "outfit_style": "edgy alternative",
+        "accessories": "no accessories",
+        "outfit_description": "a rumpled vintage graphic tee under a worn leather jacket, tight shiny disco pants, and scuffed ankle boots, styled with a careless thrifted look",
+        "expression": "smirking", "location": "neon-lit nightclub", "lighting": "club strobe lighting",
+        "shot_type": "medium shot from waist up", "mood": "moody",
+    },
+    "Y2K Mall Casual": {
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "English", "body_type": "slim", "height": "average height",
+                "hair_color": ["medium brown", "warm brown", "ash brown"], "hair_length": "long", "hair_texture": "pin straight",
+                "hair_style": "half up half down", "hair_accessory": "small hair clip", "skin_tone": "light",
+                "makeup_style": "soft glam", "eye_makeup": "glittery", "lips_makeup": "high shine gloss",
+                "outfit_style": "casual", "accessories": "no accessories",
+                "outfit_description": "a fitted baby tee over low-rise {denim_wash} flared jeans with a wide studded belt, a cropped denim jacket, and platform flip-flops",
+                "expression": "playful", "location": "movie theater lobby", "lighting": "cool LED overhead lighting",
+                "shot_type": "full body shot", "mood": "cheerful",
+            },
+            "Male": {
+                "ethnicity": "English", "body_type": "lean", "height": "tall",
+                "facial_hair": "soul patch", "hair_color": ["dark blonde", "dirty blonde", "golden blonde"], "hair_length": "very short",
+                "hair_texture": "slightly wavy", "hair_style": "natural and unstyled", "hair_highlights": "frosted tips",
+                "skin_tone": "light", "necklace": "no necklace", "outfit_style": "streetwear",
+                "accessories": "no accessories",
+                "outfit_description": "an oversized graphic tee under an open flannel shirt, baggy low-slung {denim_wash} jeans, a puka-shell necklace, and chunky skate sneakers",
+                "expression": "confident", "location": "movie theater lobby", "lighting": "cool LED overhead lighting",
+                "shot_type": "medium shot from waist up", "mood": "lighthearted",
+            },
+        },
+    },
+
+    # --- 0.42 world looks & era additions ----------------------------------
+    "1970s Used Car Salesman": {
+        "gender": "Male", "age": ["43","48","45"], "body_type": "stocky", "height": "average height",
+        "facial_hair": "mustache", "hair_color": ["medium brown", "ash brown", "salt and pepper"],
+        "hair_length": "very short", "hair_texture": "fine and wispy", "hair_style": "comb over",
+        "skin_tone": "light", "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": [
+            "a {pastel} polyester wide-lapel three-piece suit with a loud wide-patterned 1970s tie, a white belt, and matching white loafers",
+            "a plaid polyester sport coat with huge lapels over a {pastel} shirt with a long pointed collar, a garish wide tie, flared slacks, and white patent loafers",
+            "a {pastel} double-knit leisure-cut suit with contrast stitching, a wide striped tie held by a chunky gold-tone tie clip, and scuffed white loafers",
+        ],
+        "expression": "smirking", "location": "1970s wood-paneled den",
+        "lighting": "harsh fluorescent lighting", "shot_type": "medium shot from waist up",
+        "mood": "self-assured",
+    },
+    "Sapeur": {
+        "gender": "Male", "ethnicity": "Congolese", "body_type": "lean", "height": "average height",
+        "facial_hair": "clean shaven", "hair_color": ["jet black", "near black", "raven black"],
+        "hair_length": "very short", "hair_texture": "tightly curled", "hair_style": "natural and unstyled",
+        "skin_tone": ["deep", "ebony", "dark brown"], "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "outfit_description": [
+            "a sharply tailored {jewel_tone} three-piece suit with a contrasting silk pocket square, a crisp white shirt, a bold patterned tie, a tilted fedora, and gleaming two-tone leather brogues",
+            "an immaculately pressed {color} double-breasted suit with wide peak lapels, a silk cravat, bright socks showing above mirror-polished shoes, and a matching fedora",
+            "a boldly clashing ensemble of a {jewel_tone} blazer over {pastel} trousers, a patterned silk waistcoat, a polka-dot bow tie, and polished wingtip shoes",
+        ],
+        "expression": "beaming", "location": "tree-lined boulevard",
+        "lighting": "golden hour sunlight", "shot_type": "full body shot", "mood": "joyful",
+    },
+    "Bollywood Heroine": {
+        "gender": "Female", "ethnicity": "Indian", "age": ["28","25","30"],
+        "body_type": "hourglass", "height": "average height",
+        "hair_color": ["jet black", "near black", "dark brown"], "hair_length": "very long",
+        "hair_texture": ["thick and voluminous", "silky and glossy"], "hair_style": "worn down",
+        "skin_tone": ["caramel", "warm tan", "brown"], "makeup_style": "bold glam",
+        "eyeliner": "smudged kohl", "lips_makeup": "deep red",
+        "earrings": "long drop earrings", "necklace": "statement necklace", "bracelet": "bangle stack",
+        "outfit_style": "evening formal", "accessories": "no accessories",
+        "outfit_description": [
+            "a flowing {jewel_tone} chiffon sari with a heavily embroidered gold border draped over a fitted blouse, the loose end catching the wind",
+            "a heavily embroidered {jewel_tone} silk lehenga with a mirrored bodice and a sheer gold-trimmed dupatta draped over one shoulder",
+            "a {color} silk sari with {accent} along the pallu, worn over a fitted short-sleeve blouse with a jeweled waist sash",
+        ],
+        "expression": "confident", "location": "flower field in bloom",
+        "lighting": "rim lighting from setting sun", "shot_type": "full body shot", "mood": "radiant",
+    },
+    "Highland Scot": {
+        "gender": "Male",
+        "variants": {
+            "Male": {
+                "ethnicity": "Scottish", "body_type": "athletic", "height": "tall",
+                "facial_hair": ["full beard", "short beard", "stubble"],
+                "hair_color": ["auburn", "copper", "deep red"], "hair_length": "ear length",
+                "hair_texture": "wavy", "hair_style": "natural and unstyled", "skin_tone": "fair",
+                "outfit_style": "vintage retro", "accessories": "no accessories",
+                "outfit_description": [
+                    "a pleated {color} tartan kilt with a leather sporran, a tweed jacket over a matching waistcoat, thick wool knee socks with colored garter tabs, and ghillie brogues",
+                    "full Highland dress: a {dark_color} tartan kilt, a black Argyll jacket with silver buttons over a white shirt and bow tie, a horsehair sporran, and polished ghillie brogues",
+                ],
+                "expression": "confident", "location": "misty moor",
+                "lighting": "overcast diffused daylight", "shot_type": "full body shot", "mood": "self-assured",
+            },
+            "Female": {
+                "ethnicity": "Scottish", "body_type": "slender", "height": "average height",
+                "hair_color": ["auburn", "copper", "strawberry blonde"], "hair_length": "long",
+                "hair_texture": "wavy", "hair_style": "worn down", "skin_tone": "fair",
+                "makeup_style": "soft natural makeup", "outfit_style": "vintage retro",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "a long {color} tartan skirt with a matching sash pinned at the shoulder by a silver brooch, a fitted black bodice over a white blouse, and lace-up leather boots",
+                    "a {dark_color} tartan dress with a wide leather belt, a wool shawl pinned with a Celtic brooch, thick knit stockings, and buckled leather shoes",
+                ],
+                "expression": "confident", "location": "misty moor",
+                "lighting": "overcast diffused daylight", "shot_type": "full body shot", "mood": "self-assured",
+            },
+        },
+    },
+    "Mariachi Charro": {
+        "gender": "Male",
+        "variants": {
+            "Male": {
+                "ethnicity": "Mexican", "body_type": "fit", "height": "average height",
+                "facial_hair": "mustache", "hair_color": ["jet black", "near black", "dark brown"],
+                "hair_length": "very short", "hair_texture": "sleek straight", "hair_style": "slicked back",
+                "skin_tone": "medium", "outfit_style": "evening formal", "accessories": "no accessories",
+                "outfit_description": [
+                    "a fitted black charro suit with silver botonadura studs down the trouser seams, a short embroidered jacket over a white shirt with a large red bow tie, a wide silver-embroidered sombrero, and tooled leather boots",
+                    "a {dark_color} charro suit heavily embroidered with gold thread in floral and horseshoe motifs, a crisp white shirt with a wide mono bow tie, a massive matching sombrero, and polished riding boots",
+                ],
+                "expression": "beaming", "location": "cobblestone old-town street",
+                "lighting": "warm string lights bokeh background", "shot_type": "full body shot", "mood": "joyful",
+            },
+            "Female": {
+                "ethnicity": "Mexican", "body_type": "hourglass", "height": "average height",
+                "hair_color": ["jet black", "near black", "dark brown"], "hair_length": "long",
+                "hair_texture": "sleek straight", "hair_style": "crown braid", "skin_tone": "medium",
+                "makeup_style": "bold glam", "lips_makeup": "classic red",
+                "outfit_style": "evening formal", "accessories": "no accessories",
+                "outfit_description": [
+                    "a tailored {dark_color} charro suit with silver embroidery and a long matching skirt, a white ruffled blouse with a red bow at the collar, and a wide embroidered sombrero",
+                    "a fitted black charro jacket and long trumpet skirt traced with gold thread embroidery, a ruffled white blouse, a red sash at the waist, and heeled leather boots",
+                ],
+                "expression": "beaming", "location": "cobblestone old-town street",
+                "lighting": "warm string lights bokeh background", "shot_type": "full body shot", "mood": "joyful",
+            },
+        },
+    },
+    "Gaucho": {
+        "gender": "Male", "ethnicity": "Argentinian", "body_type": "lean", "height": "average height",
+        "facial_hair": "stubble", "hair_color": ["dark brown", "medium brown", "near black"],
+        "hair_length": "very short", "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+        "skin_tone": "warm tan", "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": [
+            "a heavy woven {earth_tone} poncho over a loose cotton shirt, baggy pleated bombacha riding trousers tucked into tall leather boots, a black beret, and a wide leather belt studded with silver coins",
+            "a flat-brimmed black hat, a {earth_tone} wool poncho with striped trim, a knotted neckerchief, pleated riding trousers, and worn leather riding boots",
+        ],
+        "expression": "relaxed", "location": "open meadow",
+        "lighting": "late afternoon warm sunlight", "shot_type": "cowboy shot from mid-thigh up",
+        "mood": "tranquil",
+    },
+    "Outback Bushman": {
+        "gender": "Male", "body_type": "fit", "height": "tall",
+        "facial_hair": ["stubble", "short beard"], "hair_color": ["dark blonde", "dirty blonde", "light chestnut"],
+        "hair_length": "very short", "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+        "skin_tone": "golden tan", "outfit_style": "casual", "accessories": "no accessories",
+        "outfit_description": [
+            "a wide-brimmed brown felt bush hat, a khaki cotton drill work shirt with the sleeves rolled up, rugged canvas work shorts, thick socks, and elastic-sided leather work boots",
+            "an oilskin drover coat over a khaki work shirt, moleskin trousers, a wide-brimmed felt hat with a braided band, and dusty elastic-sided boots",
+        ],
+        "expression": "relaxed", "location": "country dirt road",
+        "lighting": "harsh desert sun", "shot_type": "cowboy shot from mid-thigh up", "mood": "carefree",
+    },
+    "K-Pop Idol": {
+        "age": ["24","26","28","25"],
+        "variants": {
+            "Female": {
+                "ethnicity": "Korean", "body_type": "petite and slim", "height": "slightly below average height",
+                "hair_color": ["baby pink", "lavender", "platinum white"], "hair_length": "long",
+                "hair_texture": "sleek straight", "hair_style": "worn down", "skin_tone": "fair",
+                "complexion": "clear", "skin_finish": "dewy skin", "makeup_style": "soft glam",
+                "lips_makeup": "ombre lip", "outfit_style": "streetwear", "accessories": "no accessories",
+                "outfit_description": [
+                    "an oversized {pastel} designer blazer over a pleated tennis skirt, a cropped top, sheer socks, and chunky white platform sneakers",
+                    "a rhinestone-studded crop top with high-waisted wide-leg cargo trousers, fingerless gloves, and chunky designer sneakers",
+                ],
+                "expression": "playful", "location": "dance studio with mirrors",
+                "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "radiant",
+            },
+            "Male": {
+                "ethnicity": "Korean", "body_type": "slim", "height": "tall",
+                "facial_hair": "clean shaven", "hair_color": ["platinum white", "silver", "electric blue"],
+                "hair_length": "ear length", "hair_texture": "sleek straight", "hair_style": "curtain bangs",
+                "skin_tone": "fair", "complexion": "clear", "skin_finish": "dewy skin",
+                "necklace": "layered pendant necklaces", "outfit_style": "streetwear",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "an oversized {dark_color} tailored blazer over a silk shirt half-tucked into slim leather trousers, a studded belt, and chunky white sneakers",
+                    "a boxy cropped jacket over a sheer black shirt, pleated wide-leg trousers with a chain detail, and platform combat boots",
+                ],
+                "expression": "confident", "location": "dance studio with mirrors",
+                "lighting": "high key bright even lighting", "shot_type": "full body shot", "mood": "radiant",
+            },
+        },
+    },
+    "B-Boy / B-Girl": {
+        "age": ["24","26","28","25"],
+        "variants": {
+            "Male": {
+                "ethnicity": ["Puerto Rican", "Jamaican", "Dominican"], "body_type": "athletic", "height": "average height",
+                "facial_hair": "clean shaven", "hair_color": ["jet black", "near black", "dark brown"],
+                "hair_length": "very short", "hair_texture": "tightly curled", "hair_style": "natural and unstyled",
+                "skin_tone": ["brown", "caramel", "warm brown"], "necklace": "no necklace",
+                "outfit_style": "streetwear", "accessories": "no accessories",
+                "outfit_description": [
+                    "a matching {team_color} nylon tracksuit with contrast stripes, a black bucket hat, a thick gold rope chain, and pristine white sneakers with fat laces",
+                    "an oversized graphic tee under an open {team_color} windbreaker, baggy jeans, a flat-brim cap worn askew, and suede sneakers with fat laces",
+                ],
+                "expression": "confident", "location": "graffiti-covered skate park",
+                "lighting": "overcast diffused daylight", "shot_type": "full body shot", "mood": "self-assured",
+            },
+            "Female": {
+                "ethnicity": ["Puerto Rican", "Jamaican", "Dominican"], "body_type": "athletic", "height": "average height",
+                "hair_color": ["jet black", "near black", "dark brown"], "hair_length": "long",
+                "hair_texture": "curly", "hair_style": "high ponytail", "skin_tone": ["brown", "caramel", "warm brown"],
+                "earrings": "large bold gold hoops", "outfit_style": "streetwear", "accessories": "no accessories",
+                "outfit_description": [
+                    "a cropped {team_color} track jacket over a fitted tee, matching track pants, a bucket hat, and fresh white high-top sneakers with fat laces",
+                    "an oversized {team_color} hoodie knotted at the waist over bike shorts, tube socks, a snapback cap, and classic shell-toe sneakers with fat laces",
+                ],
+                "expression": "confident", "location": "graffiti-covered skate park",
+                "lighting": "overcast diffused daylight", "shot_type": "full body shot", "mood": "self-assured",
+            },
+        },
+    },
+    "Bosozoku": {
+        "gender": "Male", "ethnicity": "Japanese", "body_type": "lean", "height": "average height",
+        "facial_hair": "clean shaven", "hair_color": ["jet black", "near black", "raven black"],
+        "hair_length": "ear length", "hair_texture": "thick and voluminous", "hair_style": "slicked back",
+        "skin_tone": "light", "outfit_style": "edgy alternative", "accessories": "no accessories",
+        "outfit_description": [
+            "a long white tokko-fuku overcoat embroidered with bold kanji slogans, worn open over a wrapped cloth midsection, baggy trousers tucked into tall black combat boots, and a rolled headband",
+            "an embroidered {dark_color} biker jumpsuit with a high collar and painted gang insignia across the back, hand wrappings, and steel-toed boots",
+        ],
+        "expression": "intense gaze", "location": "neon-lit city street",
+        "lighting": "fog-diffused streetlamp glow", "shot_type": "full body shot", "mood": "fierce",
+    },
+    # 0.81.0: the biker gap. `Bosozoku` is the Japanese variant, `1950s Greaser` is
+    # era-coded and `Punk Rocker` is music-coded -- none of them is the plain
+    # leather-and-patches motorcycle look. Deliberately gender-neutral (no `gender`
+    # key and no `variants`): pinning it male would both misrepresent the subculture
+    # and pull the archetype roster's gender balance.
+    "Biker": {
+        "outfit_style": "edgy alternative",
+        "outfit_description": [
+            "a worn {dark_color} leather motorcycle jacket with zippered cuffs over a "
+            "plain tee, a sleeveless denim cut-off vest layered on top with embroidered "
+            "back patches, {denim_wash} jeans, leather chaps and heavy buckled riding boots",
+            "a scuffed black leather riding jacket with a quilted shoulder and a belted "
+            "waist over a band tee, reinforced riding gloves, a studded belt, "
+            "{denim_wash} jeans and tall worn leather boots",
+        ],
+        "expression": "confident",
+        "location": "country dirt road",
+        "lighting": "golden hour sunlight",
+        "shot_type": "full body shot",
+        "mood": "self-assured",
+    },
+    "Parisian Chic": {
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "French", "body_type": "slim", "height": "average height",
+                "hair_color": ["chestnut", "warm brown", "dark brown"], "hair_length": "shoulder length",
+                "hair_texture": "loosely wavy", "hair_style": "natural and unstyled", "skin_tone": "fair",
+                "makeup_style": "classic no-makeup makeup", "lips_makeup": "classic red",
+                "outfit_style": "smart casual", "accessories": "silk neck scarf",
+                "outfit_description": [
+                    "a classic beige trench coat over a Breton striped shirt, well-fitted straight-leg jeans, and black leather ballet flats",
+                    "a tailored {dark_color} blazer over a silk camisole, high-waisted cropped trousers, and pointed leather loafers",
+                ],
+                "expression": "quiet amusement", "location": "cobblestone old-town street",
+                "lighting": "overcast diffused daylight", "shot_type": "cowboy shot from mid-thigh up", "mood": "tranquil",
+            },
+            "Male": {
+                "ethnicity": "French", "body_type": "lean", "height": "tall",
+                "facial_hair": "stubble", "hair_color": ["dark brown", "medium brown", "chestnut"],
+                "hair_length": "ear length", "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+                "skin_tone": "fair", "outfit_style": "smart casual", "accessories": "no accessories",
+                "outfit_description": [
+                    "a navy wool overcoat over a fine-knit turtleneck, tailored charcoal trousers, and polished leather derby shoes",
+                    "an unstructured {menswear_color} blazer over a crisp open-collar shirt, dark slim jeans, and suede loafers",
+                ],
+                "expression": "quiet amusement", "location": "cobblestone old-town street",
+                "lighting": "overcast diffused daylight", "shot_type": "cowboy shot from mid-thigh up", "mood": "tranquil",
+            },
+        },
+    },
+    "Scandi Minimalist": {
+        "variants": {
+            "Female": {
+                "ethnicity": ["Danish", "Swedish", "Norwegian"], "body_type": "slim", "height": "tall",
+                "hair_color": ["platinum blonde", "light blonde", "dark blonde"], "hair_length": "shoulder length",
+                "hair_texture": "sleek straight", "hair_style": "worn down", "skin_tone": "fair",
+                "makeup_style": "barely there natural makeup", "outfit_style": "smart casual",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "an oversized cream wool coat over a chunky ribbed knit sweater, wide-leg tailored grey trousers, and minimal white leather sneakers",
+                    "a longline {dark_color} quilted coat over a high-neck knit dress, ribbed tights, and chunky leather boots",
+                ],
+                "expression": "serene", "location": "minimalist Scandinavian living room",
+                "lighting": "hazy overcast winter light", "shot_type": "full body shot", "mood": "peaceful",
+            },
+            "Male": {
+                "ethnicity": ["Danish", "Swedish", "Norwegian"], "body_type": "lean", "height": "tall",
+                "facial_hair": "stubble", "hair_color": ["dark blonde", "light chestnut", "medium brown"],
+                "hair_length": "very short", "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+                "skin_tone": "fair", "outfit_style": "smart casual", "accessories": "no accessories",
+                "outfit_description": [
+                    "a boxy charcoal wool overcoat over a heavy roll-neck sweater, tapered wool trousers, and minimalist leather boots",
+                    "an oversized {dark_color} knit cardigan over a fine merino tee, relaxed pleated trousers, and clean white sneakers",
+                ],
+                "expression": "serene", "location": "minimalist Scandinavian living room",
+                "lighting": "hazy overcast winter light", "shot_type": "full body shot", "mood": "peaceful",
+            },
+        },
+    },
+    "Babushka": {
+        "gender": "Female", "ethnicity": ["Russian", "Ukrainian", "Polish"], "age": ["48","50"],
+        "body_type": ["plump", "stocky", "full figured"], "height": "short",
+        "hair_color": ["silver", "white", "salt and pepper"], "hair_length": "shoulder length",
+        "hair_texture": "fine and wispy", "hair_style": "sleek bun", "skin_tone": "fair",
+        "makeup_style": "no makeup", "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": [
+            "a floral-print headscarf tied snugly under the chin, a heavy {dark_color} wool coat over a patterned housedress, thick opaque tights, and sturdy low-heeled leather walking shoes",
+            "a warm {color} floral headscarf knotted beneath the chin, a thick hand-knitted cardigan over a long dark skirt, wool stockings, and felt winter boots",
+        ],
+        "expression": "gentle smile", "location": "cluttered grandparent living room",
+        "lighting": "warm incandescent lamp glow", "shot_type": "medium shot from waist up",
+        "mood": "nostalgic",
+    },
+    "Italian Nonna": {
+        "gender": "Female", "ethnicity": "Italian", "age": ["48","50"],
+        "body_type": ["plump", "softly curved"], "height": "short",
+        "hair_color": ["salt and pepper", "silver", "charcoal gray"], "hair_length": "ear length",
+        "hair_texture": "tightly curled", "hair_style": "natural and unstyled", "skin_tone": "light medium",
+        "makeup_style": "no makeup", "earrings": "small gold hoops", "necklace": "locket necklace",
+        "outfit_style": "vintage retro", "accessories": "no accessories",
+        "outfit_description": [
+            "a simple {dark_color} floral-print cotton dress under a practical kitchen apron, a dark knitted cardigan, and comfortable leather loafers",
+            "a modest black dress with a white lace collar, a well-worn apron dusted with flour, thick stockings, and sensible sandals",
+        ],
+        "expression": "warm smile", "location": "farmhouse kitchen with open shelving",
+        "lighting": "warm sunlight streaming through a window", "shot_type": "medium shot from waist up",
+        "mood": "cheerful",
+    },
+    "Victorian Dandy": {
+        "gender": "Male", "ethnicity": "English", "body_type": "slim", "height": "tall",
+        "facial_hair": ["mustache", "van dyke", "clean shaven"],
+        "hair_color": ["dark brown", "medium brown", "near black"], "hair_length": "ear length",
+        "hair_texture": "slightly wavy", "hair_style": "slicked back", "skin_tone": "pale",
+        "outfit_style": "evening formal", "accessories": "no accessories",
+        "outfit_description": [
+            "an impeccably fitted {dark_color} frock coat over a {jewel_tone} silk brocade waistcoat, a high-collared shirt with a silk ascot pinned by a pearl stickpin, tailored trousers, and gleaming leather dress shoes with spats",
+            "a velvet-trimmed tailcoat over a patterned silk cravat, a boutonniere at the lapel, a gold watch chain draped across the waistcoat, and polished oxford shoes",
+        ],
+        "expression": "quiet amusement", "location": "dark moody Victorian parlor",
+        "lighting": "warm candlelight", "shot_type": "cowboy shot from mid-thigh up", "mood": "self-assured",
+    },
+    "Rio Carnival Dancer": {
+        "gender": "Female", "ethnicity": "Brazilian", "age": ["26","28","25"],
+        "body_type": ["athletic", "curvy", "toned"],
+        "height": "average height", "hair_color": ["jet black", "dark brown", "near black"],
+        "hair_length": "long", "hair_texture": "loosely curled", "hair_style": "worn down",
+        "skin_tone": ["golden tan", "bronze", "caramel"], "makeup_style": "editorial makeup",
+        "eye_makeup": "glittery", "lips_makeup": "high shine gloss",
+        "outfit_style": "edgy alternative", "accessories": "no accessories",
+        "outfit_description": [
+            "an elaborate {jewel_tone} sequined and beaded samba costume with a towering feathered headdress, feathered shoulder pieces, a jeweled two-piece with a sheer beaded overskirt, and strappy gold heeled sandals",
+            "a {color} feathered samba ensemble with a crystal-encrusted bodice, a fanned feather back-piece, fringed wrist pieces, and gold platform heels",
+        ],
+        "expression": "beaming", "location": "outdoor amphitheater",
+        "lighting": "stage spotlight from above", "shot_type": "full body shot", "mood": "radiant",
+    },
+    "Gibson Girl": {
+        "gender": "Female", "ethnicity": "English", "body_type": "hourglass", "height": "average height",
+        "hair_color": ["chestnut", "warm brown", "dark brown"], "hair_length": "very long",
+        "hair_texture": "softly curled", "hair_style": "updo", "skin_tone": "porcelain",
+        "makeup_style": "soft natural makeup", "outfit_style": "vintage retro",
+        "accessories": "no accessories",
+        "outfit_description": [
+            "a crisp high-collared white shirtwaist blouse with a cameo brooch at the throat, a long {dark_color} trumpet skirt cinched at the waist with a wide belt, and buttoned leather boots",
+            "a light {pastel} lace-trimmed blouse with leg-of-mutton sleeves, a fitted dark skirt with a sweeping hem, and a velvet ribbon choker",
+        ],
+        "expression": "serene", "location": "sunlit sunroom",
+        "lighting": "soft window light from the side", "shot_type": "medium shot from waist up",
+        "mood": "dreamy",
+    },
+
+    # --- Festivals, performers & era icons (0.50.0) ------------------------
+    # Face-paint looks (calavera, clown, mime) describe the paint in the
+    # costume text (Geisha precedent) — never as new makeup_style options,
+    # which would leak stage paint into the global random makeup pool.
+    "Día de los Muertos": {
+        # Soft Female preference: La Catrina is the iconic image; the Male
+        # variant is her counterpart El Catrín (dapper calavera gentleman).
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "Mexican", "body_type": ["slender", "curvy", "hourglass"],
+                "hair_color": ["jet black", "raven black", "near black"], "hair_length": "long",
+                "hair_texture": "loosely curled", "hair_style": ["updo", "crown braid", "worn down"],
+                "makeup_style": "editorial makeup", "lips_makeup": "deep red",
+                "outfit_style": "evening formal", "accessories": "no accessories",
+                "outfit_description": [
+                    "an elegant ruffled {jewel_tone} lace Catrina gown with ornate sugar-skull calavera face paint in delicate floral patterns, a crown of bright marigolds, and an embroidered shawl",
+                    "a flowing tiered {color} dress with graceful sugar-skull calavera face paint, marigold blossoms woven into the hair, and a black lace mantilla veil",
+                    "a Catrina-style ruffled {dark_color} and marigold-orange gown with elegant calavera face paint, a wide-brimmed hat trimmed with roses and marigolds, and lace gloves",
+                ],
+                "expression": "serene",
+                "location": ["open-air street food market", "cobblestone old-town street"],
+                "lighting": ["warm candlelight", "warm lantern light"],
+                "shot_type": "full body shot", "mood": ["radiant", "mysterious"],
+            },
+            "Male": {
+                "ethnicity": "Mexican", "body_type": "lean", "height": "tall",
+                "facial_hair": "clean shaven",
+                "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short",
+                "hair_style": "slicked back", "outfit_style": "evening formal",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "a sharp {dark_color} vintage Catrín suit with elegant sugar-skull calavera face paint, a marigold boutonniere, a wide-brimmed hat, and a {color} pocket square",
+                    "an embroidered black charro-style jacket with silver detailing, refined calavera face paint, a marigold boutonniere, and a crisp white shirt",
+                ],
+                "expression": "calm and composed",
+                "location": ["open-air street food market", "cobblestone old-town street"],
+                "lighting": ["warm candlelight", "warm lantern light"],
+                "shot_type": "full body shot", "mood": ["radiant", "mysterious"],
+            },
+        },
+    },
+    "Circus Clown": {
+        # Deliberately cheerful classic circus clowning — the creepy/horror
+        # clown looks live on the Cosplayer node, not here.
+        "gender": "Any",
+        "variants": {
+            "Female": {
+                "hair_color": ["bright red", "orange", "rainbow ombre"], "hair_length": "shoulder length",
+                "hair_texture": "tightly curled", "hair_style": ["pigtails", "space buns"],
+                "makeup_style": "club makeup", "outfit_style": "edgy alternative",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "a cheerful {color} polka-dot clown dress with a ruffled collar, striped stockings, oversized buttoned shoes, a tiny felt hat, and friendly whiteface clown paint with a painted red nose and rosy cheeks",
+                    "a patchwork {color} and {pastel} clown costume with a giant bow at the collar, rainbow-striped socks, comically large shoes, and bright auguste clown face paint with a red foam nose",
+                ],
+                "expression": ["wide toothy grin", "playful"],
+                "location": ["outdoor amphitheater", "backstage dressing room"],
+                "lighting": ["stage spotlight from above", "high key bright even lighting"],
+                "shot_type": "full body shot", "mood": ["cheerful", "lighthearted"],
+            },
+            "Male": {
+                "hair_color": ["bright red", "orange", "electric blue"], "hair_length": "ear length",
+                "hair_texture": "tightly curled", "facial_hair": "clean shaven",
+                "outfit_style": "edgy alternative", "accessories": "no accessories",
+                "outfit_description": [
+                    "a classic {color} polka-dot clown jumpsuit with a ruffled collar, giant floppy shoes, a squeaky flower on the lapel, and cheerful auguste clown face paint with a red nose",
+                    "an oversized {color} plaid clown suit with suspenders, a polka-dot bow tie, a tiny bowler hat, comically large shoes, and friendly whiteface clown paint with a painted grin",
+                ],
+                "expression": ["wide toothy grin", "playful"],
+                "location": ["outdoor amphitheater", "backstage dressing room"],
+                "lighting": ["stage spotlight from above", "high key bright even lighting"],
+                "shot_type": "full body shot", "mood": ["cheerful", "lighthearted"],
+            },
+        },
+    },
+    "Hair Metal Rocker": {
+        "gender": "Any",
+        "variants": {
+            "Female": {
+                "hair_color": ["platinum blonde", "black with colored tips", "bright red"],
+                "hair_length": "very long", "hair_texture": ["tightly curled", "thick and voluminous"],
+                "hair_style": ["worn down", "tousled bedhead", "windswept"],
+                "makeup_style": "heavy glam", "eye_makeup": "smoky black",
+                "outfit_style": "edgy alternative", "accessories": "no accessories",
+                "outfit_description": [
+                    "a studded black leather jacket over a ripped {neon} band tee, skin-tight leopard-print leggings, and buckled ankle boots with stacked bangle bracelets",
+                    "a fringed {color} leather jacket with glinting studs over a fishnet top, a {denim_wash} denim mini skirt, ripped fishnet stockings, and lace-up platform boots",
+                    "a {neon} spandex bodysuit with a studded belt, a cropped denim vest covered in band patches, and knee-high heeled boots",
+                ],
+                "expression": ["smirking", "intense gaze"],
+                "location": ["concert hall backstage", "recording studio", "neon-lit city street"],
+                "lighting": ["stage spotlight from above", "club strobe lighting"],
+                "shot_type": ["full body shot", "cowboy shot from mid-thigh up"],
+                "mood": ["fierce", "carefree"],
+            },
+            "Male": {
+                "hair_color": ["platinum blonde", "jet black", "bright red"],
+                "hair_length": ["shoulder length", "slightly past shoulders"],
+                "hair_texture": ["wavy", "tightly curled"],
+                "hair_style": ["mullet", "worn down", "tousled bedhead"],
+                "facial_hair": ["clean shaven", "stubble"],
+                "outfit_style": "edgy alternative", "accessories": "no accessories",
+                "outfit_description": [
+                    "a sleeveless {denim_wash} denim vest covered in band patches over a ripped tee, skin-tight {dark_color} leather pants, a bandana tied at the wrist, and snakeskin boots",
+                    "a studded black leather jacket over a torn band tee, {color} spandex pants, layered chain necklaces, and white high-top sneakers",
+                ],
+                "expression": ["smirking", "intense gaze"],
+                "location": ["concert hall backstage", "recording studio", "neon-lit city street"],
+                "lighting": ["stage spotlight from above", "club strobe lighting"],
+                "shot_type": ["full body shot", "cowboy shot from mid-thigh up"],
+                "mood": ["fierce", "carefree"],
+            },
+        },
+    },
+    "1980s Action Star": {
+        # Male-leaning by design (the mullet-and-muscles VHS hero); a forced
+        # Female subject keeps the wardrobe but the engine re-randomizes the
+        # male-only hair/facial-hair locks within the female pools.
+        "gender": "Male", "body_type": "athletic", "fitness_level": "muscular",
+        "hair_color": ["dark brown", "jet black", "dirty blonde"],
+        "hair_length": ["shoulder length", "slightly past shoulders"],
+        "hair_style": "mullet", "facial_hair": ["clean shaven", "stubble", "mustache"],
+        "outfit_style": "casual", "accessories": ["aviator sunglasses", "no accessories"],
+        "outfit_description": [
+            "a tight white tank top with {denim_wash} jeans, a wide leather belt with a heavy buckle, dog tags, and scuffed combat boots",
+            "a battered brown leather jacket over a black tee, cargo pants with a utility belt, fingerless gloves, and rugged boots",
+            "a sleeveless olive field shirt with a red bandana headband, camo cargo pants, dog tags, and combat boots",
+        ],
+        "expression": ["steely", "smirking", "intense gaze"],
+        "location": ["urban alley with graffiti", "warehouse interior", "parking garage"],
+        "lighting": ["dramatic chiaroscuro side lighting", "single neon light from one side", "golden hour sunlight"],
+        "shot_type": ["cowboy shot from mid-thigh up", "low angle looking up"],
+        "mood": ["intense", "triumphant"],
+    },
+    "Mime": {
+        "outfit_style": "edgy alternative", "accessories": "no accessories",
+        "outfit_description": [
+            "a classic mime costume with a black-and-white striped long-sleeve top, black suspenders and trousers, white gloves, a black beret, and white mime face paint with a single painted teardrop",
+            "a monochrome mime outfit with a striped boatneck shirt, high-waisted black trousers with suspenders, white gloves, a jaunty black beret, and white face paint with black-lined brows and a red dot on each cheek",
+        ],
+        "expression": ["surprised", "playful", "mischievous"],
+        "location": ["cobblestone old-town street", "pedestrian shopping street"],
+        "lighting": "overcast diffused daylight", "shot_type": "full body shot",
+        "mood": ["lighthearted", "carefree"],
+    },
+    "Opera Singer": {
+        "gender": "Any",
+        "variants": {
+            "Female": {
+                "body_type": ["curvy", "full figured", "hourglass"], "age": ["33","38","40","45"],
+                "hair_length": "long", "hair_style": ["updo", "French twist", "chignon"],
+                "makeup_style": "full glam", "lips_makeup": "deep red",
+                "outfit_style": "evening formal", "accessories": "no accessories",
+                "outfit_description": [
+                    "a dramatic {jewel_tone} velvet opera gown with a sweeping train, long satin opera gloves, and glittering chandelier earrings",
+                    "a corseted {dark_color} taffeta gown with an off-the-shoulder neckline and a dramatic brocade overskirt",
+                ],
+                "expression": ["intense gaze", "serene"],
+                "location": ["outdoor amphitheater", "backstage dressing room"],
+                "lighting": ["dramatic single overhead spotlight", "stage spotlight from above"],
+                "shot_type": ["medium shot from waist up", "full body shot"],
+                "mood": ["triumphant", "intense"],
+            },
+            "Male": {
+                "body_type": ["stocky", "full figured", "average"], "age": ["38","40","45","50"],
+                "facial_hair": ["clean shaven", "short beard", "full beard"],
+                "hair_length": "very short", "outfit_style": "evening formal",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "a crisp white-tie ensemble with a black tailcoat, a white piqué waistcoat and bow tie, and patent leather shoes",
+                    "a {dark_color} velvet tuxedo jacket with satin lapels over a wing-collar shirt, with a white silk scarf draped around the neck",
+                ],
+                "expression": ["intense gaze", "serene"],
+                "location": ["outdoor amphitheater", "backstage dressing room"],
+                "lighting": ["dramatic single overhead spotlight", "stage spotlight from above"],
+                "shot_type": ["medium shot from waist up", "full body shot"],
+                "mood": ["triumphant", "intense"],
+            },
+        },
+    },
+    "Figure Skater": {
+        "gender": "Any",
+        "variants": {
+            "Female": {
+                "body_type": ["athletic", "petite and slim", "toned"], "fitness_level": "very fit",
+                "age": ["24","25","26","28"],
+                "hair_length": ["shoulder length", "long"],
+                "hair_style": ["sleek bun", "high ponytail"], "makeup_style": "soft glam",
+                "eye_makeup": "glittery", "outfit_style": "athletic",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "a sparkling {jewel_tone} figure-skating dress with a sheer illusion neckline, crystal embellishments, a flared skirt, and white figure skates with gleaming blades",
+                    "a {pastel} competition skating dress with cascading rhinestones, sheer mesh sleeves, and white figure skates",
+                ],
+                "expression": ["determined", "bright smile"],
+                "location": ["roller skating rink", "dance studio with mirrors"],
+                "lighting": ["high key bright even lighting", "stage spotlight from above"],
+                "shot_type": "full body shot", "mood": ["triumphant", "radiant"],
+            },
+            "Male": {
+                "body_type": ["athletic", "lean", "toned"], "fitness_level": "very fit",
+                "age": ["25","26","28"], "facial_hair": "clean shaven",
+                "hair_length": "very short", "outfit_style": "athletic",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "a fitted {dark_color} skating costume with sequined accents on the shoulders, a sheer-panel shirt, tailored stretch trousers, and black figure skates",
+                    "a sleek {jewel_tone} competition skating shirt with an asymmetric beaded seam, black stretch trousers, and black figure skates",
+                ],
+                "expression": ["determined", "bright smile"],
+                "location": ["roller skating rink", "dance studio with mirrors"],
+                "lighting": ["high key bright even lighting", "stage spotlight from above"],
+                "shot_type": "full body shot", "mood": ["triumphant", "radiant"],
+            },
+        },
+    },
+    "Oktoberfest": {
+        "gender": "Any",
+        "variants": {
+            "Female": {
+                "ethnicity": ["German", "Austrian"], "hair_length": "long",
+                "hair_style": ["crown braid", "dutch braids", "loose braids"],
+                "makeup_style": "soft natural makeup", "outfit_style": "vintage retro",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "a traditional {color} dirndl with a white puff-sleeve blouse, a fitted laced bodice, a full skirt with a satin apron, and a delicate {flower} tucked behind one ear",
+                    "a {jewel_tone} dirndl dress with an embroidered bodice, a ruffled white blouse, an apron tied in a neat bow, and ribbons woven through braided hair",
+                ],
+                "expression": ["beaming", "candid mid-laugh"],
+                "location": "wood-paneled pub",
+                "lighting": ["warm string lights bokeh background", "warm incandescent lamp glow"],
+                "shot_type": ["medium shot from waist up", "cowboy shot from mid-thigh up"],
+                "mood": ["joyful", "lighthearted"],
+            },
+            "Male": {
+                "ethnicity": ["German", "Austrian"],
+                "facial_hair": ["clean shaven", "full beard", "mustache"],
+                "hair_length": "very short", "outfit_style": "vintage retro",
+                "accessories": "no accessories",
+                "outfit_description": [
+                    "traditional {earth_tone} leather lederhosen with embroidered suspenders over a checkered shirt, wool knee socks, sturdy shoes, and an alpine felt hat with a feather",
+                    "knee-length lederhosen with a rustic {color} gingham shirt, an embroidered halter front, and a Tyrolean hat with a small feather",
+                ],
+                "expression": ["beaming", "candid mid-laugh"],
+                "location": "wood-paneled pub",
+                "lighting": ["warm string lights bokeh background", "warm incandescent lamp glow"],
+                "shot_type": ["medium shot from waist up", "cowboy shot from mid-thigh up"],
+                "mood": ["joyful", "lighthearted"],
+            },
+        },
+    },
+    "Mardi Gras Reveler": {
+        "gender": "Any",
+        "variants": {
+            "Female": {
+                "makeup_style": "editorial makeup", "eye_makeup": "glittery",
+                "outfit_style": "cocktail semi-formal", "accessories": "no accessories",
+                "outfit_description": [
+                    "a purple-and-gold sequined masquerade dress with a green feathered eye mask, strands of shiny carnival beads, and satin gloves",
+                    "a glittering green-and-purple flapper-style fringe dress with gold carnival beads, a jeweled feather headpiece, and an ornate hand-held mask",
+                ],
+                "expression": ["beaming", "candid mid-laugh"],
+                "location": ["neon-lit city street", "cobblestone old-town street", "open-air street food market"],
+                "lighting": ["warm string lights bokeh background", "neon sign glow in multiple colors"],
+                "shot_type": ["full body shot", "medium shot from waist up"],
+                "mood": ["joyful", "carefree"],
+            },
+            "Male": {
+                "outfit_style": "cocktail semi-formal", "accessories": "no accessories",
+                "outfit_description": [
+                    "a purple velvet blazer over a gold brocade waistcoat with a green pocket square, strands of carnival beads, and a feathered domino mask",
+                    "a gold sequined jacket over a black shirt with purple-and-green carnival beads and a ribbon-trimmed top hat",
+                ],
+                "expression": ["beaming", "candid mid-laugh"],
+                "location": ["neon-lit city street", "cobblestone old-town street", "open-air street food market"],
+                "lighting": ["warm string lights bokeh background", "neon sign glow in multiple colors"],
+                "shot_type": ["full body shot", "medium shot from waist up"],
+                "mood": ["joyful", "carefree"],
+            },
+        },
+    },
+    "Storm Chaser": {
+        "outfit_style": "casual", "accessories": ["baseball cap", "no accessories"],
+        "outfit_description": [
+            "a rugged {color} rain shell over a graphic tee, cargo pants with a two-way radio clipped to the belt, and mud-spattered hiking boots",
+            "a heavy-duty {earth_tone} windbreaker with reflective piping, sturdy field pants with kneepads, and weatherbeaten trail boots",
+        ],
+        "expression": ["focused", "intense gaze"],
+        "location": ["country dirt road", "open meadow"],
+        "lighting": "dramatic stormy sky light",
+        "shot_type": ["full body shot with environment visible", "wide shot with subject at center"],
+        "mood": ["tense", "restless"],
+    },
+    "Beauty Pageant Contestant": {
+        "gender": "Female", "body_type": ["slender", "hourglass", "toned"],
+        "age": ["26","28","25"],
+        "hair_length": ["long", "very long"], "hair_texture": ["softly curled", "loosely curled"],
+        "hair_style": ["freshly blown out", "worn down", "updo"],
+        "makeup_style": "full glam", "lashes": "dramatic falsies",
+        "lips_makeup": ["classic red", "pink"], "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "outfit_description": [
+            "a floor-length {jewel_tone} sequined evening gown with a sweetheart neckline, a white satin pageant sash lettered in gold, sparkling drop earrings, and a crystal tiara",
+            "a fitted {color} mermaid-cut pageant gown with crystal beading, a satin winner's sash across the bodice, elegant heels, and a rhinestone crown",
+        ],
+        "expression": ["beaming", "bright smile"],
+        "location": ["outdoor amphitheater", "hotel lobby with marble floors"],
+        "lighting": ["stage spotlight from above", "high key bright even lighting"],
+        "shot_type": "full body shot", "mood": ["radiant", "triumphant"],
+    },
+
+    # --- 0.67.0 additions -------------------------------------------------
+    # Lean unisex professions (costume via _COSTUMES). Deliberately NO
+    # makeup_style lock: leaving it unlocked lets the male-default "no makeup"
+    # cascade run, so a male render stays bare-faced (the ER Nurse lesson), while
+    # a female render randomizes an appropriate look — the same convention the
+    # other lean professions (Surgeon, Judge, Sommelier, ...) already follow.
+    "Butler": {
+        "accessories": "no accessories", "bag": "no bag",
+        "hair_style": ["slicked back", "sleek bun"], "outfit_style": "business formal",
+        "expression": ["neutral", "calm and composed"],
+        "location": ["formal dining room with chandelier", "grand hotel suite"],
+        "lighting": "warm incandescent lamp glow",
+        "shot_type": "medium shot from waist up", "mood": "tranquil",
+    },
+    "Trial Lawyer": {
+        "accessories": "no accessories", "bag": "no bag",
+        "hair_style": ["slicked back", "sleek bun", "low ponytail"], "outfit_style": "business formal",
+        "expression": ["confident", "determined"], "location": "courtroom",
+        "lighting": "soft window light from the side",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    "Coal Miner": {
+        "accessories": "no accessories", "bag": "no bag", "outfit_style": "casual", "complexion": "ruddy",
+        "expression": ["determined", "serious"],
+        "location": ["warehouse interior", "factory floor"],
+        "lighting": "low key moody single light source",
+        "shot_type": "medium shot from waist up", "mood": "grim",
+    },
+    "Butcher": {
+        "accessories": "no accessories", "bag": "no bag", "outfit_style": "casual",
+        "expression": ["confident", "warm smile"],
+        "location": ["upscale grocery market deli counter", "farmers market indoor stall"],
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "medium shot from waist up", "mood": "self-assured",
+    },
+    # Lean unisex historical / sport / performer.
+    "Musketeer": {
+        "accessories": "no accessories", "bag": "no bag",
+        "hair_length": ["long", "shoulder length"], "hair_texture": ["loosely curled", "wavy"],
+        "outfit_style": "vintage retro", "expression": ["confident", "smirking"],
+        "location": ["castle courtyard", "cobblestone old-town street"],
+        "lighting": "late afternoon warm sunlight",
+        "shot_type": "full body shot", "mood": "self-assured",
+    },
+    "Medieval Peasant": {
+        "accessories": "no accessories", "bag": "no bag", "outfit_style": "casual",
+        "expression": ["neutral", "warm smile"],
+        "location": ["castle courtyard", "country dirt road"],
+        "lighting": "overcast diffused daylight",
+        "shot_type": "cowboy shot from mid-thigh up", "mood": "nostalgic",
+    },
+    "Fencer": {
+        "accessories": "no accessories", "bag": "no bag", "outfit_style": "athletic",
+        "expression": ["focused", "determined"],
+        "location": ["high school gymnasium", "dance studio with mirrors"],
+        "lighting": "high key bright even lighting",
+        "shot_type": "full body shot", "mood": "intense",
+    },
+    "Alpine Skier": {
+        "accessories": "no accessories", "bag": "no bag", "outfit_style": "athletic",
+        "expression": ["bright smile", "confident"],
+        "location": ["snowy pine forest", "mountain overlook"],
+        "lighting": "snow-reflected daylight",
+        "shot_type": "full body shot with environment visible", "mood": "carefree",
+    },
+    "Rapper": {
+        "accessories": "no accessories", "bag": "no bag", "outfit_style": "streetwear",
+        "expression": ["confident", "intense gaze"],
+        "location": ["recording studio", "urban alley with graffiti"],
+        "lighting": ["neon sign glow in multiple colors", "low key moody single light source"],
+        "shot_type": "medium close-up from chest up", "mood": "self-assured",
+    },
+    # Per-gender variants (each carries its own coherent costume). A makeup_style
+    # lock inside a Female variant is safe — it is gender-scoped, so it never
+    # reaches a male render (unlike a base lock, which would; see ER Nurse).
+    "Genie": {
+        "accessories": "no accessories", "bag": "no bag", "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": ["Egyptian", "Lebanese", "Iranian"], "body_type": "curvy",
+                "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very long",
+                "hair_texture": "wavy", "hair_style": "worn down", "makeup_style": "bold glam", "lips_makeup": "berry",
+                "outfit_style": "edgy alternative",
+                "outfit_description": "a jeweled {jewel_tone} silk bedlah with a beaded bra top, sheer harem trousers, broad gold arm cuffs, and a circlet set with a teardrop gem",
+                "expression": "flirtatious", "location": "grand hotel suite",
+                "lighting": "warm lantern light", "shot_type": "full body shot", "mood": "enigmatic",
+            },
+            "Male": {
+                "ethnicity": ["Egyptian", "Lebanese", "Iranian"], "body_type": "athletic", "fitness_level": "muscular",
+                "facial_hair": "short beard", "hair_color": ["jet black", "raven black", "near black"], "hair_length": "very short",
+                "outfit_style": "edgy alternative",
+                "outfit_description": "an open {jewel_tone} silk vest over a bare chest, billowing harem trousers cinched with a gold sash, broad gold arm cuffs, and a jeweled turban",
+                "expression": "confident", "location": "grand hotel suite",
+                "lighting": "warm lantern light", "shot_type": "full body shot", "mood": "enigmatic",
+            },
+        },
+    },
+    "Cottagecore": {
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "body_type": ["softly curved", "average"], "hair_length": ["long", "very long"],
+                "hair_texture": ["loosely wavy", "softly curled"], "hair_style": ["loose braids", "half up half down"],
+                "hair_accessory": "flower crown", "makeup_style": "fresh-faced dewy look",
+                "outfit_style": "bohemian", "accessories": "no accessories", "bag": "no bag",
+                "outfit_description": [
+                    "a {pastel} prairie dress with a scalloped lace collar, puffed sleeves, and a tied pinafore apron, carrying a woven basket of wildflowers",
+                    "a floral cotton milkmaid dress with a laced bodice and billowing sleeves, worn with a wide straw sun hat",
+                ],
+                "expression": ["gentle smile", "serene"],
+                "location": ["flower field in bloom", "sunlit vineyard"],
+                "lighting": "golden hour sunlight", "shot_type": "full body shot with environment visible", "mood": "dreamy",
+            },
+            "Male": {
+                "body_type": ["lean", "average"], "facial_hair": "stubble", "hair_length": ["ear length", "short pixie"],
+                "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+                "outfit_style": "bohemian", "accessories": "no accessories", "bag": "no bag",
+                "outfit_description": [
+                    "a loose {earth_tone} linen shirt with rolled sleeves, suspenders over cuffed trousers, and a woven straw hat, carrying a basket of foraged herbs",
+                    "a knitted vest over an open-collar linen shirt, patched work trousers, and scuffed leather boots",
+                ],
+                "expression": ["gentle smile", "at ease"],
+                "location": ["flower field in bloom", "sunlit vineyard"],
+                "lighting": "golden hour sunlight", "shot_type": "full body shot with environment visible", "mood": "dreamy",
+            },
+        },
+    },
+    "Dark Academia": {
+        "variants": {
+            "Female": {
+                "hair_color": ["dark brown", "near black", "chestnut"], "hair_length": ["shoulder length", "long"],
+                "hair_texture": "loosely wavy", "hair_style": ["low ponytail", "half up half down"],
+                "makeup_style": "classic no-makeup makeup", "outfit_style": "preppy",
+                "accessories": "no accessories", "bag": "no bag",
+                "outfit_description": [
+                    "a {dark_color} tweed blazer over a white shirt and knit vest, a pleated wool skirt, opaque tights, and leather oxford shoes, a stack of old books under one arm",
+                    "a fine-knit turtleneck under a herringbone overcoat, tailored trousers, and brogues, a worn leather satchel over the shoulder",
+                ],
+                "expression": ["pensive and thoughtful", "contemplative"],
+                "location": ["university library reading room", "public library with tall bookshelves"],
+                "lighting": "soft window light from the side", "shot_type": "medium shot from waist up", "mood": "nostalgic",
+            },
+            "Male": {
+                "facial_hair": ["stubble", "clean shaven"], "hair_color": ["dark brown", "near black", "chestnut"],
+                "hair_length": ["ear length", "short pixie"], "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+                "outfit_style": "preppy", "accessories": "no accessories", "bag": "no bag",
+                "outfit_description": [
+                    "a {dark_color} tweed blazer with elbow patches over a knit vest and tie, tailored trousers, and leather oxford shoes, a stack of old books under one arm",
+                    "a herringbone overcoat over a fine-knit turtleneck, wool trousers, and brogues, a worn leather satchel over the shoulder",
+                ],
+                "expression": ["pensive and thoughtful", "contemplative"],
+                "location": ["university library reading room", "public library with tall bookshelves"],
+                "lighting": "soft window light from the side", "shot_type": "medium shot from waist up", "mood": "nostalgic",
+            },
+        },
+    },
+    "E-Girl / E-Boy": {
+        "bag": "no bag",
+        "variants": {
+            "Female": {
+                "hair_color": ["hot pink", "electric blue", "magenta", "black with colored tips"], "hair_length": ["long", "shoulder length"],
+                "hair_texture": "sleek straight", "hair_style": ["space buns", "pigtails"], "hair_accessory": "small hair clip",
+                "makeup_style": "club makeup", "eye_makeup": "colorful bold eyeshadow", "piercings": "labret stud",
+                "outfit_style": "edgy alternative", "accessories": "no accessories",
+                "outfit_description": [
+                    "a black cropped tee over a {color} long-sleeve striped shirt, a plaid mini skirt, fishnet tights, and chunky platform boots, with a layered chain choker",
+                    "an oversized {color} graphic hoodie, a black pleated skirt, striped arm warmers, and platform sneakers",
+                ],
+                "expression": ["playful", "coy"],
+                "location": ["neon-lit nightclub", "graffiti-covered skate park"],
+                "lighting": "purple and teal neon wash", "shot_type": "medium close-up from chest up", "mood": "moody",
+            },
+            "Male": {
+                "hair_color": ["black with colored tips", "electric blue", "magenta"], "hair_length": ["ear length", "chin length bob"],
+                "hair_texture": "sleek straight", "hair_style": ["curtain bangs", "worn down"], "piercings": "labret stud",
+                "outfit_style": "edgy alternative", "accessories": "no accessories",
+                "outfit_description": [
+                    "a {color} long-sleeve striped shirt under a black graphic tee, black skinny jeans with a chain belt, and chunky platform boots, with a layered chain choker",
+                    "an oversized {color} graphic hoodie over layered tees, black cargo pants, and high-top skate shoes",
+                ],
+                "expression": ["playful", "smirking"],
+                "location": ["neon-lit nightclub", "graffiti-covered skate park"],
+                "lighting": "purple and teal neon wash", "shot_type": "medium close-up from chest up", "mood": "moody",
+            },
+        },
+    },
+    "Country Star": {
+        "bag": "no bag",
+        "variants": {
+            "Female": {
+                "hair_color": ["golden blonde", "light chestnut", "auburn"], "hair_length": ["long", "very long"],
+                "hair_texture": ["beachy waves", "loosely curled"], "hair_style": "worn down",
+                "makeup_style": "soft glam", "lips_makeup": "nude lipstick",
+                "outfit_style": "vintage retro", "accessories": "no accessories",
+                "outfit_description": [
+                    "a fringed {color} suede jacket over a denim shirt tied at the waist, high-waisted jeans, a tooled leather belt, and embroidered cowboy boots",
+                    "a {pastel} floral sundress with a fringed shawl, a concho belt, and worn cowboy boots, holding an acoustic guitar",
+                ],
+                "expression": ["bright smile", "warm smile"],
+                "location": ["outdoor amphitheater", "rooftop cocktail bar"],
+                "lighting": "warm string lights bokeh background", "shot_type": "full body shot", "mood": "cheerful",
+            },
+            "Male": {
+                "facial_hair": ["short beard", "stubble"], "hair_color": ["medium brown", "dark brown", "light chestnut"],
+                "hair_length": ["short pixie", "ear length"], "hair_texture": "slightly wavy", "hair_style": "natural and unstyled",
+                "outfit_style": "vintage retro", "accessories": "no accessories",
+                "outfit_description": [
+                    "a pearl-snap {color} western shirt with embroidered yokes, bootcut jeans, a tooled leather belt with a big buckle, a felt cowboy hat, and worn boots",
+                    "a {earth_tone} suede jacket with fringe over a plaid shirt, dark denim, a wide belt buckle, and a straw cowboy hat, holding an acoustic guitar",
+                ],
+                "expression": ["confident", "warm smile"],
+                "location": ["outdoor amphitheater", "rooftop cocktail bar"],
+                "lighting": "warm string lights bokeh background", "shot_type": "full body shot", "mood": "cheerful",
+            },
+        },
+    },
+    "Regency Aristocrat": {
+        "bag": "no bag",
+        "gender": "Female",
+        "variants": {
+            "Female": {
+                "ethnicity": "English", "body_type": ["slim", "hourglass"], "hair_color": ["light chestnut", "chestnut", "warm brown"],
+                "hair_length": ["long", "very long"], "hair_texture": "softly curled", "hair_style": "updo", "hair_accessory": "jeweled hair comb",
+                "skin_tone": "porcelain", "makeup_style": "soft natural makeup",
+                "outfit_style": "evening formal", "accessories": "no accessories", "bag": "no bag",
+                "outfit_description": [
+                    "a high-waisted empire-line {pastel} muslin gown with a satin sash, short puffed sleeves, and long silk gloves, carrying a beaded reticule",
+                    "a {jewel_tone} silk regency gown with delicate lace trim, an empire waist, elbow-length gloves, and a feathered hair ornament",
+                ],
+                "expression": ["serene", "subtle soft smile"],
+                "location": ["formal dining room with chandelier", "castle courtyard"],
+                "lighting": "warm candlelight", "shot_type": "full body shot", "mood": "tranquil",
+            },
+            "Male": {
+                "ethnicity": "English", "body_type": ["lean", "average"], "facial_hair": "clean shaven",
+                "hair_color": ["dark brown", "chestnut", "medium brown"], "hair_length": "ear length", "hair_texture": "loosely curled",
+                "hair_style": "natural and unstyled", "outfit_style": "evening formal", "accessories": "no accessories",
+                "outfit_description": [
+                    "a tailored {dark_color} tailcoat over an embroidered {color} waistcoat, a high starched cravat, buff breeches, and tall polished Hessian boots",
+                    "a fitted bottle-green riding coat with brass buttons over a patterned waistcoat, a knotted cravat, fawn breeches, and gleaming top boots",
+                ],
+                "expression": ["confident", "subtle soft smile"],
+                "location": ["formal dining room with chandelier", "castle courtyard"],
+                "lighting": "warm candlelight", "shot_type": "full body shot", "mood": "tranquil",
+            },
+        },
+    },
+
+    # --- 0.87.0: six archetypes opening ground nothing else covers ---------
+    # Chosen so no existing concept cluster grows. The craft cluster (Potter,
+    # Glassblower, Watchmaker, Jeweler, Tailor, Calligrapher, Toymaker,
+    # Carpenter, Stonemason, Welder) and the sports cluster are both already
+    # dense and deliberately get nothing. Costumes live in _COSTUMES.
+    "Kabuki Actor": {
+        # Japanese theatrical, distinct from Geisha (courtesan dress, white face,
+        # no wig-and-kumadori) and Samurai (armor). The kumadori is painted, so
+        # makeup_style is pinned deliberately rather than left to randomize.
+        "ethnicity": "Japanese",
+        # `makeup_style` MUST be "no makeup" here, not a glam value. Pinning
+        # "editorial makeup" cascaded nine explicit western-cosmetic sub-fields
+        # (smoky eyeshadow, cat eye, red lip, blush, contour, highlighter...)
+        # into the prompt ahead of one kumadori phrase, and the render came back
+        # as a smoky eye with no kumadori at all. An authored PAINTED face needs
+        # the cascade suppressed so only the authored paint survives.
+        "makeup_style": "no makeup",
+        "skin_tone": "porcelain",
+        "hair_color": ["jet black", "raven black"],
+        "hair_length": ["long", "very long"],
+        "hair_style": ["updo", "top knot"],
+        "expression": ["intense gaze", "steely"],
+        "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "location": ["empty theater stage with the curtain up", "concert hall backstage"],
+        "lighting": ["stage spotlight from above", "warm candlelight"],
+        "shot_type": ["medium shot from waist up", "medium close-up from chest up"],
+        "mood": "commanding",
+    },
+    "Volcanologist": {
+        # A silvered proximity suit. Nothing else in the roster is aluminized,
+        # and Firefighter's turnout gear is the closest miss.
+        # Sealed headgear: pin no makeup (which cascades every cosmetic
+        # sub-field absent) and keep the hair plain, the same way Astronaut,
+        # Firefighter and Race Car Driver do. One costume variant wears the
+        # hood back so a face can read - the Beekeeper shape.
+        "makeup_style": "no makeup",
+        "hair_length": ["very short", "ear length"],
+        "hair_style": "natural and unstyled",
+        "expression": ["determined", "focused"],
+        "outfit_style": "athletic",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "location": ["rocky coastal cliff", "red rock desert arch"],
+        "lighting": ["harsh desert sun", "fire and flame warm flicker"],
+        "shot_type": "full body shot",
+        "mood": "intense",
+    },
+    "Hazmat Technician": {
+        # Sealed containment. Surgeon is scrubs and an open face; Plague Doctor
+        # is a beaked leather mask. Neither is a taped, hooded, respirator suit.
+        # Same sealed-headgear handling as Volcanologist above.
+        "makeup_style": "no makeup",
+        "hair_length": ["very short", "ear length"],
+        "hair_style": "natural and unstyled",
+        "expression": ["focused", "calm and composed"],
+        "outfit_style": "athletic",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "location": ["warehouse interior", "factory floor"],
+        "lighting": ["cool LED overhead lighting", "single neon light from one side"],
+        "shot_type": "full body shot",
+        "mood": "intense",
+    },
+    "Marching Band Drum Major": {
+        # Ceremonial performance uniform: the plumed shako and frogged jacket
+        # are the look, and nothing else in the roster wears either.
+        "expression": ["confident", "determined"],
+        "posture": "upright",
+        "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "location": ["outdoor amphitheater", "high school gymnasium"],
+        "lighting": ["harsh overhead midday sun", "high key bright even lighting"],
+        "shot_type": "full body shot",
+        "mood": "triumphant",
+    },
+    "Yeoman Warder": {
+        # Ceremonial state dress. The ruff and Tudor bonnet put it nowhere near
+        # Royal Guard or Palace Guard.
+        "ethnicity": "English",
+        "gender": "Male",
+        "facial_hair": ["full beard", "short beard", "mutton chops"],
+        "hair_color": ["salt and pepper", "silver", "gray-streaked dark hair"],
+        "hair_length": "very short",
+        "expression": ["stern", "confident"],
+        "posture": "upright",
+        "outfit_style": "evening formal",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "location": ["castle courtyard", "cobblestone old-town street"],
+        "lighting": ["overcast diffused daylight", "soft morning light"],
+        "shot_type": "full body shot",
+        "mood": "commanding",
+    },
+    "Trawler Deckhand": {
+        # Working maritime, as against Sea Captain (braided coat), Navy Sailor
+        # (dress uniform) and Deep Sea Diver (helmet). Oilskins and waders.
+        "complexion": "ruddy",
+        "expression": ["determined", "at ease"],
+        "outfit_style": "athletic",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "location": ["working harbor dock", "harbor with moored boats"],
+        "lighting": ["overcast diffused daylight", "blue hour twilight"],
+        "shot_type": ["full body shot", "medium shot from waist up"],
+        "mood": "moody",
+    },
+
+    # ======================================================================
+    # Added 0.90.0. Seven silhouettes with no existing coverage. Costumes are
+    # inline rather than in `_COSTUMES` (which OVERRIDES an inline value at
+    # import), and every uniformed/on-duty entry locks "bag": "no bag" so the bag
+    # field cannot randomize a handbag onto someone working.
+    # ======================================================================
+    "Matador": {
+        "gender": "Male",
+        "ethnicity": "Spanish",
+        "body_type": "lean",
+        "height": "average height",
+        "fitness_level": "very fit",
+        "hair_color": ["jet black", "near black", "dark brown"],
+        "hair_length": "very short",
+        "hair_style": "slicked back",
+        "skin_tone": "olive",
+        "outfit_style": "evening formal",
+        "outfit_description": "a traje de luces of a short {jewel_tone} bolero jacket stiff with "
+                              "gold bullion embroidery and heavy shoulder fringe, a matching "
+                              "embroidered waistcoat, high-waisted knee-length breeches, pink "
+                              "stockings, flat black slippers, and a black montera hat",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "expression": "steely",
+        "location": "outdoor amphitheater",
+        "lighting": "harsh overhead midday sun",
+        "shot_type": "full body shot",
+        "mood": "commanding",
+    },
+    "Sumo Wrestler": {
+        "gender": "Male",
+        "ethnicity": "Japanese",
+        "body_type": "plus size",
+        "height": "tall",
+        "waist": "full",
+        "fitness_level": "lightly active",
+        "hair_color": ["jet black", "raven black"],
+        "hair_length": "shoulder length",
+        "hair_style": "top knot",
+        "facial_hair": "clean shaven",
+        "skin_tone": "light medium",
+        "outfit_style": "athletic",
+        # The mawashi is the entire garment; naming the bare torso keeps the model
+        # from inventing a shirt under it.
+        "outfit_description": "a broad {jewel_tone} silk mawashi belt wound many times around the "
+                              "waist and between the legs, worn on an otherwise bare, "
+                              "immense, heavy-bellied and thickly-built frame, with bare "
+                              "feet",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "expression": "focused",
+        "location": "martial arts dojo",
+        "lighting": "diffused skylight from above",
+        "shot_type": "full body shot",
+        "mood": "commanding",
+    },
+    "Hockey Goalie": {
+        "body_type": "athletic",
+        "height": "average height",
+        "fitness_level": "athletic",
+        "outfit_style": "athletic",
+        "outfit_description": "bulky {color} goaltender pads strapped over the legs, a heavily "
+                              "padded chest protector under a loose team jersey, an oversized "
+                              "blocker on one hand and a deep catching glove on the other, and "
+                              "a painted cage-fronted goalie mask",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "expression": "determined",
+        "location": "indoor ice rink",
+        "lighting": "cool LED overhead lighting",
+        "shot_type": "full body shot",
+        "mood": "intense",
+    },
+    "Fighter Pilot": {
+        "body_type": "athletic",
+        "height": "average height",
+        "fitness_level": "very fit",
+        "outfit_style": "athletic",
+        "outfit_description": "a {earth_tone} flight suit zipped to the throat, an anti-g garment "
+                              "laced over the thighs and belly, a torso harness of heavy webbing "
+                              "and buckles, gloved hands, and a visored helmet with an oxygen "
+                              "mask clipped across the face",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "expression": "confident",
+        "lighting": "harsh overhead midday sun",
+        "shot_type": ["full body shot", "medium shot from waist up"],
+        "mood": "self-assured",
+    },
+    "Buddhist Monk": {
+        "age": ["40","50","48"],
+        "body_type": "lean",
+        "height": "average height",
+        "hair_length": "bald",
+        "facial_hair": "clean shaven",
+        "makeup_style": "no makeup",
+        "outfit_style": "casual",
+        "outfit_description": "layered saffron and deep maroon kasaya robes, one shoulder left "
+                              "bare and the cloth gathered over the opposite arm, worn with "
+                              "simple sandals",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "necklace": "no necklace",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "bracelet": "none",
+        "earrings": "no earrings",
+        "nails": "natural short nails",
+        "expression": "serene",
+        "location": "Buddhist temple hall",
+        "lighting": "warm candlelight",
+        "shot_type": ["full body shot", "medium shot from waist up"],
+        "mood": "tranquil",
+    },
+    "Whirling Dervish": {
+        "gender": "Male",
+        "ethnicity": "Turkish",
+        "body_type": "lean",
+        "height": "average height",
+        "facial_hair": ["short beard", "clean shaven"],
+        "outfit_style": "evening formal",
+        # The skirt flaring under rotation is the whole image; stated as a worn
+        # property rather than as a pose, which the pose field owns.
+        "outfit_description": "a tall camel-felt sikke hat, a long white tennure gown whose "
+                              "full skirt flares wide in a circle, a fitted white jacket, and a "
+                              "black hirka cloak slipped from the shoulders",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "expression": "serene",
+        "location": "community theatre auditorium",
+        "lighting": "dramatic single overhead spotlight",
+        "shot_type": "full body shot",
+        "mood": "tranquil",
+    },
+    # Bolivian Aymara and Quechua women's dress -- a living, self-identified style
+    # with real pride attached (cholita fashion shows, wrestlers, climbers), and
+    # the same class as the shipped Babushka, Italian Nonna, Geisha, Mariachi
+    # Charro, Gaucho, Sapeur and Highland Scot. Written as the actual garments
+    # rather than as a caricature: the bowler is worn tilted and small, the pollera
+    # is layered and heavy, the manta is a shawl, the braids are joined at the ends.
+    "Andean Cholita": {
+        "gender": "Female",
+        "ethnicity": "Bolivian",
+        "age": ["40","50","48"],
+        "body_type": "stocky",
+        "height": "short",
+        "hair_color": ["jet black", "raven black"],
+        "hair_length": "waist length",
+        "hair_style": "braided pigtails",
+        "hair_part": "center part",
+        "hair_highlights": "none",
+        # Large hoops are authentic; the unpinned field rolled an "industrial
+        # earring", which is a modern piercing rather than this style's jewellery.
+        "earrings": ["large bold gold hoops", "medium gold hoops", "long drop earrings"],
+        "skin_tone": "warm tan",
+        "eye_color": "dark brown",
+        # Same pins as Babushka and Italian Nonna: without them the engine put
+        # "heavy glam, dramatic falsies, coral lip colour" and salon money-piece
+        # highlights on a traditional look, and rolled deep blue eyes on a
+        # Bolivian woman. Jewellery has its own fields and is NOT covered by
+        # `accessories`, so the modern pieces have to be pinned off individually.
+        "makeup_style": "no makeup",
+        "necklace": "no necklace",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "bracelet": "none",
+        "nails": "natural short nails",
+        "outfit_style": "vintage retro",
+        "outfit_description": "a small bowler hat perched high and tilted on the head, a "
+                              "brightly embroidered {jewel_tone} manta shawl pinned at the chest, a "
+                              "many-layered pollera skirt falling to mid-calf over stiff "
+                              "petticoats, and flat buckled shoes",
+        "accessories": "no accessories",
+        "expression": "calm and composed",
+        "location": "open-air street food market",
+        "lighting": "golden hour sunlight",
+        "shot_type": ["full body shot", "medium shot from waist up"],
+        "mood": "radiant",
+    },
+
+    # --- 0.96.0: traditional dress -----------------------------------------
+    # Authored the same way as Andean Cholita, Sapeur, Highland Scot and Whirling
+    # Dervish: an honest, specific likeness of the garments, named correctly, with
+    # the modern-jewellery and salon-makeup fields pinned off so the engine does not
+    # dress a traditional look in contemporary accessories. Adding archetypes is
+    # bias-free -- the archetype menu is picked uniformly, so these are variety only
+    # and no field distribution moves.
+
+    # The tagelmust is worn by MEN in Tuareg custom, so this is male-only rather than
+    # a variants pair. Desert Nomad's indigo/tagelmust alternate is retired below in
+    # the same commit -- keeping both would ship one look under two names.
+    "Tuareg": {
+        "gender": "Male",
+        "ethnicity": "Berber",
+        "body_type": "lean",
+        "height": "tall",
+        # The tagelmust encloses the scalp and the lower face, so the scalp and
+        # facial-hair fields have nothing to show; pinned rather than left to roll
+        # underneath the cloth.
+        "hair_length": "very short",
+        "facial_hair": "clean shaven",
+        "hair_accessory": "no hair accessory",
+        "hair_color": ["jet black", "dark brown"],
+        "hair_texture": "curly",
+        "hair_style": "natural and unstyled",
+        "makeup_style": "no makeup",
+        "nails": "natural short nails",
+        "skin_tone": ["bronze", "warm tan", "caramel"],
+        "piercings": "no piercings beyond ears",
+        "eye_color": "dark brown",
+        "outfit_style": "bohemian",
+        # The costume override does NOT suppress the jewellery fields, and the silver
+        # Agadez cross is named in the prose, so the rest are pinned off or a modern
+        # pendant lands on top of it (the Andean Cholita rule).
+        "necklace": "no necklace",
+        "earrings": "no earrings",
+        "other_jewelry": "no other jewelry",
+        "bracelet": "none",
+        "rings": "none",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "outfit_description": [
+            "a long indigo-dyed tagelmust wound around the head and drawn across "
+            "the bridge of the nose so only the eyes show, a loose full-length "
+            "indigo gandoura robe over wide trousers, a silver Agadez cross hung "
+            "on a cord at the chest, and worn leather sandals",
+            "a deep indigo tagelmust wrapped high on the head and veiling the lower "
+            "face, a flowing {earth_tone} gandoura over an indigo underrobe, a "
+            "tooled leather belt pouch, and flat leather sandals",
+        ],
+        "expression": "calm and composed",
+        "location": ["rolling desert dune", "cracked salt flats"],
+        "lighting": "harsh desert sun",
+        "shot_type": ["full body shot", "medium shot from waist up"],
+        "mood": "enigmatic",
+    },
+
+    "Maasai": {
+        "gender": "Male",
+        "ethnicity": "Kenyan",
+        "skin_tone": ["dark brown", "deep", "ebony"],
+        "eye_color": "dark brown",
+        "piercings": "no piercings beyond ears",
+        "outfit_style": "bohemian",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "expression": "calm and composed",
+        "location": "golden savanna with acacia trees",
+        "lighting": "golden hour sunlight",
+        "shot_type": "full body shot",
+        "mood": "self-assured",
+        "variants": {
+            # The moran's ochred braids and the beaded disc collar of a married woman
+            # are different looks, not one look on two bodies, so they diverge fully.
+            "Male": {
+                "body_type": "lean",
+                "height": "very tall",
+                "facial_hair": "clean shaven",
+                "hair_color": "jet black",
+                "hair_length": "long",
+                "hair_texture": "coily",
+                "hair_style": "cornrows",
+                "makeup_style": "no makeup",
+                "nails": "natural short nails",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "outfit_description": [
+                    "a bright red checked shuka cloth knotted over one shoulder and "
+                    "falling to the knee, layered flat beaded collars in red, white "
+                    "and blue at the throat, beaded bands at the wrists and ankles, "
+                    "long ochre-reddened braids, and tyre-soled sandals",
+                    "two overlapping shuka cloths in red and {jewel_tone} plaid worn "
+                    "across the body, a broad beaded neckpiece, coiled beaded armbands, "
+                    "stretched earlobes carrying beaded discs, and flat leather sandals",
+                ],
+            },
+            "Female": {
+                "body_type": "slender",
+                "height": "tall",
+                "hair_length": "buzzed very short",
+                "hair_color": "jet black",
+                "hair_texture": "coily",
+                "hair_style": "natural and unstyled",
+                "hair_accessory": "no hair accessory",
+                "makeup_style": "no makeup",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "nails": "natural short nails",
+                "outfit_description": [
+                    "a bright red checked shuka wrapped and knotted at one shoulder, "
+                    "a very wide flat beaded disc collar covering the chest in "
+                    "concentric rings of red, white, blue and orange, a beaded "
+                    "headband across a closely shaved head, stacked beaded bracelets, "
+                    "and flat leather sandals",
+                    "layered {jewel_tone} and red shuka cloths, a broad circular "
+                    "beaded collar worn over the shoulders, long beaded ear pendants "
+                    "hanging from stretched lobes, coiled wire armbands, and sandals",
+                ],
+            },
+        },
+    },
+
+    # The option pool has no Sami value, so the ethnicity is pinned to the states
+    # Sapmi spans rather than left to roll the whole 92-value list. Named for the
+    # garment (gakti) the way Andean Cholita is named for the wearer.
+    "Sami Gakti": {
+        "gender": "Female",
+        "ethnicity": ["Norwegian", "Finnish", "Swedish"],
+        "skin_tone": ["fair", "light", "porcelain"],
+        "outfit_style": "vintage retro",
+        "piercings": "no piercings beyond ears",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "bracelet": "none",
+        "expression": "calm and composed",
+        "location": ["snowy pine forest", "alpine meadow with wildflowers"],
+        "lighting": ["snow-reflected daylight", "overcast diffused daylight"],
+        "shot_type": "full body shot",
+        "mood": "tranquil",
+        "variants": {
+            "Female": {
+                "body_type": "average",
+                "height": "average height",
+                "hair_color": ["dark blonde", "medium brown", "ash brown"],
+                "hair_length": "long",
+                "hair_texture": "slightly wavy",
+                "hair_style": "loose braids",
+                "makeup_style": "no makeup",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "nails": "natural short nails",
+                "outfit_description": [
+                    "a deep blue wool gakti tunic banded at the hem, cuffs and collar "
+                    "with woven red, yellow and green ribbon, a tall four-winds cap in "
+                    "matching blue and red, a silver risku brooch fastening the collar, "
+                    "a braided belt, and reindeer-hide boots with upturned toes",
+                    "a {dark_color} wool gakti with bright ribbon banding at the "
+                    "shoulders and hem, a fringed woven shawl pinned with a domed "
+                    "silver brooch, a woven belt of tin-thread embroidery, and "
+                    "curl-toed hide boots bound with woven laces",
+                ],
+            },
+            "Male": {
+                "body_type": "stocky",
+                "height": "average height",
+                "facial_hair": "clean shaven",
+                "hair_color": ["dark blonde", "medium brown"],
+                "hair_length": "very short",
+                "hair_texture": "slightly wavy",
+                "hair_style": "natural and unstyled",
+                "makeup_style": "no makeup",
+                "nails": "natural short nails",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "outfit_description": [
+                    "a deep blue wool gakti tunic cut to the thigh and banded with "
+                    "woven red and yellow ribbon at the hem and cuffs, a tall "
+                    "four-winds cap, a wide tooled leather belt with a sheathed knife, "
+                    "and reindeer-hide boots with upturned toes",
+                    "a {dark_color} wool gakti over close-cut wool trousers, ribbon "
+                    "banding at the collar and hem, a silver-buckled belt, a woven "
+                    "band tied below each knee, and curl-toed hide boots",
+                ],
+            },
+        },
+    },
+
+    "Ukrainian Vyshyvanka": {
+        "gender": "Female",
+        "ethnicity": "Ukrainian",
+        "age": ["26","28","25"],
+        "skin_tone": ["fair", "light"],
+        "eye_color": ["pale blue", "hazel", "dark brown"],
+        "piercings": "no piercings beyond ears",
+        "outfit_style": "vintage retro",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "bracelet": "none",
+        "expression": "warm smile",
+        "location": ["rolling wheat field", "flower field in bloom"],
+        "lighting": "golden hour sunlight",
+        "shot_type": ["medium shot from waist up", "full body shot"],
+        "mood": "radiant",
+        "variants": {
+            "Female": {
+                "body_type": "average",
+                "height": "average height",
+                "hair_color": ["dark blonde", "light chestnut", "medium brown"],
+                "hair_length": "waist length",
+                "hair_texture": "slightly wavy",
+                "hair_style": "crown braid",
+                # The vinok is named in the costume, so the hair_accessory field is
+                # pinned off rather than left to add a second headpiece.
+                "hair_accessory": "no hair accessory",
+                "makeup_style": "barely there natural makeup",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "nails": "natural short nails",
+                "outfit_description": [
+                    "a white linen vyshyvanka blouse densely embroidered in red and "
+                    "black geometric cross-stitch across the shoulders and sleeves, a "
+                    "wrapped woven plakhta skirt, a red woven sash at the waist, "
+                    "layered strings of red coral beads, a vinok flower crown trailing "
+                    "long coloured ribbons down the back, and red leather boots",
+                    "a white linen vyshyvanka embroidered in {jewel_tone} floral motifs "
+                    "down both sleeves, a full dark skirt with a woven apron, a braided "
+                    "sash, strands of red beads at the throat, and a wildflower vinok "
+                    "with ribbons",
+                ],
+            },
+            "Male": {
+                "body_type": "lean",
+                "height": "tall",
+                "facial_hair": "clean shaven",
+                "hair_color": ["dark blonde", "medium brown"],
+                "hair_length": "very short",
+                "hair_texture": "slightly wavy",
+                "hair_style": "natural and unstyled",
+                "makeup_style": "no makeup",
+                "nails": "natural short nails",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "outfit_description": [
+                    "a loose white linen vyshyvanka shirt with red and black geometric "
+                    "cross-stitch banding the standing collar, placket and cuffs, worn "
+                    "loose over dark wide trousers with a woven red sash knotted at the "
+                    "waist, and black leather boots",
+                    "a white linen vyshyvanka shirt embroidered in {jewel_tone} thread "
+                    "at the collar and cuffs, a braided woollen belt with tasselled "
+                    "ends, dark trousers tucked into knee boots, and a fur-trimmed cap",
+                ],
+            },
+        },
+    },
+
+    "Mongolian Deel": {
+        "gender": "Male",
+        "ethnicity": "Mongolian",
+        "skin_tone": ["warm tan", "tan", "golden tan"],
+        "eye_color": "dark brown",
+        "piercings": "no piercings beyond ears",
+        "outfit_style": "vintage retro",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "expression": "calm and composed",
+        "location": ["open meadow", "rolling desert dune"],
+        "lighting": ["golden hour sunlight", "overcast diffused daylight"],
+        "shot_type": "full body shot",
+        "mood": "self-assured",
+        "variants": {
+            "Male": {
+                "body_type": "stocky",
+                "height": "average height",
+                "facial_hair": "clean shaven",
+                "hair_color": "jet black",
+                "hair_length": "very short",
+                "hair_texture": "sleek straight",
+                "hair_style": "natural and unstyled",
+                "makeup_style": "no makeup",
+                "nails": "natural short nails",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "outfit_description": [
+                    "a floor-length {jewel_tone} silk deel crossing right over left and "
+                    "fastened at the shoulder with knotted cloth buttons, a wide orange "
+                    "silk bus sash wound many times around the waist, a brimmed "
+                    "conical hat with an upturned edge, and heavy leather boots with "
+                    "upturned toes",
+                    "a quilted {dark_color} winter deel with a broad contrasting collar "
+                    "and cuff bands, a bright silk sash at the waist, a fur-lined "
+                    "loovuuz hat with earflaps, and thick upturned-toe riding boots",
+                ],
+            },
+            "Female": {
+                "body_type": "average",
+                "height": "average height",
+                "hair_color": "jet black",
+                "hair_length": "waist length",
+                "hair_texture": "sleek straight",
+                "hair_style": "loose braids",
+                "makeup_style": "no makeup",
+                "necklace": "no necklace",
+                "earrings": ["medium gold hoops", "long drop earrings"],
+                "bracelet": "none",
+                "nails": "natural short nails",
+                "outfit_description": [
+                    "a floor-length {jewel_tone} silk deel with a high standing collar "
+                    "and long sleeves, crossing right over left and fastened with "
+                    "knotted cloth buttons, a wide contrasting silk sash at the waist, "
+                    "a tall embroidered headdress with coral and silver ornaments, and "
+                    "upturned-toe leather boots",
+                    "an embroidered {color} silk deel with wide padded shoulders and a "
+                    "contrast-banded hem, a silver-mounted sash, silver hair ornaments "
+                    "hung with coral beads, and boots with upturned toes",
+                ],
+            },
+        },
+    },
+
+    "Korean Hanbok": {
+        "gender": "Female",
+        "ethnicity": "Korean",
+        "skin_tone": ["fair", "light", "porcelain"],
+        "eye_color": "dark brown",
+        "piercings": "no piercings beyond ears",
+        "outfit_style": "vintage retro",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "bracelet": "none",
+        "expression": "serene",
+        "location": ["cherry blossom grove", "castle courtyard"],
+        "lighting": "soft morning light",
+        "shot_type": "full body shot",
+        "mood": "tranquil",
+        "variants": {
+            "Female": {
+                "body_type": "slender",
+                "height": "average height",
+                "hair_color": "jet black",
+                "hair_length": "waist length",
+                "hair_texture": "sleek straight",
+                "hair_style": "chignon",
+                "hair_part": "center part",
+                # The binyeo pin is named in the costume; the field is pinned off so a
+                # modern clip does not land beside it.
+                "hair_accessory": "no hair accessory",
+                "makeup_style": "barely there natural makeup",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "nails": "natural short nails",
+                "outfit_description": [
+                    "a short {pastel} jeogori jacket with a curved white collar band "
+                    "and long {jewel_tone} goreum ribbon tied in a single loop at the "
+                    "chest, over a very full high-waisted chima skirt falling to the "
+                    "floor in soft folds, a long carved binyeo pin through a low "
+                    "chignon, and white boat-shaped beoseon socks",
+                    "a {color} silk jeogori with contrasting cuff and collar bands over "
+                    "a wide {pastel} chima gathered high under the bust, a norigae "
+                    "tassel ornament hung from the jacket tie, and flat embroidered "
+                    "silk shoes",
+                ],
+            },
+            "Male": {
+                "body_type": "lean",
+                "height": "average height",
+                "facial_hair": "clean shaven",
+                "hair_color": "jet black",
+                "hair_length": "long",
+                "hair_texture": "sleek straight",
+                "hair_style": "top knot",
+                "makeup_style": "no makeup",
+                "nails": "natural short nails",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "outfit_description": [
+                    "a {pastel} jeogori jacket over wide gathered baji trousers tied at "
+                    "the ankle, a long {jewel_tone} durumagi overcoat falling below the "
+                    "knee and fastened with a ribbon tie, a wide black horsehair gat hat "
+                    "with a tall crown and a chin cord, and white beoseon socks",
+                    "a pale linen jeogori and wide baji trousers under a sheer black "
+                    "horsehair overcoat, a woven belt, a tall brimmed gat hat, and flat "
+                    "black shoes",
+                ],
+            },
+        },
+    },
+
+    "Vietnamese Ao Dai": {
+        "gender": "Female",
+        "ethnicity": "Vietnamese",
+        "skin_tone": ["light", "light medium", "fair"],
+        "eye_color": "dark brown",
+        "piercings": "no piercings beyond ears",
+        "outfit_style": "vintage retro",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "other_jewelry": "no other jewelry",
+        "rings": "none",
+        "bracelet": "none",
+        "expression": "gentle smile",
+        "location": ["terraced rice paddies", "botanical garden path"],
+        "lighting": ["soft morning light", "golden hour sunlight"],
+        "shot_type": "full body shot",
+        "mood": "peaceful",
+        "variants": {
+            "Female": {
+                "body_type": "very slim",
+                "height": "average height",
+                "hair_color": "jet black",
+                "hair_length": "waist length",
+                "hair_texture": "sleek straight",
+                "hair_style": "worn down",
+                "hair_part": "center part",
+                "makeup_style": "barely there natural makeup",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "nails": "natural short nails",
+                "outfit_description": [
+                    "a close-fitting {pastel} silk ao dai tunic with a mandarin collar, "
+                    "split at the hip into long front and back panels that fall to the "
+                    "ankle, worn over wide white silk trousers, with a conical non la "
+                    "hat held by its chin ribbon and flat sandals",
+                    "a {jewel_tone} silk ao dai painted with sprays of blossom down one "
+                    "panel, a high mandarin collar fastened at the shoulder, wide "
+                    "matching silk trousers, and low heeled sandals",
+                ],
+            },
+            "Male": {
+                "body_type": "lean",
+                "height": "average height",
+                "facial_hair": "clean shaven",
+                "hair_color": "jet black",
+                "hair_length": "very short",
+                "hair_texture": "sleek straight",
+                "hair_style": "natural and unstyled",
+                "makeup_style": "no makeup",
+                "nails": "natural short nails",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "outfit_description": [
+                    "a loose {jewel_tone} brocade ao dai tunic with a mandarin collar "
+                    "and side slits reaching the knee, worn over wide dark trousers, "
+                    "with a flat wound khan dong turban and cloth shoes",
+                    "a plain {color} silk ao dai tunic buttoned along the right "
+                    "shoulder over straight white trousers, a wrapped khan dong "
+                    "headpiece, and flat black shoes",
+                ],
+            },
+        },
+    },
+
+    # --- 0.96.0: style subcultures -----------------------------------------
+    # Gated against what already ships: Techwear/Gorpcore was declined because
+    # Cyberpunk Netrunner is already a techwear look, and the sweet-street silhouette
+    # is already Kawaii Street Fashion. These four bring a silhouette none of
+    # Emo / Punk Rocker / 1990s Goth / 1960s Mod / 1950s Greaser / Hair Metal owns.
+
+    "Visual Kei": {
+        "gender": "Female",
+        "ethnicity": "Japanese",
+        "age": ["26","28","25"],
+        "outfit_style": "edgy alternative",
+        "skin_tone": ["porcelain", "very pale"],
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "expression": "intense gaze",
+        "location": ["concert hall backstage", "empty theater stage with the curtain up"],
+        "lighting": ["dramatic single overhead spotlight", "colored gel lighting"],
+        "shot_type": ["medium shot from waist up", "full body shot"],
+        "mood": "intense",
+        "variants": {
+            # Deliberately androgynous on both sides -- that is the style, not a
+            # crossover. The male pool has no dramatic `makeup_style`, so the male
+            # variant carries the look through eyeliner/eye_makeup/lips, which do have
+            # full male pools.
+            "Male": {
+                "body_type": "very slim",
+                "height": "tall",
+                "facial_hair": "clean shaven",
+                "hair_color": ["jet black", "platinum white", "deep red"],
+                "hair_length": "shoulder length",
+                "hair_texture": "thick and voluminous",
+                "hair_style": "windswept",
+                "makeup_style": "no makeup",
+                "nails": "black polish",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "rings": "none",
+                "other_jewelry": "no other jewelry",
+                "outfit_description": [
+                    "heavy stage makeup of stark white foundation, dramatic black "
+                    "winged eyeliner and deep red lips, worn with a heavily layered "
+                    "{dark_color} costume of an asymmetric "
+                    "ruffled shirt under a cropped military jacket with corded frogging "
+                    "and buckled straps, tight leather trousers, lace fingerless gloves, "
+                    "a stack of pendant chains, and tall buckled platform boots",
+                    "heavy stage makeup of pale foundation, thick smudged black "
+                    "eyeliner and dark lips, worn with a long {dark_color} brocade "
+                    "coat with flared cuffs over a lace "
+                    "jabot shirt, a corseted waist belt, torn lace sleeves, layered "
+                    "silver chains and rings, and knee-high platform boots",
+                ],
+            },
+            "Female": {
+                "body_type": "very slim",
+                "height": "tall",
+                "hair_color": ["jet black", "platinum white", "deep red"],
+                "hair_length": "shoulder length",
+                "hair_texture": "thick and voluminous",
+                "hair_style": "windswept",
+                "makeup_style": "editorial makeup",
+                "eyeliner": "dramatic winged",
+                "eye_makeup": "smoky black",
+                "lips_makeup": "deep red",
+                "nails": "black polish",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "rings": "none",
+                "other_jewelry": "no other jewelry",
+                "outfit_description": [
+                    "a heavily layered {dark_color} stage costume of an asymmetric "
+                    "ruffled blouse under a cropped military jacket with corded frogging "
+                    "and buckled straps, a tiered lace skirt over torn tights, lace "
+                    "fingerless gloves, layered pendant chains, and tall platform boots",
+                    "a long {dark_color} brocade coat with flared cuffs over a lace "
+                    "jabot blouse, an outer corset, torn lace sleeves, stacked silver "
+                    "chains and rings, and knee-high buckled platform boots",
+                ],
+            },
+        },
+    },
+
+    "Cybergoth": {
+        "gender": "Female",
+        "age": ["24","26","28","25"],
+        "outfit_style": "edgy alternative",
+        "skin_tone": ["porcelain", "very pale", "pale"],
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "necklace": "no necklace",
+        "expression": "confident",
+        "location": ["neon-lit nightclub", "urban alley with graffiti"],
+        "lighting": ["neon sign glow in multiple colors", "club strobe lighting"],
+        "shot_type": "full body shot",
+        "mood": "intense",
+        "variants": {
+            "Female": {
+                "body_type": "slim",
+                "height": "average height",
+                "hair_color": ["jet black", "hot pink", "electric blue"],
+                "hair_length": "shoulder length",
+                "hair_texture": "sleek straight",
+                "hair_style": "high ponytail",
+                "makeup_style": "club makeup",
+                "eyeliner": "graphic editorial liner",
+                "eye_makeup": "colorful bold eyeshadow",
+                "lips_makeup": "plum",
+                "nails": "black polish",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "rings": "none",
+                "other_jewelry": "no other jewelry",
+                "outfit_description": [
+                    "a black PVC corset top and pleated mini skirt over ripped fishnet "
+                    "tights, a mass of {neon} synthetic cyberlox falls bound into a high "
+                    "ponytail, tinted goggles pushed up on the forehead, a ribbed "
+                    "respirator mask hanging at the throat, striped arm warmers, and "
+                    "enormous buckled platform boots",
+                    "a {neon} mesh top under a black vinyl harness and utility skirt, "
+                    "UV-reactive tubing woven through the hair, welding goggles, "
+                    "fingerless gloves, layered rubber wristbands, and towering "
+                    "platform boots with stacked buckles",
+                ],
+            },
+            "Male": {
+                "body_type": "lean",
+                "height": "tall",
+                "facial_hair": "clean shaven",
+                "hair_color": ["jet black", "electric blue", "lime green"],
+                "hair_length": "short pixie",
+                "hair_texture": "sleek straight",
+                "hair_style": "slicked back",
+                "makeup_style": "no makeup",
+                "nails": "black polish",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "rings": "none",
+                "other_jewelry": "no other jewelry",
+                "outfit_description": [
+                    "blacked-out eye makeup smudged wide around both eyes, with a "
+                    "sleeveless black mesh top under a buckled vinyl harness, "
+                    "tapered black cargo trousers strapped at the thigh, {neon} "
+                    "cyberlox falls tied back from a shaved undercut, tinted goggles, "
+                    "a ribbed respirator at the throat, and heavy platform boots",
+                    "heavy black eye makeup ringing both eyes, with a "
+                    "black PVC jacket with {neon} panel trim over a mesh shirt, "
+                    "strapped utility trousers, UV tubing looped at the belt, welding "
+                    "goggles pushed up, and buckled platform boots",
+                ],
+            },
+        },
+    },
+
+    "Rude Boy": {
+        "gender": "Male",
+        "ethnicity": ["Jamaican", "English"],
+        "age": ["26","28","25"],
+        "piercings": "no piercings beyond ears",
+        "outfit_style": "vintage retro",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "other_jewelry": "no other jewelry",
+        "expression": "confident",
+        "location": ["indie record store", "cobblestone old-town street"],
+        "lighting": ["harsh fluorescent lighting", "overcast diffused daylight"],
+        "shot_type": ["full body shot", "medium shot from waist up"],
+        "mood": "self-assured",
+        "variants": {
+            # 2-Tone's sharp mohair suit is a different garment from 1960s Mod's
+            # geometric shift dress, and the checkerboard is unique to it.
+            "Male": {
+                "body_type": "lean",
+                "height": "average height",
+                "facial_hair": "clean shaven",
+                "hair_color": ["jet black", "dark brown"],
+                "hair_length": "buzzed very short",
+                "hair_texture": "sleek straight",
+                "hair_style": "natural and unstyled",
+                "makeup_style": "no makeup",
+                "nails": "natural short nails",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "rings": "none",
+                "outfit_description": [
+                    "a sharp two-tone tonic suit with narrow trousers cut short at the "
+                    "ankle, a crisp white shirt with a slim black tie, a black-and-white "
+                    "checkerboard pocket square, a flat-brimmed black porkpie hat, white "
+                    "socks and polished black loafers",
+                    "a slim {dark_color} mohair suit over a button-down shirt and a thin "
+                    "tie, black-and-white checkerboard braces, a porkpie hat tilted "
+                    "forward, dark sunglasses, and shined loafers",
+                ],
+            },
+            "Female": {
+                "body_type": "slim",
+                "height": "average height",
+                "hair_color": ["jet black", "dark brown"],
+                "hair_length": "short pixie",
+                "hair_texture": "sleek straight",
+                "hair_style": "crew cut",
+                "makeup_style": "soft natural makeup",
+                "eyeliner": "classic thin cat eye",
+                "necklace": "no necklace",
+                "earrings": "no earrings",
+                "bracelet": "none",
+                "rings": "none",
+                "nails": "natural short nails",
+                "outfit_description": [
+                    "a slim tailored {dark_color} suit jacket over a fitted white shirt "
+                    "and a thin black tie, cropped straight trousers, black-and-white "
+                    "checkerboard braces, a black porkpie hat, and flat loafers",
+                    "a sharp two-tone jacket over a black-and-white checkerboard shift "
+                    "dress, white socks, a slim tie knotted at the collar, dark "
+                    "sunglasses, and polished flat loafers",
+                ],
+            },
+        },
+    },
+
+    # Kept male-only and under the period name: the drape jacket and creepers are the
+    # concept, and the name is gendered (the same reason Roaring Twenties Gent and
+    # Sapeur are not variants pairs).
+    "Teddy Boy": {
+        "gender": "Male",
+        "ethnicity": "English",
+        "age": ["24","26","28","25"],
+        "body_type": "lean",
+        "height": "tall",
+        "facial_hair": "clean shaven",
+        "hair_color": ["jet black", "dark brown", "near black"],
+        "hair_length": "very short",
+        "hair_texture": "sleek straight",
+        "hair_style": "pompadour",
+        "skin_tone": ["fair", "light"],
+        "outfit_style": "vintage retro",
+        "piercings": "no piercings beyond ears",
+        "accessories": "no accessories",
+        "bag": "no bag",
+        "makeup_style": "no makeup",
+        "nails": "natural short nails",
+        "necklace": "no necklace",
+        "earrings": "no earrings",
+        "bracelet": "none",
+        "rings": "none",
+        "other_jewelry": "no other jewelry",
+        "outfit_description": [
+            "a long {dark_color} Edwardian drape jacket to mid-thigh with a black "
+            "velvet collar and turned-back velvet cuffs, a brocade waistcoat, a "
+            "narrow bootlace tie fastened with a metal clasp, high-waisted drainpipe "
+            "trousers cut short at the ankle, bright socks, and thick crepe-soled "
+            "suede brothel creepers",
+            "a {menswear_color} drape jacket with contrasting velvet trim and a deep "
+            "single vent, a patterned waistcoat over a white shirt, a slim bootlace "
+            "tie, tight drainpipe trousers, and heavy crepe-soled creepers",
+        ],
+        "expression": "smirking",
+        "location": ["wood-paneled pub", "cobblestone old-town street"],
+        "lighting": ["warm incandescent lamp glow", "fog-diffused streetlamp glow"],
+        "shot_type": "full body shot",
+        "mood": "self-assured",
+    },
+}
+
+
+#: Slotted costume strings, kept in one place and merged into ARCHETYPES below.
+#: They give the iconic archetypes a recognisable, *varying* outfit (filled via
+#: :func:`fill_costume`) instead of a generic randomized one. This also upgrades
+#: the round-2 fixed costumes with randomized colour/fabric/metal slots.
+_COSTUMES: dict[str, str | list[str]] = {
+    "Elven Ranger": "a hooded {earth_tone} leather jerkin over a {fabric} tunic with a flowing cloak clasped in {metal}",
+    "Dwarven Blacksmith": "a soot-stained leather apron over a {color} tunic with {metal} buckles and heavy gloves",
+    "Human Knight": "polished {metal} plate armor over a {color} tabard with a chainmail collar",
+    "Dark Sorceress": "flowing {dark_color} robes of {fabric} with a {metal} circlet and {gem} accents",
+    "Halfling Rogue": "a patched {earth_tone} traveling cloak over a {fabric} vest with a worn leather belt",
+    "Fairy Princess": ["a {pastel} fairy gown of shimmering {sheer_fabric} with iridescent gossamer wings and a {flower} crown",
+     "a layered {pastel} petal-hem fairy dress of {sheer_fabric} with iridescent gossamer wings and a {flower} crown"],
+    "Vampire Noble": "an aristocratic {dark_color} {fabric} frock coat with a high collar and a {gem} cravat pin",
+    "Werewolf Hunter": "a weathered {earth_tone} long coat over leather armor with {metal} buckles and a fur collar",
+    "Celestial Cleric": "flowing white and {metal} ceremonial robes with {gem} inlays and a radiant sash",
+    "Holy Paladin": "polished {metal} plate armor over a white tabard with a heavy {color} hanging cloak",
+    "Forest Druid": "layered {earth_tone} robes with a {fur} mantle, a carved wooden staff, and {flower} adornments",
+    "Shadow Monk": "simple wrapped {dark_color} linen robes tied with a wide cloth belt and cloth hand wraps",
+    "Berserker Barbarian": "{fur} hides and a leather harness with {metal} bracers over a bare muscular chest",
+    "Necromancer": "tattered {dark_color} robes with bone clasps, {accent}, and a deep hooded cowl",
+    "Arcane Wizard": "{jewel_tone} robes embroidered with silver stars and a tall wide-brimmed pointed hat",
+    "Swashbuckling Pirate": ["a weathered {earth_tone} leather coat over a loose linen shirt, a {color} sash, and a tricorn hat",
+     "a {color} brocade captain's coat over a ruffled linen shirt, a leather baldric, and a tricorn hat"],
+    "Stealth Ninja": "matte {dark_color} shinobi garb with a face wrap, hood, and split-toe tabi boots",
+    # Six looks across the eras the costume actually has: the modern novelty
+    # black-and-white, the real Victorian domestic servant it descends from, the
+    # Rococo château chambermaid, a 1950s petticoat cut, the Japanese maid-café
+    # reinterpretation, and a gothic-lolita take. Uniform pick, so no era is weighted
+    # over another; every alternate keeps the apron + headpiece silhouette that makes
+    # the archetype readable.
+    "French Maid": ["a frilly black-and-white maid dress with a {color} ribbon, lace apron, ruffled headpiece, and stockings",
+     # Fixed black, not a {dark_color} slot: the real Victorian housemaid wore black
+     # under the white pinafore, and that pool's blood red / oxblood / deep purple
+     # would render a housemaid who never existed.
+     "a floor-length black Victorian housemaid dress with a full white pinafore apron, a starched white mob cap, dark stockings, and buttoned ankle boots",
+     "a {pastel} Rococo chambermaid dress with panniered skirts, a lace-trimmed white apron, a ruffled cap, and silk ribbon lacing across the bodice",
+     # {pastel} not {color} — the generic pool's gold/silver/bronze read as metallic
+     # lame on a cotton petticoat dress.
+     "a {pastel} 1950s-style maid dress with a full petticoat skirt, a scalloped white apron, a ruffled cap, and seamed stockings",
+     "a {pastel} maid cafe dress with a wide flared skirt, a white frilled apron tied in a large bow at the back, a matching frilled headband, and knee-high white socks",
+     "a black gothic maid dress with layered lace trim, a {jewel_tone} corset waist, a white pinafore apron, a lace headpiece, and striped stockings"],
+    "Cheerleader": "a pleated cheer uniform in {color} and white with a fitted shell top and pom-poms",
+    "Roaring Flapper": ["a {color} beaded fringe flapper dress with a feathered headband and long satin gloves",
+     "a {color} drop-waist sequined flapper dress with a jeweled headband and a feather boa"],
+    "Wild West Gunslinger": "a fringed {earth_tone} western shirt with a leather duster, denim, chaps, and a worn cowboy hat",
+    "Steampunk Inventor": "a {earth_tone} brocade waistcoat with brass goggles, a {metal} pocket watch, and a leather tool belt",
+    "Cyberpunk Netrunner": ["a {dark_color} techwear jacket with {color} LED trim, utility straps, and a sleek visor",
+     "a {dark_color} techwear longcoat with {color} circuit-line trim, utility straps, and a sleek visor"],
+    "Space Knight": "layered {earth_tone} robes under a hooded cloak with a {metal} utility belt",
+    "Gladiator": "a {metal} segmented breastplate over a leather skirt with arm guards and a {color} cape",
+    "Viking Shieldmaiden": "a {color} wool tunic with a {fur} cloak, {metal} brooches, and leather bracers",
+    "Samurai": "layered lacquered armor in {dark_color} and {metal} with a {color} sash and a horned helm",
+    "Cabaret Witch": "a {dark_color} {fabric} gown with a wide pointed hat, {accent}, and a fitted corset bodice",
+    "Disco Diva": ["a shimmering {color} sequined jumpsuit with a plunging neckline and platform heels",
+     "a shimmering {color} halter disco dress with a flowing hem and platform heels"],
+    "Punk Rocker": "a studded {dark_color} leather jacket over a torn band tee with tartan and combat boots",
+    "Renaissance Noble": "a richly embroidered {jewel_tone} {fabric} doublet with slashed sleeves and {accent}",
+    "Pop Star": ["a glittering {color} stage outfit with {accent}, fishnet layers, and statement boots",
+     "a glittering {color} sequined mini dress with {accent}, sheer sleeves, and knee-high statement boots"],
+    "Ballerina": "a {pastel} tulle tutu with a fitted satin bodice, ribbon laces, and pointe shoes",
+    "Bridal Portrait": "an ivory {fabric} wedding gown with {accent}, a lace veil, and a {flower} bouquet",
+    "Astronaut": "a white EVA spacesuit with a {metal} chestplate, mission patches, and a reflective-visor helmet",
+    "Angelic Being": "flowing white and {metal} robes with soft feathered wings and a glowing {gem} halo",
+    "Nun": "a traditional black-and-white habit with a {fabric} veil and a simple wooden cross",
+    "Valkyrie": "{metal} winged-helm armor over a {color} tunic with a {fur} cloak and a round shield",
+    "Gothic Doll": "a {dark_color} ruffled gothic doll dress with lace trim, a bonnet, and a {color} bow",
+    "Belly Dancer": "a {jewel_tone} beaded bedlah with a coin-trimmed hip scarf and flowing chiffon veils",
+    # ER Nurse: five looks across the eras and settings the uniform actually spans —
+    # ward scrubs, scrubs under a lab coat, a printed scrub top, full isolation PPE,
+    # and the mid-century white uniform the role is historically pictured in. Every
+    # alternate is deliberately UNISEX: this archetype has no gender lock, so a
+    # gendered garment (a nurse's *dress*) would land on a male subject. The starched
+    # cap + cape look is worded as a "uniform" for the same reason.
+    "ER Nurse": ["{scrub_color} medical scrubs with a lanyard ID badge and a stethoscope around the neck",
+     "{scrub_color} scrubs under an unbuttoned white lab coat with a stethoscope around the neck, an ID badge clipped at the chest, and a penlight in the breast pocket",
+     "a patterned {scrub_color} scrub top over plain scrub trousers with a lanyard ID badge, trauma shears in a pocket, and comfortable clogs",
+     "{scrub_color} scrubs under a disposable yellow isolation gown with a surgical mask pulled down under the chin, a face shield pushed up, and a stethoscope around the neck",
+     "a crisp vintage white nurse's uniform with a starched white cap, a red-lined navy wool cape over the shoulders, and polished white shoes"],
+    "Surgeon": ["{scrub_color} surgical scrubs with a cap, a hanging mask, and gloved hands",
+     "{scrub_color} surgical scrubs with a surgical cap, a mask hanging loose around the neck, and a lanyard ID"],
+    "Judge": ["flowing black judicial robes with a high collar over a {color} blouse",
+     "flowing black judicial robes with a crisp white jabot collar and a {metal} lapel pin"],
+    "News Anchor": "a tailored {color} suit with a pocket square and a subtle lapel mic",
+    "Orchestra Conductor": ["a black tailcoat and white tie with a raised baton",
+     "an ivory dinner jacket with a black bow tie and a raised baton"],
+    "Veterinarian": ["{scrub_color} scrubs under a white coat with a stethoscope and a name badge",
+     "a {color} clinic polo with an embroidered paw logo, khakis, and a stethoscope around the neck"],
+    "Sommelier": ["a crisp black vest over a white shirt with a tasting cup on a chain",
+     "a long {dark_color} bistro apron over a crisp shirt and tie with a tasting cup on a chain"],
+    "Glassblower": ["a heavy leather apron and tinted safety goggles over a soot-streaked {color} shirt",
+     "rolled-sleeve {earth_tone} work clothes with a heavy canvas apron, tinted goggles pushed up, and a glowing blowpipe held mid-turn"],
+    "Warlock": "flowing {dark_color} {fabric} robes with eldritch {gem} talismans, {accent}, and a deep hooded cowl",
+    "Artificer": "a {earth_tone} leather work apron over a tunic with brass-and-copper mechanical gauntlets and goggles",
+    "Sorcerer": "{jewel_tone} arcane robes with {metal} sigils, a high collar, and a flowing cape",
+    "Alchemist": "a stained {earth_tone} long coat lined with glass vials, a leather satchel, and brass goggles",
+    "Witch Hunter": "a {dark_color} long coat with a wide-brimmed hat, {metal} buckles, and a leather bandolier",
+    # Kept tight on purpose: the beaked mask, the robe and the wide hat ARE the
+    # archetype, so the alternates vary material, mask weathering and the cane rather
+    # than reinventing the silhouette.
+    "Plague Doctor": ["a black waxed-leather robe and wide-brimmed hat with a long pale beaked bird mask and gloves",
+     "a heavy waxed-canvas plague doctor's robe with a long pale beaked mask, smoked-glass eye lenses, a wide-brimmed hat, and a slim wooden cane",
+     "a floor-length {dark_color} oilcloth plague doctor's coat with a weathered leather beaked mask, dark round eye lenses, heavy gauntlets, and a broad flat hat"],
+    "Soldier": ["camouflage combat fatigues with a tactical vest, dog tags, and laced boots",
+     "camouflage combat fatigues with a plate carrier, a cloth-covered helmet, dog tags, knee pads, and laced boots",
+     "a {earth_tone} field uniform with the sleeves rolled tight, a boonie hat, dog tags, and dust-caked boots",
+     "a formal service dress uniform with brass buttons, ribbon bars over the breast pocket, white gloves, and a peaked cap"],
+    "Construction Worker": "a hi-vis {color} safety vest over a work shirt, a tool belt, and a hard hat",
+    "Lifeguard": "{color} lifeguard board shorts with a whistle on a lanyard and a rescue can",
+    "Park Ranger": "an {earth_tone} ranger uniform with a brimmed campaign hat, a badge, and a utility belt",
+    "Surfer": "a {color} wetsuit peeled to the waist over board shorts",
+    "Boxer": "satin {color} boxing trunks with a championship belt, taped wrists, and laced boxing boots",
+    "Superhero": ["a sleek {color} superhero bodysuit with a bold chest emblem, a flowing cape, and gloves and boots",
+     "a {color} and {dark_color} armored superhero suit with a sculpted chest emblem, a utility belt, and a short tactical cape"],
+    "Supervillain": ["a dramatic {dark_color} costume with {metal} armor accents, a high collar, and a long cape",
+     "an immaculate {dark_color} suit with a {jewel_tone} cravat, black gloves, and a silver-topped cane"],
+    "Court Jester": ["a motley {jewel_tone} and {color} jester costume with a belled three-point hat, a ruffled collar, and curled shoes",
+     "a diamond-patterned {color} and {jewel_tone} harlequin outfit with a belled cap, striped hose, and a ribboned marotte scepter"],
+    "Egyptian Pharaoh": "a pleated white-and-{metal} royal kilt with a broad jeweled collar, a striped nemes headdress, and gold arm cuffs",
+    "Geisha": "an elaborate {jewel_tone} silk kimono with a wide obi sash and ornate hair combs, with a white-painted face and red lips",
+    "Greek Goddess": "a flowing white Grecian gown draped over one shoulder with a {metal} laurel circlet and a golden cord belt",
+    "Roman Centurion": "a {metal} segmented breastplate over a leather pteruges skirt with a {color} cape, arm guards, and a crested helm",
+    "Grim Reaper": ["a tattered hooded black robe with wide draping sleeves and a frayed hem trailing into shadow",
+     "a heavy hooded black robe cinched with a frayed rope belt, wide sleeves swallowing the hands, and a long wooden scythe held upright"],
+    "Snow Queen": "a shimmering pale-blue ice gown with a high crystalline collar, a {metal} snowflake crown, and a sheer frosted cape",
+    "Sea Captain": ["a navy double-breasted captain's coat with brass buttons, gold cuffs, and a peaked captain's cap",
+     "a chunky cream fisherman's sweater under a navy peacoat with a weathered captain's cap and a wooden pipe held in one hand"],
+    "Wasteland Survivor": ["patched {earth_tone} scavenger leathers with mismatched armor plates, goggles, and a tattered scarf",
+     "a dust-caked {earth_tone} duster over layered rags with a gas mask slung at the neck, fingerless gloves, and improvised shin guards"],
+    "Pro Wrestler": ["{color} wrestling trunks with lace-up boots, kneepads, taped wrists, and a championship belt",
+     "a {color} wrestling singlet with a spray-stenciled logo, knee-high lace-up boots, elbow pads, and taped wrists"],
+    "Luchador": "a {color} lucha libre singlet with contrasting trim, lace-up boots, and a brightly colored lucha mask held at the side",
+    "Swim Instructor": "a {color} one-piece training swimsuit with a whistle on a lanyard and a poolside towel over one shoulder",
+    "Race Car Driver": "a {color} fire-resistant racing suit with sponsor patches and a helmet held under one arm",
+    "Drag Performer": "a dazzling {jewel_tone} sequined gown with dramatic feathers, statement jewelry, and towering heels",
+    "Ringmaster": "a {color} tailcoat with gold braid and epaulettes, a white shirt, jodhpurs, tall boots, and a top hat",
+    "Roaring Twenties Gent": "a {dark_color} pinstripe three-piece suit with a silk tie, a pocket square, two-tone spectator shoes, and a felt fedora",
+    "1950s Greaser": "a white tee under a {dark_color} leather jacket with cuffed jeans and leather boots",
+    "1960s Mod": "a {color} geometric mod mini shift dress with go-go boots and oversized round earrings",
+    "1980s Pop Icon": "a {jewel_tone} off-the-shoulder top with neon leg warmers, acid-wash denim, fingerless lace gloves, and chunky plastic jewelry",
+    "1990s Grunge": "an oversized {color} flannel shirt over a faded band tee with ripped jeans and worn combat boots",
+    "1950s Sock Hop": "a felt poodle skirt in {color}, a tucked-in white blouse, a neck scarf, bobby socks, and saddle shoes",
+    "1960s Hippie": "a tie-dye {color} shirt, flared bell-bottom jeans, a fringed suede vest, round wire sunglasses, and a flower headband",
+    "1990s Goth": "layered black {fabric} clothing with torn fishnet sleeves, a studded leather choker, silver rings, and heavy buckled boots",
+    "1980s Preppy": "a pastel polo shirt with a {color} sweater tied over the shoulders, pleated chinos, and leather boat shoes",
+    "1980s New Wave": "a {jewel_tone} blazer with pushed-up sleeves over a graphic tee, a skinny leather tie, slim trousers, and pointed boots",
+    "Victorian Lady": "a high-collared {jewel_tone} bustle gown of {fabric} with lace trim, puffed sleeves, buttoned boots, and a cameo brooch",
+    "Ancient Roman Patrician": "a draped white toga over a tunic with a {color} border, leather sandals, and a {metal} laurel wreath",
+    "Prehistoric Hunter": "rugged {fur} hide garments with bone-and-tooth jewelry, leather wraps, and a stone-tipped spear",
+    "Tennis Player": "a {color} athletic tennis polo with matching shorts, a sweatband, wristbands, and court shoes",
+    "Gymnast": "a sleek {jewel_tone} long-sleeved competition leotard with metallic trim and grip wristbands",
+    "Baker": "a flour-dusted white apron over a {color} shirt with rolled sleeves and a soft baker's cap",
+    "Florist": "a {earth_tone} canvas work apron over a floral-print blouse with gardening gloves and pruning shears in the pocket",
+    "Plumber": "{color} work coveralls over a plain tee with a heavy tool belt and scuffed work boots",
+    "Retail Cashier": "a {color} store polo with a name badge and a half-apron over neat chinos",
+    "Rancher": "a {color} plaid western shirt with a worn leather vest, denim jeans, a tooled leather belt, cowboy boots, and a wide-brimmed cowboy hat",
+    "Navy Sailor": "a crisp white naval uniform with a {dark_color} neckerchief, brass buttons, and a sailor's cap",
+    "Pin-up Model": "a {color} polka-dot halter swing dress cinched at the waist with a petticoat and peep-toe heels",
+    "Streamer": "a {color} oversized graphic hoodie with a gaming headset around the neck over a plain tee",
+    # Round 3 (0.48.0): occupation archetypes whose concept lives in the uniform.
+    # Without a lock these rendered a random generic outfit from their
+    # outfit_style bucket -- the archetype name never reaches the prompt.
+    "Barista": "a {earth_tone} canvas cafe apron over a rolled-sleeve shirt with a name tag and a bar towel tucked at the waist",
+    "Doctor": "a white doctor's coat over {scrub_color} scrubs with a stethoscope around the neck and an ID badge",
+    "Firefighter": ["tan firefighter turnout gear with neon-yellow reflective stripes, red suspenders, a radio clipped to the chest, and a fire helmet held at the side",
+     "full tan turnout gear with the coat hanging open over a soot-streaked station tee, an air-tank harness across the shoulders, and a helmet under one arm",
+     "a navy fire-department station uniform with a badge, collar insignia, a radio clipped to the chest, and polished boots",
+     "a wildland firefighter's yellow flame-resistant shirt and green trousers with a hard hat, goggles pushed up, and a fire-shelter pouch on the belt"],
+    "Police Officer": ["a navy police uniform shirt with a badge, shoulder radio, and duty belt, and a peaked service cap",
+     "a dark police tactical uniform with a body-armor vest lettered POLICE across the chest, a loaded duty belt, and a baseball-style patrol cap",
+     "a rumpled detective's shirt and loosened tie under a shoulder holster, with a badge clipped at the belt and sleeves rolled to the forearm",
+     "a motorcycle officer's uniform with breeches, tall polished boots, white gloves, a duty belt, and a white open-face helmet"],
+    "Chef": "a double-breasted white chef's jacket with {color} piping, a bistro apron, houndstooth trousers, and a tall white toque",
+    "Pilot": "a {dark_color} airline captain's uniform with four gold cuff stripes, wing insignia over the pocket, a tie, and a peaked cap",
+    "Scientist": "a white lab coat with pens in the breast pocket over {menswear_color} smart clothing, with safety glasses and a laminated ID badge",
+    "Farmer": "a {color} plaid work shirt under denim bib overalls with leather work gloves tucked in a pocket and a straw hat",
+    "Mechanic": "grease-smudged {dark_color} mechanic coveralls with an embroidered name patch, a shop rag hanging from the pocket, and heavy boots",
+    "Tattoo Artist": "a fitted black tee showing full-sleeve tattoos, a {dark_color} half-apron, black nitrile gloves, and ripped jeans",
+    "Bartender": "a rolled-sleeve white shirt under a {dark_color} waistcoat with a bar towel over the shoulder and a cocktail shaker in hand",
+    "Electrician": "a {color} work shirt under a hi-vis vest with a tool belt hung with pliers and wire strippers, work jeans, and safety glasses",
+    "Marine Biologist": "a {color} field jacket over quick-dry khakis with a dive watch, rubber deck boots, and a specimen kit slung at the hip",
+    # The hat lives in this archetype's `accessories` lock ("wide brim sun hat"), so no
+    # alternate here may mention one: the base costume used to say "a brimmed explorer
+    # hat" and rendered the archaeologist wearing two (fixed 0.66.0). Same double-
+    # describe class as the 0.63.0 prop-vs-costume sweep — always diff a costume
+    # against the fields the archetype already locks.
+    "Archaeologist": ["a sun-faded khaki field shirt with rolled sleeves, cargo trousers, and a brush and trowel at the belt",
+     "a dusty {earth_tone} field vest over a rolled-sleeve shirt with cargo trousers, a bandana knotted at the neck, and dirt-caked boots",
+     "a khaki dig outfit with kneepads and work gloves, dust caked to the elbows, and a fine hand brush held over an exposed find",
+     "a linen field shirt with the sleeves rolled past the elbow, canvas trousers, a leather satchel strap across the chest, and a trowel in a belt loop"],
+    "Cyclist": "a fitted {team_color} cycling jersey with matching bib shorts, fingerless gloves, a sleek road helmet, and clip-in cycling shoes",
+    "Beekeeper": ["a white beekeeping suit with the veiled hood thrown back, long leather gloves, and a bee smoker held at the side",
+     "a white beekeeping jacket with the mesh veil zipped down over the face, thick gloves, and a frame of golden honeycomb held up"],
+    "Carpenter": ["a {color} flannel shirt under a canvas tool apron with a carpenter's pencil behind the ear, work jeans, and steel-toe boots",
+     "a dusty {menswear_color} work shirt with a leather tool belt slung low, a tape measure clipped at the hip, and safety glasses pushed up"],
+    "Welder": ["a heavy leather welding jacket with gauntlet gloves, a welding helmet flipped up, and flame-scorched work trousers",
+     "flame-resistant {dark_color} coveralls with a leather bib apron, gauntlet gloves, and a welding shield held at the side"],
+    "Falconer": ["a waxed {earth_tone} field jacket with a thick leather falconry gauntlet on one forearm, a game bag, and a flat cap",
+     "a tweed shooting jacket with a heavy falconry gauntlet on one forearm, leather jesses in hand, and a wool flat cap"],
+    "Paramedic": ["a navy EMS uniform shirt with reflective piping and shoulder patches, a radio clipped to the chest, cargo trousers, and blue nitrile gloves",
+     "a hi-vis green-and-yellow paramedic jacket over a navy uniform with a trauma bag slung across the chest and blue nitrile gloves"],
+    "Train Conductor": ["a {dark_color} conductor's uniform with brass buttons, a waistcoat crossed by a pocket-watch chain, and a peaked conductor's cap",
+     "a navy railway waistcoat over a crisp white shirt with a brass pocket watch in hand and a peaked cap with gold braid piping"],
+    "Jeweler": ["a {dark_color} waistcoat over a crisp shirt with a jeweler's loupe on a neck chain and a soft polishing cloth in hand",
+     "a crisp shirt with rolled sleeves under a bench apron, a jeweler's loupe held to one eye, and a ring clamp in hand"],
+    "Watchmaker": ["a {earth_tone} work apron over a shirt and tie with a magnifying loupe strapped over one eye and fine tweezers in hand",
+     "a {menswear_color} cardigan over a shirt and tie with a magnifying loupe strapped over one eye and a tiny screwdriver in hand"],
+    "Potter": ["a clay-smudged canvas apron over a rolled-sleeve {color} linen shirt with clay-dusted forearms",
+     "a clay-spattered denim apron over a plain tee with sleeves pushed past the elbows and wet clay up both forearms"],
+    "Tailor": ["a fitted {menswear_color} waistcoat over a crisp shirt with a measuring tape draped around the neck and a pincushion at the wrist",
+     "shirt sleeves held by sleeve garters under a pinned {dark_color} waistcoat, with tailor's chalk in hand and a measuring tape around the neck"],
+    "Stonemason": ["a dusty leather work apron over a rough {earth_tone} shirt with heavy gloves and a mallet and chisel at the belt",
+     "a canvas work jacket over a dust-caked shirt with heavy gloves tucked in the belt and a chisel and wooden mallet in hand"],
+    "Winemaker": ["a {earth_tone} quilted vest over a checked shirt with dark trousers, leather boots, and a stemmed tasting glass in hand",
+     "a linen shirt with rolled sleeves under a wine-stained {dark_color} cellar apron, dark trousers, and a bunch of grapes held up to the light"],
+    # 0.96.0: the second alternate used to be a tagelmust look, which the new Tuareg
+    # archetype now owns properly (veiled face, Agadez cross, Berber ethnicity). Two
+    # names for one look is the duplication the curation rules forbid, so it is
+    # re-pointed at a generic Saharan traveller rather than deleted -- the entry keeps
+    # its two-costume rotation, so no seed loses a choice.
+    "Desert Nomad": ["flowing layered {earth_tone} desert robes with a wrapped head scarf trailing loose ends, a braided belt, and worn leather sandals",
+     "a hooded {earth_tone} burnous cloak over a long belted tunic, a coiled cord headband holding a loose head cloth, a slung waterskin, and dusty leather boots"],
+    "Tribal Shaman": ["layered hide and woven-cloth garments with a feathered mantle, bone-and-bead necklaces, and a carved staff",
+     "woven {earth_tone} ceremonial robes with feather-and-bead adornments, painted markings on the arms, and a smoking herb bundle in hand"],
+    "Trapeze Artist": ["a shimmering {jewel_tone} sequined leotard with sheer sleeves, tights, and wrapped wrist guards",
+     "a {color} sequined circus leotard with a sheer skirt panel, glittering tights, and chalk-dusted hand wraps"],
+    "Deep Sea Diver": ["a vintage brass-and-canvas deep-sea diving suit with a bolted chest plate, weighted boots, and the brass helmet held under one arm",
+     "a modern {dark_color} drysuit with a dive computer on the wrist, a mask pushed up on the forehead, and twin tanks over the shoulders"],
+    "Arctic Explorer": ["a heavy {color} expedition parka with a fur-lined hood, insulated snow trousers, thick mittens clipped to the sleeves, and snow goggles pushed up",
+     "a {dark_color} down expedition suit with a frost-rimmed fur ruff hood, ice-crusted goggles around the neck, and heavy insulated boots"],
+    "Safari Guide": ["a khaki safari shirt with rolled sleeves and epaulettes, cargo shorts, a wide-brim bush hat, a woven belt, and binoculars on a neck strap",
+     "an {earth_tone} bush jacket with epaulettes over khaki trousers, a leather belt with a canteen, and a folded map in one hand"],
+    "Toymaker": ["a {color} corduroy waistcoat over a rolled-sleeve shirt, a leather work apron dusted with wood shavings, and round spectacles",
+     "a rumpled shirt under a {color} knitted vest with a work apron full of tiny tools and a half-painted wooden toy in hand"],
+    # Round 4 (0.50.0): the last three occupation archetypes without a costume
+    # lock — same rationale as round 3 (the concept lives in the outfit/props).
+    "Astronomer": ["a chunky {menswear_color} sweater under a warm parka with a red-light headlamp around the neck and a star chart in hand",
+     "a {dark_color} fleece jacket over a graphic tee with a laminated sky map in hand, dressed for a cold night of stargazing"],
+    "Calligrapher": ["a crisp collarless linen shirt with rolled sleeves, ink-stained fingertips, and a broad-nib pen held over fresh parchment",
+     "a {menswear_color} cardigan over a neat shirt with an ink-smudged writing apron and a fine brush pen in hand"],
+    "Cartographer": ["an {earth_tone} tweed waistcoat over a rolled-sleeve shirt with brass drafting dividers in hand over an unrolled map",
+     "a travel-worn {menswear_color} field jacket with a leather map tube slung across the back and a magnifying glass in hand"],
+    # Round 5 (0.66.0): the last archetypes whose costume was a single fixed string
+    # with no {slot} — the same look on every seed. Alternates keep each concept
+    # readable and add era/colour range. Uniform pick, so no look is weighted over
+    # another. NOTE: none of these may mention a bag (the `bag` field randomizes on
+    # all of them and would render a second one).
+    #
+    # Rosie-the-Riveter era. Her head scarf is NOT in the costume: this archetype
+    # locks `hair_accessory: "thin scarf tied in hair"`, which already voices it — a
+    # bandana here would tie two scarves on one head.
+    "1940s Factory Worker": ["a blue denim button-up work shirt with the sleeves rolled to the elbow and knotted at the waist, over high-waisted work trousers",
+     "a set of oil-streaked {earth_tone} factory coveralls with the sleeves pushed up past the elbow and a worn leather tool belt",
+     "a khaki wartime munitions overall buttoned to the throat with heavy gloves tucked in a hip pocket and sturdy lace-up shoes",
+     "a {color} plaid work shirt tucked into wide-legged denim dungarees with rolled cuffs and scuffed leather boots"],
+    "1970s Boho It-Girl": ["a tan suede fringe vest over a wide-collar floral blouse, high-waisted flared denim jeans, and tall platform sandals",
+     "a floaty {jewel_tone} paisley maxi dress with bell sleeves, a wide tooled-leather belt, and stacked pendant necklaces",
+     "a crocheted {earth_tone} vest over a peasant blouse with embroidered flared jeans and round tinted sunglasses",
+     "a {color} halter jumpsuit with a plunging neckline and wide flared legs, jangling bangles, and cork platform sandals",
+     "an afghan coat of shearling and folk embroidery over a ribbed knit top, denim flares, and knee-high suede boots"],
+    "Emo": ["a fitted band t-shirt under a studded black hoodie, tight black skinny jeans, a chain wallet, and worn canvas high-tops",
+     "a black band tee under an unzipped {dark_color} hoodie with tight black skinny jeans, a studded belt, fingerless gloves, and worn high-tops",
+     "a black-and-{jewel_tone} striped long-sleeve under a graphic band tee, black skinny jeans with a chain wallet, and scuffed skate shoes",
+     "a snug {dark_color} zip hoodie over a studded belt and drainpipe jeans, with checkerboard slip-ons and rubber wristbands stacked up one forearm"],
+    "Indie Sleaze": ["a rumpled vintage graphic tee under a worn leather jacket, tight shiny disco pants, and scuffed ankle boots, styled with a careless thrifted look",
+     "a rumpled vintage graphic tee under a {dark_color} moto jacket with skinny jeans and battered canvas sneakers, styled with a careless thrifted look",
+     "an oversized thrifted blazer over a slogan tee with tight {color} jeans and scuffed loafers, layered with a haphazard second-hand look",
+     "a metallic {color} disco bodysuit under a cropped denim jacket with opaque tights and beat-up ankle boots"],
+    # --- 0.67.0 additions (lean unisex archetypes) ---
+    "Butler": "a formal black tailcoat over a white wing-collar shirt with a {dark_color} waistcoat, a black bow tie, pressed trousers, and white cotton gloves",
+    "Trial Lawyer": "a tailored {dark_color} suit over a crisp white shirt with a {color} tie, a leather portfolio tucked under one arm, and polished oxford shoes",
+    "Coal Miner": "grimy {earth_tone} coveralls streaked with coal dust, a battered hard hat with a headlamp, heavy canvas gloves, and steel-toe boots, the face smudged with soot",
+    "Butcher": "a heavy white butcher's apron streaked from the day's work over a rolled-sleeve shirt, a {color} neckerchief, and a straw boater hat",
+    "Musketeer": "a {color} tabard bearing a white cross over a leather doublet, a plumed wide-brimmed cavalier hat, a baldric across the chest, tall cuffed boots, and a rapier sheathed at the hip",
+    "Medieval Peasant": "a homespun {earth_tone} tunic cinched with a rope belt over patched wool leggings, a simple linen coif, and worn leather ankle boots",
+    "Fencer": "a white fencing jacket with a plastron and a metallic lame over-vest, white breeches and long socks, a wire-mesh mask tucked under one arm, and a slender epee in hand",
+    "Alpine Skier": "a sleek {color} insulated ski suit with a competitor's bib, reflective goggles pushed up on the forehead, padded gloves, and ski poles in hand",
+    "Rapper": "an oversized {color} graphic hoodie under a puffer vest, baggy jeans, box-fresh high-top sneakers, layered gold chains, and a snapback cap",
+    # --- 0.87.0 additions ---
+    "Kabuki Actor": ["a chalk-white painted face with bold red-and-black kumadori lines striping the brow and cheeks, above layered {jewel_tone} silk kabuki robes with vastly oversized square sleeves and a stiff brocade sash",
+     "a stark white-painted face with heavy crimson kumadori lines drawn from the eyes and mouth, above a heavy {color} embroidered kabuki over-robe with trailing hems, padded shoulders, and a wide stiffened obi"],
+    "Volcanologist": ["a silvered aluminized proximity suit with a sealed hood and a gold-tinted visor, thick reflective gauntlets, and heavy heat-resistant boots",
+     "a full aluminized heat suit that mirrors the light, worn with the hood thrown back and the gold visor pushed up, reflective gauntlets, and a webbing harness across the chest"],
+    "Hazmat Technician": ["a white taped-seam containment coverall with a sealed hood, a full-face respirator with a round filter cartridge, doubled blue nitrile gloves taped at the wrists, and rubber overboots",
+     "a {color} hazmat coverall with the hood pushed back and the full-face respirator hanging loose at the chest, an air line coiled over one shoulder, taped glove cuffs, and heavy rubber boots"],
+    "Marching Band Drum Major": ["a {team_color} frogged military-cut band jacket with gold braid and a high collar, white gauntlets, white trousers with a side stripe, and a tall plumed shako, carrying a long ceremonial mace",
+     "a white frogged drum major's jacket with {team_color} facings and heavy gold braid, a sash across the chest, white gauntlets and trousers, and a towering feathered shako"],
+    "Yeoman Warder": ["a scarlet-and-gold Tudor tunic with vertical gold banding and a royal cypher on the chest, a starched white ruff at the neck, red knee breeches with red stockings, buckled black shoes, and a flat black Tudor bonnet",
+     "a dark blue and red undress Tudor tunic with gold trim and a crowned cypher, a white ruff, matching breeches and stockings, and a flat black Tudor bonnet"],
+    "Trawler Deckhand": ["bright orange oilskin bib waders over a heavy knitted sweater, an oilskin jacket with the hood down, a wide-brimmed sou'wester hat, and thick rubber gloves",
+     "yellow oilskin bib-and-brace waders over a {menswear_color} flannel shirt, a scuffed oilskin smock, a sou'wester tied under the chin, and heavy rubber deck boots"],
+}
+for _name, _costume in _COSTUMES.items():
+    if _name in ARCHETYPES:
+        # A _COSTUMES entry supplies the base (gender-blind) costume. That only
+        # conflicts with a variant that carries its OWN costume — two competing
+        # costume sources. A *costume-less* variants block (e.g. ER Nurse, whose
+        # sole per-gender difference is makeup) is fine: the unisex _COSTUMES
+        # costume stays the single source and the variant just tweaks a
+        # non-costume field. So reject only variants that define outfit_description.
+        _variant_blocks = ARCHETYPES[_name].get("variants") or {}
+        assert not any("outfit_description" in _v for _v in _variant_blocks.values()), (
+            f"_COSTUMES entry for '{_name}' conflicts with a variant that defines its "
+            "own costume; move the costume into the variants or drop the _COSTUMES entry"
+        )
+        ARCHETYPES[_name]["outfit_description"] = _costume
+
+
+def get_archetype_names() -> list[str]:
+    """Return sorted list of available archetype names."""
+    return sorted(ARCHETYPES.keys())
+
+
+def get_archetype_preset(name: str) -> dict[str, str]:
+    """Return field preset for the named archetype."""
+    return ARCHETYPES.get(name, {}).copy()
+
+
+# Merge optional user-supplied archetypes (./user_options.json, "archetypes"
+# section) so they survive ``git pull``. Done last so user entries can override
+# a built-in of the same name.
+from .user_options import apply_user_archetypes  # noqa: E402
+
+apply_user_archetypes(ARCHETYPES)

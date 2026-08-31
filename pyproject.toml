@@ -1,0 +1,31 @@
+[project]
+name = "comfyui-explicite-prompt-generator"
+version = "2.0.0"
+description = "Coherent, seed-reproducible adult women (24-50) for ComfyUI, from fully clothed to fully nude - wardrobe levels (Clothed / Swimwear / Lingerie / Topless / Fully nude), optional explicit-action sentences, and a constraint engine so no prompt ever contradicts itself. No prompt writing, no LLM, no API keys. A Turnaround node renders every camera view of one resolved character in a single queue, and a local vault saves (and replays byte-for-byte) the women you keep."
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["comfyui", "character", "person generator", "woman", "adult", "age 24-50", "portraiture", "portrait", "face", "prompt", "prompt generator", "randomizer", "constraint", "lingerie", "swimwear", "topless", "nude", "nudity", "explicit", "sultry", "boudoir", "turnaround", "reference sheet", "vault", "reproducible", "seed"]
+dependencies = []
+
+[[project.authors]]
+name = "gbetronix"
+
+[project.urls]
+Repository = "https://github.com/gbetronix/comfyui-my-identity-forge"
+"Bug Tracker" = "https://github.com/gbetronix/comfyui-my-identity-forge/issues"
+
+[tool.comfy]
+PublisherId = "gbetronix"
+DisplayName = "Explicite Prompt Generator"
+requires-comfyui = ">=0.25.0"
+
+[tool.ruff.lint.per-file-ignores]
+# The test and preview scripts prepend the repo root onto sys.path so they can be
+# run standalone (``python tests/...``); those imports necessarily follow the shim,
+# which is the sole, intentional source of E402 in these files.
+"tests/*.py" = ["E402"]
+# Same shim, same reason: the gallery build scripts are run standalone from the
+# repo root (``python gallery/cosplay/build_manifest.py``) and must extend
+# sys.path before they can import the roster.
+"gallery/*.py" = ["E402"]

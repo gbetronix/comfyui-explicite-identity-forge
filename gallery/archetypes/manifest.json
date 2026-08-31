@@ -1,0 +1,2140 @@
+{
+  "schema_version": 2,
+  "gallery": "archetypes",
+  "generated": "2026-08-31T22:15:17.441840",
+  "version": "2.0.0",
+  "releases": [
+    "0.5.0",
+    "0.5.1",
+    "0.5.2",
+    "0.6.0",
+    "0.7.0",
+    "0.7.1",
+    "0.8.0",
+    "0.9.0",
+    "0.10.0",
+    "0.11.0",
+    "0.12.0",
+    "0.13.0",
+    "0.13.1",
+    "0.13.2",
+    "0.14.0",
+    "0.14.1",
+    "0.15.0",
+    "0.15.1",
+    "0.16.0",
+    "0.17.0",
+    "0.18.0",
+    "0.18.1",
+    "0.19.0",
+    "0.20.0",
+    "0.21.0",
+    "0.22.0",
+    "0.23.0",
+    "0.23.1",
+    "0.24.0",
+    "0.25.0",
+    "0.26.0",
+    "0.27.0",
+    "0.28.0",
+    "0.29.0",
+    "0.29.1",
+    "0.30.0",
+    "0.31.0",
+    "0.32.0",
+    "0.33.0",
+    "0.34.0",
+    "0.35.0",
+    "0.36.0",
+    "0.37.0",
+    "0.38.0",
+    "0.39.0",
+    "0.40.0",
+    "0.41.0",
+    "0.41.1",
+    "0.42.0",
+    "0.43.0",
+    "0.44.0",
+    "0.45.0",
+    "0.46.0",
+    "0.46.1",
+    "0.47.0",
+    "0.47.1",
+    "0.48.0",
+    "0.49.0",
+    "0.50.0",
+    "0.51.0",
+    "0.52.0",
+    "0.53.0",
+    "0.54.0",
+    "0.55.0",
+    "0.56.0",
+    "0.57.0",
+    "0.58.0",
+    "0.59.0",
+    "0.60.0",
+    "0.61.0",
+    "0.62.0",
+    "0.63.0",
+    "0.64.0",
+    "0.65.0",
+    "0.66.0",
+    "0.67.0",
+    "0.68.0",
+    "0.69.0",
+    "0.71.0",
+    "0.71.1",
+    "0.71.2",
+    "0.72.0",
+    "0.72.1",
+    "0.73.0",
+    "0.73.1",
+    "0.74.0",
+    "0.75.0",
+    "0.76.0",
+    "0.77.0",
+    "0.78.0",
+    "0.79.0",
+    "0.80.0",
+    "0.80.1",
+    "0.81.0",
+    "0.82.0",
+    "0.83.0",
+    "0.84.0",
+    "0.85.0",
+    "0.86.0",
+    "0.86.1",
+    "0.87.0",
+    "0.88.0",
+    "0.89.0",
+    "0.90.0",
+    "0.90.1",
+    "0.91.0",
+    "0.91.1",
+    "0.92.0",
+    "0.93.0",
+    "0.94.0",
+    "0.95.0",
+    "0.96.0",
+    "0.97.0",
+    "0.98.0",
+    "1.0.0",
+    "1.0.1",
+    "1.1.0"
+  ],
+  "total_entries": 251,
+  "entries_with_images": 18,
+  "entries_missing_images": 233,
+  "missing": [
+    "1940s Factory Worker",
+    "1940s Swing Dancer",
+    "1950s Diner Waitress",
+    "1950s Greaser",
+    "1950s Homemaker",
+    "1950s Sock Hop",
+    "1950s Soda Jerk",
+    "1950s Suburban Dad",
+    "1960s Hippie",
+    "1970s Boho It-Girl",
+    "1970s Leisure Lounge",
+    "1980s Action Star",
+    "1980s Aerobics",
+    "1980s New Wave",
+    "1980s Pop Icon",
+    "1980s Preppy",
+    "1990s Goth",
+    "1990s Grunge",
+    "Alchemist",
+    "Alpine Skier",
+    "Ancient Roman Patrician",
+    "Angelic Being",
+    "Arcane Wizard",
+    "Archaeologist",
+    "Arctic Explorer",
+    "Artificer",
+    "Artist",
+    "Astronaut",
+    "Astronomer",
+    "Athlete",
+    "Backyard Country Casual",
+    "Baker",
+    "Ballerina",
+    "Barista",
+    "Bartender",
+    "Battle Bard",
+    "Beekeeper",
+    "Belly Dancer",
+    "Berserker Barbarian",
+    "Biker",
+    "Bosozoku",
+    "Boxer",
+    "Bridal Portrait",
+    "Butcher",
+    "Butler",
+    "Cabaret Witch",
+    "Calligrapher",
+    "Carpenter",
+    "Cartographer",
+    "Celestial Cleric",
+    "Cheerleader",
+    "Chef",
+    "Circus Clown",
+    "Classic Hollywood Leading Man",
+    "Classic Hollywood Starlet",
+    "Coal Miner",
+    "Construction Worker",
+    "Corporate Executive",
+    "Cottagecore",
+    "Country Star",
+    "Court Jester",
+    "Cyberpunk Netrunner",
+    "Cyclist",
+    "DJ",
+    "Dark Academia",
+    "Dark Sorceress",
+    "Deep Sea Diver",
+    "Desert Nomad",
+    "Disco Diva",
+    "Doctor",
+    "Drag Performer",
+    "Dwarven Blacksmith",
+    "Día de los Muertos",
+    "E-Girl / E-Boy",
+    "ER Nurse",
+    "Egyptian Pharaoh",
+    "Electrician",
+    "Elven Ranger",
+    "Emo",
+    "Fairy Princess",
+    "Falconer",
+    "Farmer",
+    "Fencer",
+    "Fighter Pilot",
+    "Firefighter",
+    "Flamenco Dancer",
+    "Flight Attendant",
+    "Florist",
+    "Forest Druid",
+    "Fortune Teller",
+    "French Maid",
+    "Game-Day Fan",
+    "Gaucho",
+    "Geisha",
+    "Genie",
+    "Gibson Girl",
+    "Gladiator",
+    "Glassblower",
+    "Gothic Doll",
+    "Greek Goddess",
+    "Grim Reaper",
+    "Gymnast",
+    "Hair Metal Rocker",
+    "Halfling Rogue",
+    "Hazmat Technician",
+    "Highland Scot",
+    "Hockey Goalie",
+    "Holy Paladin",
+    "Human Knight",
+    "Indie Sleaze",
+    "Jeweler",
+    "Judge",
+    "Kabuki Actor",
+    "Kawaii Street Fashion",
+    "Kendo Practitioner",
+    "Korean Hanbok",
+    "Librarian",
+    "Lifeguard",
+    "Luchador",
+    "Lumberjack",
+    "Maasai",
+    "Mad Scientist",
+    "Marching Band Drum Major",
+    "Mardi Gras Reveler",
+    "Mariachi Charro",
+    "Marine Biologist",
+    "Martial Artist",
+    "Masquerade Guest",
+    "Matador",
+    "McBling Socialite",
+    "Mechanic",
+    "Medieval Peasant",
+    "Metrosexual",
+    "Mime",
+    "Mongolian Deel",
+    "Musician",
+    "Musketeer",
+    "Navy Sailor",
+    "Necromancer",
+    "News Anchor",
+    "Noir Detective",
+    "Nun",
+    "Oktoberfest",
+    "Opera Singer",
+    "Orchestra Conductor",
+    "Outback Bushman",
+    "Paramedic",
+    "Parisian Chic",
+    "Park Ranger",
+    "Personal Trainer",
+    "Photographer",
+    "Pilot",
+    "Pin-up Model",
+    "Plague Doctor",
+    "Plumber",
+    "Police Officer",
+    "Pop Star",
+    "Potter",
+    "Prehistoric Hunter",
+    "Pro Wrestler",
+    "Punk Rocker",
+    "Race Car Driver",
+    "Rancher",
+    "Rapper",
+    "Regency Aristocrat",
+    "Renaissance Noble",
+    "Retail Cashier",
+    "Ringmaster",
+    "Roaring Flapper",
+    "Roaring Twenties Gent",
+    "Rock Climber",
+    "Roman Centurion",
+    "Safari Guide",
+    "Sami Gakti",
+    "Samurai",
+    "Sapeur",
+    "Scandi Minimalist",
+    "Scientist",
+    "Sea Captain",
+    "Shadow Monk",
+    "Skateboarder",
+    "Snow Queen",
+    "Software Developer",
+    "Soldier",
+    "Sommelier",
+    "Sorcerer",
+    "Space Knight",
+    "Stage Magician",
+    "Stealth Ninja",
+    "Steampunk Inventor",
+    "Stonemason",
+    "Storm Chaser",
+    "Streamer",
+    "Sumo Wrestler",
+    "Superhero",
+    "Supervillain",
+    "Surfer",
+    "Surgeon",
+    "Swashbuckling Pirate",
+    "Swim Instructor",
+    "Tailor",
+    "Tattoo Artist",
+    "Tavern Wench",
+    "Teacher",
+    "Tennis Player",
+    "Toymaker",
+    "Train Conductor",
+    "Trapeze Artist",
+    "Trawler Deckhand",
+    "Trial Lawyer",
+    "Tribal Shaman",
+    "Trucker",
+    "Tuareg",
+    "Valkyrie",
+    "Vampire Noble",
+    "Veterinarian",
+    "Victorian Dandy",
+    "Victorian Lady",
+    "Vietnamese Ao Dai",
+    "Viking Shieldmaiden",
+    "Volcanologist",
+    "Warlock",
+    "Wasteland Survivor",
+    "Watchmaker",
+    "Welder",
+    "Werewolf Hunter",
+    "Whirling Dervish",
+    "Wild West Gunslinger",
+    "Winemaker",
+    "Witch Hunter",
+    "Y2K Mall Casual",
+    "Yeoman Warder",
+    "Yoga Instructor"
+  ],
+  "entries": [
+    {
+      "name": "1940s Factory Worker",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.34.0"
+    },
+    {
+      "name": "1940s Swing Dancer",
+      "has_image": false,
+      "gender": "Male",
+      "group": "",
+      "added": "0.34.0"
+    },
+    {
+      "name": "1950s Diner Waitress",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.49.0"
+    },
+    {
+      "name": "1950s Greaser",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.24.0"
+    },
+    {
+      "name": "1950s Homemaker",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.34.0"
+    },
+    {
+      "name": "1950s Sock Hop",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.26.0"
+    },
+    {
+      "name": "1950s Soda Jerk",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.49.0"
+    },
+    {
+      "name": "1950s Suburban Dad",
+      "has_image": false,
+      "gender": "Male",
+      "group": "smart casual",
+      "added": "0.34.0"
+    },
+    {
+      "name": "1960s Hippie",
+      "has_image": false,
+      "gender": "any",
+      "group": "bohemian",
+      "added": "0.26.0"
+    },
+    {
+      "name": "1960s Mod",
+      "has_image": true,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.24.0",
+      "image": "images/1960s Mod.jpeg"
+    },
+    {
+      "name": "1970s Boho It-Girl",
+      "has_image": false,
+      "gender": "Female",
+      "group": "bohemian",
+      "added": "0.34.0"
+    },
+    {
+      "name": "1970s Leisure Lounge",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.34.0"
+    },
+    {
+      "name": "1970s Used Car Salesman",
+      "has_image": true,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.42.0",
+      "image": "images/1970s Used Car Salesman.jpeg"
+    },
+    {
+      "name": "1980s Action Star",
+      "has_image": false,
+      "gender": "Male",
+      "group": "casual",
+      "added": "0.50.0"
+    },
+    {
+      "name": "1980s Aerobics",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.35.0"
+    },
+    {
+      "name": "1980s New Wave",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.26.0"
+    },
+    {
+      "name": "1980s Pop Icon",
+      "has_image": false,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.24.0"
+    },
+    {
+      "name": "1980s Preppy",
+      "has_image": false,
+      "gender": "any",
+      "group": "preppy",
+      "added": "0.26.0"
+    },
+    {
+      "name": "1990s Goth",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.26.0"
+    },
+    {
+      "name": "1990s Grunge",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Alchemist",
+      "has_image": false,
+      "gender": "any",
+      "group": "vintage retro",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Alpine Skier",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Ancient Roman Patrician",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Andean Cholita",
+      "has_image": true,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.90.0",
+      "image": "images/Andean Cholita.jpeg"
+    },
+    {
+      "name": "Angelic Being",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Arcane Wizard",
+      "has_image": false,
+      "gender": "Male",
+      "group": "bohemian",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Archaeologist",
+      "has_image": false,
+      "gender": "Female",
+      "group": "casual",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Arctic Explorer",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Artificer",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Artist",
+      "has_image": false,
+      "gender": "any",
+      "group": "bohemian",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Astronaut",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Astronomer",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Athlete",
+      "has_image": false,
+      "gender": "Female",
+      "group": "athletic",
+      "added": "0.5.0"
+    },
+    {
+      "name": "B-Boy / B-Girl",
+      "has_image": true,
+      "gender": "any",
+      "group": "",
+      "added": "0.42.0",
+      "image": "images/B-Boy B-Girl.jpeg"
+    },
+    {
+      "name": "Babushka",
+      "has_image": true,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.42.0",
+      "image": "images/Babushka.jpeg"
+    },
+    {
+      "name": "Backyard Country Casual",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.35.0"
+    },
+    {
+      "name": "Baker",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Ballerina",
+      "has_image": false,
+      "gender": "Female",
+      "group": "athletic",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Barista",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Bartender",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Battle Bard",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Beauty Pageant Contestant",
+      "has_image": true,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.50.0",
+      "image": "images/Beauty Pageant Contestant.jpeg"
+    },
+    {
+      "name": "Beekeeper",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Belly Dancer",
+      "has_image": false,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Berserker Barbarian",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Biker",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.81.0"
+    },
+    {
+      "name": "Bollywood Heroine",
+      "has_image": true,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.42.0",
+      "image": "images/Bollywood Heroine.jpeg"
+    },
+    {
+      "name": "Bosozoku",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Boxer",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Bridal Portrait",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Buddhist Monk",
+      "has_image": true,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.90.0",
+      "image": "images/Buddhist Monk.jpeg"
+    },
+    {
+      "name": "Butcher",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Butler",
+      "has_image": false,
+      "gender": "any",
+      "group": "business formal",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Cabaret Witch",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Calligrapher",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Carpenter",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Cartographer",
+      "has_image": false,
+      "gender": "any",
+      "group": "vintage retro",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Celestial Cleric",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Cheerleader",
+      "has_image": false,
+      "gender": "Female",
+      "group": "athletic",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Chef",
+      "has_image": false,
+      "gender": "Male",
+      "group": "casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Circus Clown",
+      "has_image": false,
+      "gender": "Any",
+      "group": "",
+      "added": "0.50.0"
+    },
+    {
+      "name": "Classic Hollywood Leading Man",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Classic Hollywood Starlet",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Coal Miner",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Construction Worker",
+      "has_image": false,
+      "gender": "Male",
+      "group": "casual",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Corporate Executive",
+      "has_image": false,
+      "gender": "Female",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Cottagecore",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Country Star",
+      "has_image": false,
+      "gender": "any",
+      "group": "",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Court Jester",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Cybergoth",
+      "has_image": true,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.96.0",
+      "image": "images/Cybergoth.jpeg"
+    },
+    {
+      "name": "Cyberpunk Netrunner",
+      "has_image": false,
+      "gender": "any",
+      "group": "streetwear",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Cyclist",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "DJ",
+      "has_image": false,
+      "gender": "any",
+      "group": "streetwear",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Dark Academia",
+      "has_image": false,
+      "gender": "any",
+      "group": "",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Dark Sorceress",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Deep Sea Diver",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Desert Nomad",
+      "has_image": false,
+      "gender": "any",
+      "group": "bohemian",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Disco Diva",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Doctor",
+      "has_image": false,
+      "gender": "Male",
+      "group": "business casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Drag Performer",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Dwarven Blacksmith",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Día de los Muertos",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.50.0"
+    },
+    {
+      "name": "E-Girl / E-Boy",
+      "has_image": false,
+      "gender": "any",
+      "group": "",
+      "added": "0.67.0"
+    },
+    {
+      "name": "ER Nurse",
+      "has_image": false,
+      "gender": "any",
+      "group": "loungewear",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Egyptian Pharaoh",
+      "has_image": false,
+      "gender": "any",
+      "group": "evening formal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Electrician",
+      "has_image": false,
+      "gender": "Male",
+      "group": "casual",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Elven Ranger",
+      "has_image": false,
+      "gender": "any",
+      "group": "bohemian",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Emo",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Fairy Princess",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Falconer",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Farmer",
+      "has_image": false,
+      "gender": "Male",
+      "group": "casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Fencer",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Fighter Pilot",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.90.0"
+    },
+    {
+      "name": "Figure Skater",
+      "has_image": true,
+      "gender": "Any",
+      "group": "",
+      "added": "0.50.0",
+      "image": "images/Figure Skater.jpeg"
+    },
+    {
+      "name": "Firefighter",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Flamenco Dancer",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Flight Attendant",
+      "has_image": false,
+      "gender": "Female",
+      "group": "business casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Florist",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Forest Druid",
+      "has_image": false,
+      "gender": "any",
+      "group": "bohemian",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Fortune Teller",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.5.0"
+    },
+    {
+      "name": "French Maid",
+      "has_image": false,
+      "gender": "Female",
+      "group": "smart casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Game-Day Fan",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.35.0"
+    },
+    {
+      "name": "Gaucho",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Geisha",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Genie",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Gibson Girl",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Gladiator",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Glassblower",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Gothic Doll",
+      "has_image": false,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Graduate",
+      "has_image": true,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.31.0",
+      "image": "images/Graduate.jpeg"
+    },
+    {
+      "name": "Greek Goddess",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Grim Reaper",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Gymnast",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Hair Metal Rocker",
+      "has_image": false,
+      "gender": "Any",
+      "group": "",
+      "added": "0.50.0"
+    },
+    {
+      "name": "Halfling Rogue",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Hazmat Technician",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.87.0"
+    },
+    {
+      "name": "Highland Scot",
+      "has_image": false,
+      "gender": "Male",
+      "group": "",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Hockey Goalie",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.90.0"
+    },
+    {
+      "name": "Holy Paladin",
+      "has_image": false,
+      "gender": "Male",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Human Knight",
+      "has_image": false,
+      "gender": "Male",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Indie Sleaze",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Italian Nonna",
+      "has_image": true,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.42.0",
+      "image": "images/Italian Nonna.jpeg"
+    },
+    {
+      "name": "Jeweler",
+      "has_image": false,
+      "gender": "any",
+      "group": "business casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Judge",
+      "has_image": false,
+      "gender": "any",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "K-Pop Idol",
+      "has_image": true,
+      "gender": "any",
+      "group": "",
+      "added": "0.42.0",
+      "image": "images/K-Pop Idol.jpeg"
+    },
+    {
+      "name": "Kabuki Actor",
+      "has_image": false,
+      "gender": "any",
+      "group": "evening formal",
+      "added": "0.87.0"
+    },
+    {
+      "name": "Kawaii Street Fashion",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.35.0"
+    },
+    {
+      "name": "Kendo Practitioner",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "1.0.0"
+    },
+    {
+      "name": "Korean Hanbok",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.96.0"
+    },
+    {
+      "name": "Librarian",
+      "has_image": false,
+      "gender": "Female",
+      "group": "smart casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Lifeguard",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Luchador",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Lumberjack",
+      "has_image": false,
+      "gender": "Male",
+      "group": "",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Maasai",
+      "has_image": false,
+      "gender": "Male",
+      "group": "bohemian",
+      "added": "0.96.0"
+    },
+    {
+      "name": "Mad Scientist",
+      "has_image": false,
+      "gender": "Male",
+      "group": "",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Marching Band Drum Major",
+      "has_image": false,
+      "gender": "any",
+      "group": "evening formal",
+      "added": "0.87.0"
+    },
+    {
+      "name": "Mardi Gras Reveler",
+      "has_image": false,
+      "gender": "Any",
+      "group": "",
+      "added": "0.50.0"
+    },
+    {
+      "name": "Mariachi Charro",
+      "has_image": false,
+      "gender": "Male",
+      "group": "",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Marine Biologist",
+      "has_image": false,
+      "gender": "Female",
+      "group": "casual",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Martial Artist",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Masquerade Guest",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Matador",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.90.0"
+    },
+    {
+      "name": "McBling Socialite",
+      "has_image": false,
+      "gender": "Female",
+      "group": "streetwear",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Mechanic",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Medieval Peasant",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Metrosexual",
+      "has_image": false,
+      "gender": "Male",
+      "group": "smart casual",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Mime",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.50.0"
+    },
+    {
+      "name": "Mongolian Deel",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.96.0"
+    },
+    {
+      "name": "Musician",
+      "has_image": false,
+      "gender": "any",
+      "group": "streetwear",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Musketeer",
+      "has_image": false,
+      "gender": "any",
+      "group": "vintage retro",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Navy Sailor",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Necromancer",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "News Anchor",
+      "has_image": false,
+      "gender": "any",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Noir Detective",
+      "has_image": false,
+      "gender": "Male",
+      "group": "",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Nun",
+      "has_image": false,
+      "gender": "Female",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Oktoberfest",
+      "has_image": false,
+      "gender": "Any",
+      "group": "",
+      "added": "0.50.0"
+    },
+    {
+      "name": "Opera Singer",
+      "has_image": false,
+      "gender": "Any",
+      "group": "",
+      "added": "0.50.0"
+    },
+    {
+      "name": "Orchestra Conductor",
+      "has_image": false,
+      "gender": "any",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Outback Bushman",
+      "has_image": false,
+      "gender": "Male",
+      "group": "casual",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Paramedic",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Parisian Chic",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Park Ranger",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Personal Trainer",
+      "has_image": false,
+      "gender": "Female",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Photographer",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Pilot",
+      "has_image": false,
+      "gender": "Male",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Pin-up Model",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Plague Doctor",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Plumber",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Police Officer",
+      "has_image": false,
+      "gender": "Male",
+      "group": "business casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Pop Star",
+      "has_image": false,
+      "gender": "Female",
+      "group": "cocktail semi-formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Potter",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Prehistoric Hunter",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Pro Wrestler",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Punk Rocker",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Race Car Driver",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Rancher",
+      "has_image": false,
+      "gender": "any",
+      "group": "vintage retro",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Rapper",
+      "has_image": false,
+      "gender": "any",
+      "group": "streetwear",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Regency Aristocrat",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Renaissance Noble",
+      "has_image": false,
+      "gender": "any",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Retail Cashier",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Ringmaster",
+      "has_image": false,
+      "gender": "any",
+      "group": "evening formal",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Rio Carnival Dancer",
+      "has_image": true,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.42.0",
+      "image": "images/Rio Carnival Dancer.jpeg"
+    },
+    {
+      "name": "Roaring Flapper",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Roaring Twenties Gent",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Rock Climber",
+      "has_image": false,
+      "gender": "Female",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Roman Centurion",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Rude Boy",
+      "has_image": true,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.96.0",
+      "image": "images/Rude Boy.jpeg"
+    },
+    {
+      "name": "Safari Guide",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Sami Gakti",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.96.0"
+    },
+    {
+      "name": "Samurai",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Sapeur",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Scandi Minimalist",
+      "has_image": false,
+      "gender": "any",
+      "group": "",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Scientist",
+      "has_image": false,
+      "gender": "Female",
+      "group": "business casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Sea Captain",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Shadow Monk",
+      "has_image": false,
+      "gender": "Male",
+      "group": "loungewear",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Skateboarder",
+      "has_image": false,
+      "gender": "any",
+      "group": "streetwear",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Snow Queen",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Software Developer",
+      "has_image": false,
+      "gender": "any",
+      "group": "loungewear",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Soldier",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Sommelier",
+      "has_image": false,
+      "gender": "any",
+      "group": "business formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Sorcerer",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Space Knight",
+      "has_image": false,
+      "gender": "Male",
+      "group": "bohemian",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Stage Magician",
+      "has_image": false,
+      "gender": "Male",
+      "group": "",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Stealth Ninja",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Steampunk Inventor",
+      "has_image": false,
+      "gender": "any",
+      "group": "vintage retro",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Stonemason",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Storm Chaser",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.50.0"
+    },
+    {
+      "name": "Streamer",
+      "has_image": false,
+      "gender": "any",
+      "group": "streetwear",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Sumo Wrestler",
+      "has_image": false,
+      "gender": "Male",
+      "group": "athletic",
+      "added": "0.90.0"
+    },
+    {
+      "name": "Superhero",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Supervillain",
+      "has_image": false,
+      "gender": "any",
+      "group": "evening formal",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Surfer",
+      "has_image": false,
+      "gender": "Male",
+      "group": "resort vacation",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Surgeon",
+      "has_image": false,
+      "gender": "any",
+      "group": "business casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Swashbuckling Pirate",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Swim Instructor",
+      "has_image": false,
+      "gender": "Female",
+      "group": "athletic",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Tailor",
+      "has_image": false,
+      "gender": "any",
+      "group": "smart casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Tattoo Artist",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Tavern Wench",
+      "has_image": false,
+      "gender": "Female",
+      "group": "casual",
+      "added": "1.0.0"
+    },
+    {
+      "name": "Teacher",
+      "has_image": false,
+      "gender": "Female",
+      "group": "smart casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Teddy Boy",
+      "has_image": true,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.96.0",
+      "image": "images/Teddy Boy.jpeg"
+    },
+    {
+      "name": "Tennis Player",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.28.0"
+    },
+    {
+      "name": "Toymaker",
+      "has_image": false,
+      "gender": "any",
+      "group": "vintage retro",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Train Conductor",
+      "has_image": false,
+      "gender": "any",
+      "group": "business casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Trapeze Artist",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Trawler Deckhand",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.87.0"
+    },
+    {
+      "name": "Trial Lawyer",
+      "has_image": false,
+      "gender": "any",
+      "group": "business formal",
+      "added": "0.67.0"
+    },
+    {
+      "name": "Tribal Shaman",
+      "has_image": false,
+      "gender": "any",
+      "group": "bohemian",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Trucker",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.34.0"
+    },
+    {
+      "name": "Tuareg",
+      "has_image": false,
+      "gender": "Male",
+      "group": "bohemian",
+      "added": "0.96.0"
+    },
+    {
+      "name": "Ukrainian Vyshyvanka",
+      "has_image": true,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.96.0",
+      "image": "images/Ukrainian Vyshyvanka.jpeg"
+    },
+    {
+      "name": "Valkyrie",
+      "has_image": false,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Vampire Noble",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Veterinarian",
+      "has_image": false,
+      "gender": "any",
+      "group": "business casual",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Victorian Dandy",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.42.0"
+    },
+    {
+      "name": "Victorian Lady",
+      "has_image": false,
+      "gender": "Female",
+      "group": "evening formal",
+      "added": "0.24.0"
+    },
+    {
+      "name": "Vietnamese Ao Dai",
+      "has_image": false,
+      "gender": "Female",
+      "group": "vintage retro",
+      "added": "0.96.0"
+    },
+    {
+      "name": "Viking Shieldmaiden",
+      "has_image": false,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Visual Kei",
+      "has_image": true,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.96.0",
+      "image": "images/Visual Kei.jpeg"
+    },
+    {
+      "name": "Volcanologist",
+      "has_image": false,
+      "gender": "any",
+      "group": "athletic",
+      "added": "0.87.0"
+    },
+    {
+      "name": "Warlock",
+      "has_image": false,
+      "gender": "Female",
+      "group": "edgy alternative",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Wasteland Survivor",
+      "has_image": false,
+      "gender": "any",
+      "group": "edgy alternative",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Watchmaker",
+      "has_image": false,
+      "gender": "any",
+      "group": "business casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Welder",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Werewolf Hunter",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Whirling Dervish",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.90.0"
+    },
+    {
+      "name": "Wild West Gunslinger",
+      "has_image": false,
+      "gender": "Male",
+      "group": "vintage retro",
+      "added": "0.5.0"
+    },
+    {
+      "name": "Winemaker",
+      "has_image": false,
+      "gender": "any",
+      "group": "casual",
+      "added": "0.29.0"
+    },
+    {
+      "name": "Witch Hunter",
+      "has_image": false,
+      "gender": "Male",
+      "group": "edgy alternative",
+      "added": "0.17.0"
+    },
+    {
+      "name": "Y2K Mall Casual",
+      "has_image": false,
+      "gender": "Female",
+      "group": "",
+      "added": "0.35.0"
+    },
+    {
+      "name": "Yeoman Warder",
+      "has_image": false,
+      "gender": "Male",
+      "group": "evening formal",
+      "added": "0.87.0"
+    },
+    {
+      "name": "Yoga Instructor",
+      "has_image": false,
+      "gender": "Female",
+      "group": "athletic",
+      "added": "0.17.0"
+    }
+  ]
+}

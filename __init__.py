@@ -1,0 +1,152 @@
+"""comfyui-explicite-prompt-generator — V3 custom node pack entrypoint.
+
+A female-first, seed-reproducible adult (24-50) character prompt generator
+for ComfyUI, with a constraint engine that keeps trait combinations coherent
+and a wardrobe ladder from Fully clothed down to Fully nude.
+
+Exposes four nodes:
+
+* ``IdentityForge`` — the generator itself: multi-field character prompts
+  with the constraint engine and dual prose/JSON output, including the
+  wardrobe level (Clothed / Swimwear / Lingerie / Topless / Fully nude) and
+  an explicit-action sentence.
+* ``IdentityForgeTurnaround`` — takes a resolved character and emits every
+  camera view of it as a list, so one queue renders a whole reference set.
+* ``IdentityForgeVaultSave`` — save a generated character to a local vault.
+* ``IdentityForgeVaultLoad`` — recall a saved character as a chainable preset.
+
+Discovery uses the ComfyUI V3 ``comfy_entrypoint`` mechanism. Frontend widgets
+live in ``./js`` and are served via ``WEB_DIRECTORY``. The vault nodes also
+register a few read/management HTTP routes (see ``_register_vault_routes``).
+"""
+from comfy_api.latest import ComfyExtension, io
+
+# Package-relative inside ComfyUI; absolute fallback keeps the entrypoint
+# importable in flatter layouts.
+try:
+    from .nodes.identity_forge import IdentityForge
+    from .nodes.identity_forge_turnaround import IdentityForgeTurnaround
+    from .nodes.identity_forge_vault_save import IdentityForgeVaultSave
+    from .nodes.identity_forge_vault_load import IdentityForgeVaultLoad
+except ImportError:  # pragma: no cover
+    from nodes.identity_forge import IdentityForge
+    from nodes.identity_forge_turnaround import IdentityForgeTurnaround
+    from nodes.identity_forge_vault_save import IdentityForgeVaultSave
+    from nodes.identity_forge_vault_load import IdentityForgeVaultLoad
+
+#: Tells ComfyUI where to find this pack's frontend JavaScript.
+WEB_DIRECTORY = "./js"
+
+__all__ = ["comfy_entrypoint", "WEB_DIRECTORY"]
+
+
+def _register_vault_routes() -> None:
+    """Register the vault's HTTP API for the frontend (list/preview/manage).
+
+    Best-effort and idempotent: the routes power the Vault Load node's Refresh,
+    thumbnails and manager modal. Graph execution never depends on them, so any
+    failure here is logged and ignored rather than breaking node loading.
+
+    Security note: these routes are unauthenticated (matching ComfyUI's usual
+    localhost trust model), and the ``delete`` / ``rename`` routes mutate the
+    vault. All paths are constrained to the vault root by ``_entry_dir`` (resolve
+    + parent check), so a caller cannot escape it with ``..`` / absolute-path
+    tricks — but on a ComfyUI instance exposed to an untrusted network these
+    still allow anyone who can reach the server to delete or rename saved
+    characters. Front such a deployment with authentication.
+
+    The mutating routes additionally require ``Content-Type: application/json``
+    (see ``_json_body``). That is not decoration: aiohttp's ``request.json()``
+    parses any body regardless of content type, and a ``text/plain`` POST is a
+    CORS-*simple* request that a browser sends cross-origin with no preflight —
+    so without the check, any page a user happened to visit while ComfyUI was
+    running could silently delete or rename their saved characters. Requiring a
+    JSON content type forces a preflight, which fails since these routes send no
+    CORS headers.
+    """
+    try:
+        from aiohttp import web
+        from server import PromptServer  # type: ignore[import-not-found]
+
+        from .nodes.identity_forge_vault_save import (
+            _PREVIEW_FILE, _entry_dir, save_character,  # noqa: F401 (save re-exported for symmetry)
+        )
+        from .nodes.identity_forge_vault_save import _vault_root
+        from .nodes.identity_forge_vault_load import (
+            delete_characters, list_characters, rename_character,
+        )
+    except Exception as exc:  # noqa: BLE001 — never block node registration
+        print(f"[IdentityForge] Vault API routes not registered: {exc}")
+        return
+
+    routes = PromptServer.instance.routes
+
+    async def _json_body(request):  # type: ignore[no-untyped-def]
+        """Parse a mutating route's JSON body, or return an error response.
+
+        Returns ``(body, None)`` on success and ``(None, response)`` on failure, so
+        the caller can bail out with a 4xx instead of raising into a 500. Enforces
+        a JSON content type — see the CSRF note in this function's docstring.
+        """
+        if request.content_type != "application/json":
+            return None, web.json_response(
+                {"error": "Content-Type must be application/json"}, status=415)
+        try:
+            body = await request.json()
+        except Exception:  # noqa: BLE001 — any parse failure is a client error
+            return None, web.json_response({"error": "Malformed JSON body"}, status=400)
+        if not isinstance(body, dict):
+            return None, web.json_response({"error": "Body must be a JSON object"}, status=400)
+        return body, None
+
+    @routes.get("/identity_forge/vault/characters")
+    async def _characters(_request):  # type: ignore[no-untyped-def]
+        return web.json_response({"characters": list_characters(_vault_root())})
+
+    @routes.get("/identity_forge/vault/preview/{name}")
+    async def _preview(request):  # type: ignore[no-untyped-def]
+        name = request.match_info["name"]
+        try:
+            path = _entry_dir(_vault_root(), name) / _PREVIEW_FILE
+        except ValueError:
+            return web.Response(status=400, text="bad name")
+        if not path.is_file():
+            return web.Response(status=404, text="no preview")
+        return web.FileResponse(path)
+
+    @routes.post("/identity_forge/vault/delete")
+    async def _delete(request):  # type: ignore[no-untyped-def]
+        body, error = await _json_body(request)
+        if error is not None:
+            return error
+        names = body.get("names") or ([body["name"]] if body.get("name") else [])
+        survivors = delete_characters(_vault_root(), names)
+        return web.json_response({"characters": survivors})
+
+    @routes.post("/identity_forge/vault/rename")
+    async def _rename(request):  # type: ignore[no-untyped-def]
+        body, error = await _json_body(request)
+        if error is not None:
+            return error
+        try:
+            new_name = rename_character(_vault_root(), body.get("from", ""), body.get("to", ""))
+        except ValueError as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        return web.json_response({"name": new_name})
+
+    print("[IdentityForge] Vault API routes registered.")
+
+
+_register_vault_routes()
+
+
+class IdentityForgeExtension(ComfyExtension):
+    """Registers the IdentityForge node pack with ComfyUI."""
+
+    async def get_node_list(self) -> list[type[io.ComfyNode]]:
+        return [IdentityForge, IdentityForgeTurnaround,
+                IdentityForgeVaultSave, IdentityForgeVaultLoad]
+
+
+async def comfy_entrypoint() -> IdentityForgeExtension:
+    return IdentityForgeExtension()
