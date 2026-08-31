@@ -4,9 +4,9 @@ Three sibling galleries, one per preset node:
 
 | Folder | Entries from | Live page |
 | --- | --- | --- |
-| [`cosplay/`](cosplay/) | `data/cosplayers.py` | [cosplay gallery](https://gbetronix.github.io/comfyui-my-identity-forge/gallery/cosplay/) |
-| [`archetypes/`](archetypes/) | `data/templates.py` (`ARCHETYPES`) | [archetype gallery](https://gbetronix.github.io/comfyui-my-identity-forge/gallery/archetypes/) |
-| [`creatures/`](creatures/) | `data/creatures.py` (`CREATURES`) | [creature gallery](https://gbetronix.github.io/comfyui-my-identity-forge/gallery/creatures/) |
+| [`cosplay/`](cosplay/) | `data/cosplayers.py` | [cosplay gallery](https://gbetronix.github.io/comfyui-explicite-identity-forge/gallery/cosplay/) |
+| [`archetypes/`](archetypes/) | `data/templates.py` (`ARCHETYPES`) | [archetype gallery](https://gbetronix.github.io/comfyui-explicite-identity-forge/gallery/archetypes/) |
+| [`creatures/`](creatures/) | `data/creatures.py` (`CREATURES`) | [creature gallery](https://gbetronix.github.io/comfyui-explicite-identity-forge/gallery/creatures/) |
 
 **Images live only on the `gh-pages` branch.** `gallery/.gitignore` blocks `images/`
 on `main`, so cloning or pulling the repo never drags down hundreds of megabytes of

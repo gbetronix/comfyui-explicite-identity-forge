@@ -284,7 +284,7 @@ def main() -> int:
         run("git", "push", "origin", BRANCH, cwd=worktree)
         print(f"\nDone. {written} image(s) published"
               + (f", {errors} error(s)" if errors else "") + ".")
-        print(f"https://gbetronix.github.io/comfyui-my-identity-forge/{REL_DIR}/")
+        print(f"https://gbetronix.github.io/comfyui-explicite-identity-forge/{REL_DIR}/")
         return 1 if errors else 0
 
     finally:
