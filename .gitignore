@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# User-supplied dropdown options (keep local; survives git pull)
+user_options.json
+
+# Node (dev-only frontend test harness, tests/frontend/)
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local agent / working notes (not for distribution)
+.claude/
+.omo/
+.superpowers/
+docs/worklog/
+worklog-*.md
+
+# Local render config (this machine's ComfyUI models); see AGENTS.md
+scripts/render_config.json

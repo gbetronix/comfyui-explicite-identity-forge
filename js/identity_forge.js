@@ -1,0 +1,887 @@
+import { app } from "../../scripts/app.js";
+
+/*
+ * IdentityForge frontend extension.
+ *
+ * Data (GROUP_ORDER / FIELD_TO_GROUP / GENDER_POOLS) is generated from
+ * data/fields.py by scripts/generate_js_data.py — do not edit the block between
+ * the GENERATED DATA markers by hand; rerun that script after changing the fields
+ * (CI runs it with --check, and tests/test_js_sync.py guards the same invariant).
+ *
+ * Features (all degrade gracefully; any failure is caught so the node still
+ * works headless):
+ *   - Master buttons: set every field to "Random", or lock every field to a
+ *     concrete random value.
+ *   - Collapsible group sections so the many widgets stay manageable.
+ *   - Gender pool-swapping: changing the gender toggle restricts the
+ *     gender-divergent dropdowns and resets any now-invalid lock to "Random".
+ *
+ * Per-field locking needs no JS: selecting a concrete value locks a field,
+ * selecting "Random" unlocks it. "Random"/"None" persist through ComfyUI's
+ * native widget serialization, so saved workflows round-trip unchanged.
+ */
+
+// >>> GENERATED DATA — do not edit by hand. Regenerate: python scripts/generate_js_data.py >>>
+const GROUP_ORDER = ["Demographics", "Body", "Face", "Hair", "Makeup", "Jewelry & Nails", "Clothing", "Nudity & Intimate", "Setting & Shot"];
+const FIELD_TO_GROUP = {
+  "age": "Demographics",
+  "ethnicity": "Demographics",
+  "skin_tone": "Body",
+  "body_type": "Body",
+  "height": "Body",
+  "bust": "Body",
+  "waist": "Body",
+  "hips": "Body",
+  "face_shape": "Face",
+  "forehead": "Face",
+  "cheekbones": "Face",
+  "eyebrows": "Face",
+  "eye_color": "Face",
+  "eye_shape": "Face",
+  "nose": "Face",
+  "lips": "Face",
+  "smile_type": "Face",
+  "jawline": "Face",
+  "chin": "Face",
+  "complexion": "Face",
+  "skin_details": "Face",
+  "freckles_density": "Face",
+  "hair_color": "Hair",
+  "hair_length": "Hair",
+  "hair_texture": "Hair",
+  "hair_style": "Hair",
+  "facial_hair": "Hair",
+  "hair_accessory": "Hair",
+  "makeup_style": "Makeup",
+  "eyebrow_makeup": "Makeup",
+  "eye_makeup": "Makeup",
+  "eyeliner": "Makeup",
+  "lashes": "Makeup",
+  "contour": "Makeup",
+  "highlight": "Makeup",
+  "blush": "Makeup",
+  "lips_makeup": "Makeup",
+  "skin_finish": "Makeup",
+  "earrings": "Jewelry & Nails",
+  "necklace": "Jewelry & Nails",
+  "other_jewelry": "Jewelry & Nails",
+  "piercings": "Jewelry & Nails",
+  "nails": "Jewelry & Nails",
+  "outfit_style": "Clothing",
+  "swimwear_style": "Clothing",
+  "lingerie_style": "Clothing",
+  "lingerie_color": "Clothing",
+  "topless_outfit": "Clothing",
+  "nude_outfit": "Clothing",
+  "bag": "Clothing",
+  "accessories": "Clothing",
+  "expression": "Setting & Shot",
+  "location": "Setting & Shot",
+  "lighting": "Setting & Shot",
+  "shot_type": "Setting & Shot",
+  "shoulder_width": "Body",
+  "neck_length": "Body",
+  "posture": "Body",
+  "fitness_level": "Body",
+  "hair_part": "Hair",
+  "hair_highlights": "Hair",
+  "rings": "Jewelry & Nails",
+  "bracelet": "Jewelry & Nails",
+  "watch_type": "Jewelry & Nails",
+  "footwear": "Clothing",
+  "clothing_color": "Clothing",
+  "clothing_pattern": "Clothing",
+  "season": "Setting & Shot",
+  "mood": "Setting & Shot",
+  "pose": "Setting & Shot",
+  "explicit_act": "Setting & Shot",
+  "composition": "Setting & Shot",
+  "nipple_appearance": "Nudity & Intimate",
+  "areola_appearance": "Nudity & Intimate",
+  "labia_appearance": "Nudity & Intimate",
+  "vulva_detail": "Nudity & Intimate",
+  "anus_appearance": "Nudity & Intimate",
+  "pubic_style": "Nudity & Intimate",
+  "pubic_color": "Nudity & Intimate",
+  "arousal_level": "Nudity & Intimate",
+  "tattoos": "Body",
+  "legwear": "Clothing",
+  "tattoo_placement": "Body"
+};
+const GENDER_POOLS = {
+  "bust": {
+    "Female": [
+      "Random",
+      "very small",
+      "small",
+      "modest",
+      "medium",
+      "full",
+      "large",
+      "very large",
+      "generously proportioned",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "flat",
+      "slightly defined",
+      "average",
+      "broad",
+      "muscular",
+      "large",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "very small",
+      "small",
+      "modest",
+      "medium",
+      "full",
+      "large",
+      "very large",
+      "generously proportioned",
+      "flat",
+      "slightly defined",
+      "average",
+      "broad",
+      "muscular",
+      "None"
+    ]
+  },
+  "hair_length": {
+    "Female": [
+      "Random",
+      "buzzed very short",
+      "very short",
+      "short pixie",
+      "ear length",
+      "chin length bob",
+      "jaw length",
+      "shoulder length",
+      "slightly past shoulders",
+      "mid back",
+      "lower back",
+      "long",
+      "very long",
+      "waist length",
+      "hip length",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "bald",
+      "buzzed very short",
+      "very short",
+      "short pixie",
+      "ear length",
+      "chin length bob",
+      "jaw length",
+      "shoulder length",
+      "slightly past shoulders",
+      "mid back",
+      "lower back",
+      "long",
+      "very long",
+      "waist length",
+      "hip length",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "buzzed very short",
+      "very short",
+      "short pixie",
+      "ear length",
+      "chin length bob",
+      "jaw length",
+      "shoulder length",
+      "slightly past shoulders",
+      "mid back",
+      "lower back",
+      "long",
+      "very long",
+      "waist length",
+      "hip length",
+      "bald",
+      "None"
+    ]
+  },
+  "hair_style": {
+    "Female": [
+      "Random",
+      "worn down",
+      "half up half down",
+      "high ponytail",
+      "low ponytail",
+      "side ponytail",
+      "messy bun",
+      "sleek bun",
+      "top knot",
+      "chignon",
+      "side braid",
+      "fishtail braid",
+      "French braid",
+      "dutch braids",
+      "crown braid",
+      "waterfall braid",
+      "loose braids",
+      "box braids",
+      "cornrows",
+      "locs",
+      "space buns",
+      "pigtails",
+      "high pigtails",
+      "low pigtails",
+      "curled pigtails",
+      "braided pigtails",
+      "bantu knots",
+      "afro",
+      "twist-out",
+      "updo",
+      "French twist",
+      "slicked back",
+      "curtain bangs",
+      "blunt bangs",
+      "wet look",
+      "windswept",
+      "freshly blown out",
+      "natural and unstyled",
+      "tousled bedhead",
+      "ballerina bun",
+      "braided ponytail",
+      "fade",
+      "undercut",
+      "pompadour",
+      "quiff",
+      "shag",
+      "milkmaid braids",
+      "rope braid",
+      "braided bun",
+      "two-strand twists",
+      "bubble ponytail",
+      "micro bangs",
+      "hair puff",
+      "crew cut",
+      "textured crop",
+      "high-top fade",
+      "side-swept bangs",
+      "wispy bangs",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "worn down",
+      "half up half down",
+      "high ponytail",
+      "low ponytail",
+      "side ponytail",
+      "messy bun",
+      "sleek bun",
+      "top knot",
+      "chignon",
+      "side braid",
+      "fishtail braid",
+      "French braid",
+      "dutch braids",
+      "crown braid",
+      "waterfall braid",
+      "loose braids",
+      "box braids",
+      "cornrows",
+      "locs",
+      "space buns",
+      "pigtails",
+      "high pigtails",
+      "low pigtails",
+      "curled pigtails",
+      "braided pigtails",
+      "bantu knots",
+      "afro",
+      "twist-out",
+      "updo",
+      "French twist",
+      "slicked back",
+      "curtain bangs",
+      "blunt bangs",
+      "wet look",
+      "windswept",
+      "freshly blown out",
+      "natural and unstyled",
+      "tousled bedhead",
+      "ballerina bun",
+      "braided ponytail",
+      "comb over",
+      "mullet",
+      "fade",
+      "undercut",
+      "pompadour",
+      "quiff",
+      "shag",
+      "milkmaid braids",
+      "rope braid",
+      "braided bun",
+      "two-strand twists",
+      "bubble ponytail",
+      "micro bangs",
+      "hair puff",
+      "crew cut",
+      "textured crop",
+      "high-top fade",
+      "side-swept bangs",
+      "wispy bangs",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "worn down",
+      "half up half down",
+      "high ponytail",
+      "low ponytail",
+      "side ponytail",
+      "messy bun",
+      "sleek bun",
+      "top knot",
+      "chignon",
+      "side braid",
+      "fishtail braid",
+      "French braid",
+      "dutch braids",
+      "crown braid",
+      "waterfall braid",
+      "loose braids",
+      "box braids",
+      "cornrows",
+      "locs",
+      "space buns",
+      "pigtails",
+      "high pigtails",
+      "low pigtails",
+      "curled pigtails",
+      "braided pigtails",
+      "bantu knots",
+      "afro",
+      "twist-out",
+      "updo",
+      "French twist",
+      "slicked back",
+      "curtain bangs",
+      "blunt bangs",
+      "wet look",
+      "windswept",
+      "freshly blown out",
+      "natural and unstyled",
+      "tousled bedhead",
+      "ballerina bun",
+      "braided ponytail",
+      "fade",
+      "undercut",
+      "pompadour",
+      "quiff",
+      "shag",
+      "milkmaid braids",
+      "rope braid",
+      "braided bun",
+      "two-strand twists",
+      "bubble ponytail",
+      "micro bangs",
+      "hair puff",
+      "crew cut",
+      "textured crop",
+      "high-top fade",
+      "side-swept bangs",
+      "wispy bangs",
+      "comb over",
+      "mullet",
+      "None"
+    ]
+  },
+  "facial_hair": {
+    "Female": [
+      "Random",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "stubble",
+      "short beard",
+      "full beard",
+      "goatee",
+      "mustache",
+      "van dyke",
+      "soul patch",
+      "mutton chops",
+      "five o'clock shadow",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "stubble",
+      "short beard",
+      "full beard",
+      "goatee",
+      "mustache",
+      "van dyke",
+      "soul patch",
+      "mutton chops",
+      "five o'clock shadow",
+      "None"
+    ]
+  },
+  "hair_accessory": {
+    "Female": [
+      "Random",
+      "hair bow",
+      "oversized hair bow",
+      "satin ribbon tied in hair",
+      "silk headband",
+      "knotted headband",
+      "padded headband",
+      "scrunchie",
+      "claw clip",
+      "small hair clip",
+      "decorative hair pins",
+      "jeweled hair comb",
+      "thin scarf tied in hair",
+      "flower crown",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "thin headband",
+      "bandana tied over hair",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "hair bow",
+      "oversized hair bow",
+      "satin ribbon tied in hair",
+      "silk headband",
+      "knotted headband",
+      "padded headband",
+      "scrunchie",
+      "claw clip",
+      "small hair clip",
+      "decorative hair pins",
+      "jeweled hair comb",
+      "thin scarf tied in hair",
+      "flower crown",
+      "thin headband",
+      "bandana tied over hair",
+      "None"
+    ]
+  },
+  "makeup_style": {
+    "Female": [
+      "Random",
+      "barely there natural makeup",
+      "soft natural makeup",
+      "fresh-faced dewy look",
+      "classic no-makeup makeup",
+      "soft everyday glam",
+      "soft glam",
+      "full glam",
+      "bold glam",
+      "heavy glam",
+      "editorial makeup",
+      "vintage 1950s pin-up makeup",
+      "mod 1960s eye makeup",
+      "gothic dark makeup",
+      "club makeup",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "barely there natural makeup",
+      "soft natural makeup",
+      "fresh-faced dewy look",
+      "classic no-makeup makeup",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "barely there natural makeup",
+      "soft natural makeup",
+      "fresh-faced dewy look",
+      "classic no-makeup makeup",
+      "soft everyday glam",
+      "soft glam",
+      "full glam",
+      "bold glam",
+      "heavy glam",
+      "editorial makeup",
+      "vintage 1950s pin-up makeup",
+      "mod 1960s eye makeup",
+      "gothic dark makeup",
+      "club makeup",
+      "None"
+    ]
+  },
+  "labia_appearance": {
+    "Female": [
+      "Random",
+      "soft, naturally proportioned labia",
+      "full, softly rounded labia majora",
+      "modest, closely fitted labia",
+      "slightly prominent inner labia",
+      "full, softly parted labia",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "a natural, relaxed scrotum",
+      "a full, softly heavy scrotum",
+      "a slim, close-fitting scrotum",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "soft, naturally proportioned labia",
+      "full, softly rounded labia majora",
+      "modest, closely fitted labia",
+      "slightly prominent inner labia",
+      "full, softly parted labia",
+      "a natural, relaxed scrotum",
+      "a full, softly heavy scrotum",
+      "a slim, close-fitting scrotum",
+      "None"
+    ]
+  },
+  "vulva_detail": {
+    "Female": [
+      "Random",
+      "a delicate, realistically detailed vaginal opening",
+      "a gently parted vulva",
+      "a naturally textured vulva with realistic detail",
+      "a visible urethral opening just above the vaginal entrance",
+      "a subtly open view with a softly visible cervix",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "a naturally defined perineum",
+      "a detailed, realistic perineum with natural skin texture",
+      "a relaxed perineum with soft, natural folds",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "a delicate, realistically detailed vaginal opening",
+      "a gently parted vulva",
+      "a naturally textured vulva with realistic detail",
+      "a visible urethral opening just above the vaginal entrance",
+      "a subtly open view with a softly visible cervix",
+      "a naturally defined perineum",
+      "a detailed, realistic perineum with natural skin texture",
+      "a relaxed perineum with soft, natural folds",
+      "None"
+    ]
+  },
+  "pubic_color": {
+    "Female": [
+      "Random",
+      "in her natural hair color",
+      "a shade darker than her hair",
+      "a shade lighter than her hair",
+      "a contrasting, distinctly darker tone",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "in his natural hair color",
+      "a shade darker than his hair",
+      "a shade lighter than his hair",
+      "a contrasting, distinctly darker tone",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "in her natural hair color",
+      "a shade darker than her hair",
+      "a shade lighter than her hair",
+      "a contrasting, distinctly darker tone",
+      "in his natural hair color",
+      "a shade darker than his hair",
+      "a shade lighter than his hair",
+      "None"
+    ]
+  },
+  "legwear": {
+    "Female": [
+      "Random",
+      "sheer black tights",
+      "opaque black tights",
+      "opaque cream tights",
+      "fishnet tights",
+      "patterned tights",
+      "sheer stockings",
+      "ribbed knee-high socks",
+      "over-the-knee socks",
+      "slouchy ankle socks",
+      "None"
+    ],
+    "Male": [
+      "Random",
+      "None"
+    ],
+    "Any": [
+      "Random",
+      "sheer black tights",
+      "opaque black tights",
+      "opaque cream tights",
+      "fishnet tights",
+      "patterned tights",
+      "sheer stockings",
+      "ribbed knee-high socks",
+      "over-the-knee socks",
+      "slouchy ankle socks",
+      "None"
+    ]
+  }
+};
+// <<< GENERATED DATA <<<
+
+function isFieldWidget(w) {
+  return w && Object.prototype.hasOwnProperty.call(FIELD_TO_GROUP, w.name);
+}
+
+function setWidgetValue(node, w, value) {
+  if (!w) return;
+  w.value = value;
+  if (typeof w.callback === "function") {
+    try { w.callback(value, app.canvas, node); } catch (e) { /* ignore */ }
+  }
+}
+
+function lockToRandomValue(node, w) {
+  const opts = (w.options && w.options.values) || [];
+  const concrete = opts.filter((o) => o !== "Random" && o !== "None");
+  if (!concrete.length) return;
+  const pick = concrete[Math.floor(Math.random() * concrete.length)];
+  setWidgetValue(node, w, pick);
+}
+
+// --- collapse helpers (hide a widget without losing its type) -------------
+function hideWidget(w) {
+  if (w.__hidden) return;
+  w.__hidden = true;
+  w.__origType = w.type;
+  w.__origComputeSize = w.computeSize;
+  w.type = "if_hidden";
+  w.computeSize = () => [0, -4];
+}
+
+function showWidget(w) {
+  if (!w.__hidden) return;
+  w.__hidden = false;
+  w.type = w.__origType;
+  // A widget that never had its own computeSize saved `undefined` here.
+  // Reassigning `w.computeSize = undefined` still leaves it as an *own*
+  // property (value undefined), which some layout checks treat differently
+  // from the property being absent entirely -- delete it instead so a
+  // re-expanded widget is indistinguishable from one that was never
+  // collapsed.
+  if (w.__origComputeSize) {
+    w.computeSize = w.__origComputeSize;
+  } else {
+    delete w.computeSize;
+  }
+  w.__origType = null;
+  w.__origComputeSize = null;
+}
+
+function resize(node) {
+  if (typeof node.computeSize === "function") {
+    const sz = node.computeSize();
+    node.setSize([Math.max(node.size[0], sz[0]), sz[1]]);
+  }
+  node.setDirtyCanvas(true, true);
+}
+
+//: The first widget this file adds. Its presence IS the re-entry guard below --
+//: a structural check rather than a flag, so it also holds for a node rebuilt by
+//: "Fix node (recreate)", which produces a genuinely new node object.
+const ALL_RANDOM_LABEL = "🎲 Unlock all (set to Random)";
+
+function setupIdentityForge(node) {
+  const original = node.widgets ? node.widgets.slice() : [];
+  if (!original.length) return;
+  // Re-entry guard: onNodeCreated can fire again for the same node on some paths.
+  // Without it a second call appends a second pair of master buttons and a second
+  // set of group headers, and wraps the gender callback twice. The Cosplayer file
+  // has had this since 0.89.0; the other four setups had not (0.97.0).
+  if (original.some((w) => w.name === ALL_RANDOM_LABEL)) return;
+
+  const fields = original.filter(isFieldWidget);
+  const fieldSet = new Set(fields);
+  // Everything that isn't a randomizable field — the seed (and its auto-added
+  // control_after_generate widget) and the global controls (gender, wardrobe,
+  // hair_color_scope, accessory_density, location_setting) — kept in original
+  // schema order. Filtering by "not a field" (rather than a name allow-list)
+  // means linked/auto widgets like control_after_generate are never dropped.
+  const preFields = original.filter((w) => !fieldSet.has(w));
+
+  // --- master buttons ---
+  // "Random" on a field = randomize it each run; any concrete value = lock it.
+  const allRandom = node.addWidget("button", ALL_RANDOM_LABEL, null, () => {
+    for (const w of fields) setWidgetValue(node, w, "Random");
+    resize(node);
+  }, { serialize: false });
+
+  const lockAll = node.addWidget("button", "🔒 Roll + lock all fields", null, () => {
+    for (const w of fields) if (w.value === "Random") lockToRandomValue(node, w);
+    resize(node);
+  }, { serialize: false });
+
+  // --- group headers + collapse ---
+  const groups = new Map();
+  for (const groupName of GROUP_ORDER) groups.set(groupName, []);
+  for (const w of fields) {
+    const g = FIELD_TO_GROUP[w.name];
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g).push(w);
+  }
+
+  const headers = [];
+  const ordered = [...preFields, allRandom, lockAll];
+  for (const [groupName, groupWidgets] of groups) {
+    if (!groupWidgets.length) continue;
+    const state = { collapsed: false };
+    const header = node.addWidget("button", "▾ " + groupName, null, () => {
+      state.collapsed = !state.collapsed;
+      header.name = (state.collapsed ? "▸ " : "▾ ") + groupName;
+      for (const w of groupWidgets) (state.collapsed ? hideWidget : showWidget)(w);
+      resize(node);
+    }, { serialize: false });
+    headers.push(header);
+    ordered.push(header, ...groupWidgets);
+  }
+
+  // Safety net: append any original widget we didn't explicitly place, so a
+  // future auto-added widget can never silently disappear.
+  const placed = new Set(ordered);
+  for (const w of original) if (!placed.has(w)) ordered.push(w);
+
+  // Re-order the widget array so headers sit above their groups.
+  node.widgets = ordered.filter((w, i) => ordered.indexOf(w) === i);
+
+  // --- gender pool swapping ---
+  const genderW = original.find((w) => w.name === "gender");
+  if (genderW) {
+    const prev = genderW.callback;
+    genderW.callback = function (value) {
+      if (typeof prev === "function") prev.apply(this, arguments);
+      applyGender(node, value);
+    };
+    applyGender(node, genderW.value);
+  }
+
+  resize(node);
+}
+
+function applyGender(node, gender) {
+  for (const [field, pools] of Object.entries(GENDER_POOLS)) {
+    const w = (node.widgets || []).find((x) => x.name === field);
+    if (!w || !w.options) continue;
+    const opts = pools[gender] || pools["Any"];
+    w.options.values = opts.slice();
+    if (!opts.includes(w.value)) setWidgetValue(node, w, "Random");
+  }
+  node.setDirtyCanvas(true, true);
+}
+
+/**
+ * Fields added in a release AFTER the workflow being loaded was saved, newest
+ * release first. Each entry is one release's additions.
+ *
+ * **Why this exists.** `widgets_values` is a positional array and ComfyUI restores it
+ * 1:1 against `node.widgets` -- INCLUDING the buttons and group headers this file
+ * inserts, and regardless of `serialize: false`, which is honoured in neither
+ * direction. `setupIdentityForge` then re-sorts `node.widgets` into group order, so a
+ * field appended at the end of FIELD_DEFINITIONS does NOT land at the end of the
+ * array the loader indexes into: `tattoos` sits in Body, at position 25 of 88.
+ *
+ * The consequence, measured against a real 0.89.0-shaped array on a live instance:
+ * 60 of 85 widgets restored one or more slots out. Appending in Python is necessary
+ * but NOT sufficient, and a fixture that only compares schema key order cannot see
+ * it -- that check passes while the node is broken.
+ *
+ * The pack learned this the expensive way at 0.89.0, when the Cosplayer node's
+ * `franchise_filter` was added with `serialize: false` on the reasoning that a
+ * non-serializing widget cannot disturb `widgets_values`. That is true when WRITING
+ * and false when READING, and every existing Cosplayer node had to be recreated.
+ */
+const FIELDS_ADDED_BY_RELEASE = [
+  ["tattoos", "tattoo_placement", "legwear"], // 0.90.0
+];
+
+/**
+ * Pad a legacy `widgets_values` so each value lands on the widget that saved it.
+ *
+ * Walks releases newest-first, and for each one whose additions exactly account for
+ * the shortfall, splices this node's default into the slot every new widget occupies
+ * *now*. Length is the only signal available (the array carries no names), so the
+ * match has to be exact: a length that corresponds to no known release is left
+ * untouched rather than guessed at, because a wrong guess silently scrambles a
+ * workflow instead of failing.
+ *
+ * Deliberately silent. There is no toast, banner or console warning: the values are
+ * restored correctly, so there is nothing for the user to act on, and a notice that
+ * fires on every load of an older workflow is an irritant.
+ */
+function padLegacyWidgetValues(node, values) {
+  const total = (node.widgets || []).length;
+  if (!Array.isArray(values) || values.length >= total) return values;
+
+  let padded = values.slice();
+  for (const added of FIELDS_ADDED_BY_RELEASE) {
+    if (padded.length + added.length > total) continue;
+    const slots = added
+      .map((name) => (node.widgets || []).findIndex((w) => w.name === name))
+      .filter((i) => i > -1)
+      .sort((a, b) => a - b);
+    if (slots.length !== added.length) continue;
+    // Ascending order matters: each splice shifts everything after it, so inserting
+    // low-to-high keeps the later indices correct as we go.
+    for (const slot of slots) {
+      padded.splice(slot, 0, node.widgets[slot]?.value ?? "Random");
+    }
+    if (padded.length === total) break;
+  }
+  return padded.length === total ? padded : values;
+}
+
+app.registerExtension({
+  name: "identity_forge.ui",
+  async beforeRegisterNodeDef(nodeType, nodeData) {
+    if (nodeData.name !== "IdentityForge") return;
+    const onNodeCreated = nodeType.prototype.onNodeCreated;
+    nodeType.prototype.onNodeCreated = function () {
+      const result = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;
+      try {
+        setupIdentityForge(this);
+      } catch (err) {
+        console.error("[IdentityForge] frontend setup failed:", err);
+      }
+      return result;
+    };
+
+    // Must wrap `configure` itself, not `onConfigure`: LiteGraph applies
+    // widgets_values and THEN calls onConfigure, so by then the damage is done.
+    // `onNodeCreated` has already run at this point, so node.widgets is built and
+    // grouped and the new fields can be located by name.
+    const configure = nodeType.prototype.configure;
+    nodeType.prototype.configure = function (info) {
+      try {
+        if (info && Array.isArray(info.widgets_values)) {
+          info = { ...info, widgets_values: padLegacyWidgetValues(this, info.widgets_values) };
+        }
+      } catch (err) {
+        console.error("[IdentityForge] legacy widget mapping failed:", err);
+      }
+      return configure ? configure.apply(this, [info]) : undefined;
+    };
+  },
+});
