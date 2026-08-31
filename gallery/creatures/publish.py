@@ -267,7 +267,9 @@ def main() -> int:
 
         # -A, not a bare add: a plain `git add` stages additions and
         # modifications but NOT deletions, so a prune would be silently undone.
-        run("git", "add", "-A", REL_DIR, cwd=worktree)
+        run("git", "add", "-f", "-A", REL_DIR, cwd=worktree)
+        # -f: gallery/.gitignore ignores images/ on main, so a plain add would
+        # silently skip NEW image files; overwrites of tracked files are unaffected.
         if not run("git", "status", "--porcelain", cwd=worktree):
             print("\nNothing changed on the branch.")
             return 0
