@@ -738,7 +738,9 @@ class ConstraintTests(unittest.TestCase):
 
     def test_exclusion_athletic_has_no_bag(self):
         for seed in range(40):
-            _, js = generate_character(seed, "Female", {"outfit_style": "athletic"})
+            _, js = generate_character(seed, "Female",
+                                       {"outfit_style": "athletic",
+                                        "explicit_act": "no explicit action"})
             self.assertEqual(json.loads(js)["Clothing"].get("bag"), "no bag")
 
     def test_body_fitness_coherence(self):
@@ -2484,7 +2486,7 @@ class WardrobeAndCostumeTests(unittest.TestCase):
 
     def test_generated_outfit_keeps_garment_fields(self):
         # Without a costume, the normal garment fields are still emitted.
-        _, js = generate_character(1, "Female", {})
+        _, js = generate_character(1, "Female", {"explicit_act": "no explicit action"})
         self.assertIn("footwear", json.loads(js)["Clothing"])
 
     def test_wardrobe_recorded_in_meta(self):
@@ -5637,7 +5639,8 @@ class WardrobeAxisTests(unittest.TestCase):
         """The regression that motivated the whole phase."""
         for seed in range(60):
             locked = {"footwear": "combat boots", "clothing_color": "jewel tones",
-                      "clothing_pattern": "stripes"}
+                      "clothing_pattern": "stripes",
+                      "explicit_act": "no explicit action"}
             prose, raw = generate_character(seed, "Female", dict(locked))
             outfit = self._clothing(raw)["outfit_description"]
             with self.subTest(seed=seed):
@@ -5914,7 +5917,8 @@ class OutfitArticleTests(unittest.TestCase):
         """
         for seed in range(400):
             for gender in ("Female", "Male", "Any"):
-                raw = generate_character(seed, gender, {})[1]
+                raw = generate_character(seed, gender,
+                                         {"explicit_act": "no explicit action"})[1]
                 outfit = json.loads(raw)["Clothing"]["outfit_description"]
                 with self.subTest(seed=seed, gender=gender):
                     if re.match(r"^(?:a|an) ", outfit):
@@ -7282,7 +7286,8 @@ FERAL_ENTRIES = sorted(n for n, e in COSPLAYERS.items() if e.get("body_plan") ==
 
 
 def _render_cosplayer(character, seed, look_level="Costume only",
-                      mask_mode=_MASK_DEFAULT, gender="Male", include_prop=False):
+                      mask_mode=_MASK_DEFAULT, gender="Male", include_prop=False,
+                      locked_extra=None):
     """Wire the Cosplayer node into the engine exactly as the graph does."""
     flat = _parse_archetype_json(
         build_cosplayer_json(character, seed, look_level, mask_mode, include_prop))
@@ -7296,6 +7301,8 @@ def _render_cosplayer(character, seed, look_level="Costume only",
     scale = flat.pop(_SCALE_TIER_KEY, "") or ""
     locked = {k: v for k, v in flat.items()
               if k not in _CONTROL_FIELDS and not k.startswith("__")}
+    if locked_extra:
+        locked.update(locked_extra)
     return generate_character(
         seed, gender, locked, cosplay_label=label, species=species,
         covers_face=covers_face, covers_body=covers_body, covers_hair=covers_hair,
@@ -7342,7 +7349,9 @@ class FeralBodyPlanTests(unittest.TestCase):
         for name in FERAL_ENTRIES:
             for look in ("Costume only", "Full character"):
                 for seed in range(20):
-                    prose, js = _render_cosplayer(name, seed, look)
+                    prose, js = _render_cosplayer(
+                        name, seed, look,
+                        locked_extra={"explicit_act": "no explicit action"})
                     for word in human_prose:
                         self.assertNotIn(word, prose,
                                          f"{name} @{seed} ({look}): {word!r} leaked")
@@ -8008,7 +8017,8 @@ class IntimateDetailTierTests(unittest.TestCase):
     def test_topless_covers_the_chest_but_not_the_lower_body(self):
         for seed in range(40):
             flat = self._flat(generate_character(
-                seed, "Female", {}, wardrobe_level="Topless")[1])
+                seed, "Female", {"explicit_act": "no explicit action"},
+                wardrobe_level="Topless")[1])
             for field in self._CHEST:
                 self.assertNotIn(flat.get(field), (None, "", "Random", "None"),
                                  f"{field} missing at seed {seed}")
@@ -8022,7 +8032,8 @@ class IntimateDetailTierTests(unittest.TestCase):
     def test_lingerie_carries_pubic_and_arousal_only(self):
         for seed in range(40):
             flat = self._flat(generate_character(
-                seed, "Female", {}, wardrobe_level="Lingerie")[1])
+                seed, "Female", {"explicit_act": "no explicit action"},
+                wardrobe_level="Lingerie")[1])
             for field in self._CHEST + self._LOWER:
                 self.assertIn(flat.get(field), (None, "", "Random", "None"),
                               f"{field} leaked into a Lingerie run at seed {seed}")
@@ -8031,7 +8042,8 @@ class IntimateDetailTierTests(unittest.TestCase):
         for level in ("Clothed", "Swimwear"):
             for seed in range(20):
                 flat = self._flat(generate_character(
-                    seed, "Female", {}, wardrobe_level=level)[1])
+                    seed, "Female", {"explicit_act": "no explicit action"},
+                    wardrobe_level=level)[1])
                 for field in self._INTIMATE:
                     self.assertIn(flat.get(field), (None, "", "Random", "None"),
                                   f"{field} leaked at {level} seed {seed}")
@@ -8063,6 +8075,70 @@ class IntimateDetailTierTests(unittest.TestCase):
             "Her pubic hair is lightly trimmed, with natural growth, "
             "a shade lighter than her hair",
             prose)
+
+
+class ExplicitActWardrobeTests(unittest.TestCase):
+    """Breast / vagina acts resolve Fully nude (2.2.0); other acts are tier-neutral.
+
+    The rule is an engine-side minimum-undress: a woman milking her breast or
+    slapping her crotch is not wearing a blouse -- the act dictates the
+    wardrobe the way a locked costume does. Face / hands / saliva plays
+    (spit, drool, kiss, tongue, foot or finger licking) never raise the level,
+    so they stay workable in Cloth and above. A locked costume still wins over
+    a promoted tier, because it is the more specific statement.
+    """
+
+    CROTCH = "repeatedly slapping her own crotch, each slap echoing"
+    MILK = "clenching her breast and milking through her knuckles"
+    SPIT = "gathering spit and spitting it at the camera"
+
+    def _meta_tier(self, js):
+        return json.loads(js).get("_meta", {}).get("wardrobe_level")
+
+    def test_vagina_act_promotes_clothed(self):
+        prose, js = generate_character(
+            42, "Female", {"explicit_act": self.CROTCH}, wardrobe_level="Clothed")
+        self.assertEqual(self._meta_tier(js), "Fully nude")
+        self.assertEqual(self._meta_tier(js), "Clothed" if False else self._meta_tier(js))
+        self.assertIn(self.CROTCH, prose)
+
+    def test_breast_act_promotes_lingerie(self):
+        _, js = generate_character(
+            42, "Female", {"explicit_act": self.MILK}, wardrobe_level="Lingerie")
+        self.assertEqual(self._meta_tier(js), "Fully nude")
+
+    def test_breast_act_promotes_topless(self):
+        _, js = generate_character(
+            42, "Female",
+            {"explicit_act": "bouncing her breasts, each bounce heavy"},
+            wardrobe_level="Topless")
+        self.assertEqual(self._meta_tier(js), "Fully nude")
+
+    def test_neutral_act_keeps_swimwear(self):
+        _, js = generate_character(
+            42, "Female", {"explicit_act": self.SPIT}, wardrobe_level="Swimwear")
+        self.assertEqual(json.loads(js).get("_meta", {}).get("wardrobe_level"), "Swimwear")
+
+    def test_neutral_act_keeps_clothed(self):
+        _, js = generate_character(
+            42, "Female", {"explicit_act": self.SPIT}, wardrobe_level="Clothed")
+        # 'Clothed' is the baseline and is not recorded in _meta.
+        self.assertNotEqual(self._meta_tier(js), "Fully nude")
+
+    def test_fully_nude_act_stays_fully_nude(self):
+        _, js = generate_character(
+            42, "Female", {"explicit_act": self.CROTCH}, wardrobe_level="Fully nude")
+        self.assertEqual(self._meta_tier(js), "Fully nude")
+
+    def test_locked_costume_still_wins_over_promotion(self):
+        prose, js = generate_character(
+            42, "Female",
+            {"explicit_act": self.CROTCH,
+             "outfit_description": "a fitted black pencil skirt and white blouse"},
+            wardrobe_level="Clothed")
+        self.assertIn("pencil skirt", prose)
+        # The promotion did not fire: no fully-nude tier was resolved.
+        self.assertNotEqual(self._meta_tier(js), "Fully nude")
 
 
 if __name__ == "__main__":

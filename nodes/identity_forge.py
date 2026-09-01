@@ -2917,6 +2917,11 @@ def generate_character(
     fields. A supplied costume still wins over the tier. The API default stays
     neutral (``Clothed``): the node's *widget* defaults to ``Lingerie``,
     because this is a nude-prompt generator; a bare library call is not.
+    **Minimum undress:** a resolved breast/vagina explicit act
+    (``explicit_act`` in the field's ``implies_fully_nude`` list) promotes a
+    lower tier to ``Fully nude`` -- the act dictates the wardrobe -- while
+    face/hand/saliva acts never do, and a locked ``outfit_description`` still
+    outranks the promotion.
 
     ``cosplay_label`` (e.g. ``"2B (NieR: Automata)"``), when set by a connected
     Cosplayer node, prefixes the prose and is recorded in the JSON ``_meta``.
@@ -3082,6 +3087,22 @@ def generate_character(
     )
     for message in warnings:
         print(message)
+
+    # Explicit acts dictate a minimum amount of undress (2.2.0). Breast and
+    # vagina plays (data/fields.py ``implies_fully_nude``) are performed fully
+    # naked -- the act is the wardrobe, the way a locked costume is; a woman
+    # milking her breast or slapping her crotch is not doing it in a blouse.
+    # Face / hands / saliva plays (spit, drool, kiss, bite, tongue, foot or
+    # finger licking) are tier-neutral and stay, so they never raise the level.
+    # Only ever moves UPWARD: a deliberate 'Fully nude' choice is obviously
+    # kept, and a lower tier is promoted to it. A locked costume
+    # (``outfit_description``) still wins over the promoted tier, exactly like
+    # it wins over the widget's.
+    nude_act = resolved.get("explicit_act") or ""
+    if (nude_act in FIELD_DEFINITIONS["explicit_act"]["implies_fully_nude"]
+            and wardrobe_level != "Fully nude"
+            and _is_absent(resolved.get("outfit_description"))):
+        wardrobe_level = "Fully nude"
 
     # A costume override (outfit_description supplied by an archetype/cosplayer)
     # is already a complete outfit, so the separately-randomized garment fields

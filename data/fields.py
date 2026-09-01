@@ -764,7 +764,26 @@ FIELD_DEFINITIONS: OrderedDict[str, dict] = OrderedDict([
             'squirt play, gushing clear fluid onto the camera': 0.5,
             'spreading her labia with her fingers, wet and dripping': 0.5,
             'repeatedly slapping her own crotch, each slap echoing': 0.5,
-        }
+        },
+        # Engine rule (2.2.0): these breast / vagina plays are performed fully
+        # naked -- the act dictates the wardrobe, the way a locked costume
+        # does. Any other tier resolves to 'Fully nude' when one of these is
+        # the resolved act (a locked outfit_description still wins over the
+        # tier, as everywhere). Face / hands / saliva plays (spit, drool,
+        # kissing, biting, tongue work, foot or finger licking) are tier-neutral
+        # and never raise the level.
+"implies_fully_nude": [
+            'licking her own breasts, tongue tracing the areola in slow circles',
+            'clenching her breast and milking through her knuckles',
+            'sucking her own nipple hard into a peak',
+            'bouncing her breasts, each bounce heavy',
+            'pressing a thin stream of breast milk onto the camera',
+            'dripping, each drop landing on the camera',
+            'squirt play, gushing clear fluid onto the camera',
+            'spreading her labia with her fingers, wet and dripping',
+            'repeatedly slapping her own crotch, each slap echoing',
+            'crotch pressing against the camera, hips rolling',
+        ],
     }),
     ("held_item", {
         "group": 'Setting & Shot',
@@ -1142,7 +1161,7 @@ FIELD_HELP: dict[str, str] = {
     "season": "Time of year, which colours the setting and wardrobe.",
     "mood": "Overall emotional tone of the image. Set to 'None' if a downstream rendering pack owns this axis.",
     "pose": "What the body is doing. A pose needing something the subject lacks is dropped: hair or pockets to reach for, a free hand when a prop is held, a seat at giant scale. A lock wins.",
-    "explicit_act": "An explicit sexual action, voiced as its own sentence. A 'no explicit action' draw is omitted from the output.",
+    "explicit_act": "An explicit sexual action, voiced as its own sentence. 'No explicit action' is omitted from the output. Breast/vagina acts resolve Fully nude; face, hands and saliva acts work at any tier.",
     "tattoos": "Body ink - style and how much of it. Deliberately uncommon at random, and scaled by the accessory density control. Where it sits is tattoo_placement.",
     "legwear": "Tights, stockings or socks. Only rendered when the outfit actually shows leg, so it never appears under trousers. Feminine wardrobe only.",
     "tattoo_placement": "Where the tattoo sits. Placements the clothing would hide are dropped automatically - no forearm ink under long sleeves, no thigh ink under a skirt-less outfit or opaque tights.",
