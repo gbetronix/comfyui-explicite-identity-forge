@@ -114,7 +114,7 @@
      "type": "CLIP",
      "slot_index": 0,
      "links": [
-      4
+      60
      ]
     }
    ],
@@ -437,7 +437,7 @@
      "localized_name": "model",
      "name": "model",
      "type": "MODEL",
-     "link": 52
+     "link": 59
     },
     {
      "localized_name": "positive",
@@ -2129,93 +2129,6 @@
    }
   },
   {
-   "id": 57,
-   "type": "Krea2T-Enhancer-Advanced",
-   "pos": [
-    2270,
-    680
-   ],
-   "size": [
-    290,
-    130
-   ],
-   "flags": {},
-   "order": 14,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "model",
-     "name": "model",
-     "type": "MODEL",
-     "link": 59
-    },
-    {
-     "localized_name": "enabled",
-     "name": "enabled",
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "enabled"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "strength",
-     "name": "strength",
-     "type": "FLOAT",
-     "widget": {
-      "name": "strength"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "text_scale",
-     "name": "text_scale",
-     "type": "FLOAT",
-     "widget": {
-      "name": "text_scale"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "debug",
-     "name": "debug",
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "debug"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "model",
-     "name": "model",
-     "type": "MODEL",
-     "slot_index": 0,
-     "links": [
-      52
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "ComfyUI-Krea2T-Enhancer",
-    "ver": "6666ffb729b2afc8ecdffd3cb6f121555ec948cb",
-    "Node name for S&R": "Krea2T-Enhancer-Advanced"
-   },
-   "widgets_values": [
-    true,
-    1.25,
-    1.5,
-    false
-   ],
-   "widgets_values_named": {
-    "enabled": true,
-    "strength": 1.25,
-    "text_scale": 1.5,
-    "debug": false
-   }
-  },
-  {
    "id": 59,
    "type": "ExpliciteIdentityForgeModifier",
    "pos": [
@@ -2667,14 +2580,6 @@
    "STRING"
   ],
   [
-   52,
-   57,
-   0,
-   12,
-   0,
-   "MODEL"
-  ],
-  [
    56,
    59,
    0,
@@ -2710,7 +2615,7 @@
    59,
    64,
    0,
-   57,
+   12,
    0,
    "MODEL"
   ]
