@@ -474,8 +474,8 @@
     "randomize",
     10,
     1,
-    "er_sde",
-    "bong_tangent",
+    "euler",
+    "simple",
     1
    ],
    "widgets_values_named": {
@@ -483,8 +483,8 @@
     "control_after_generate": "randomize",
     "steps": 10,
     "cfg": 1,
-    "sampler_name": "er_sde",
-    "scheduler": "bong_tangent",
+    "sampler_name": "euler",
+    "scheduler": "simple",
     "denoise": 1
    }
   },
