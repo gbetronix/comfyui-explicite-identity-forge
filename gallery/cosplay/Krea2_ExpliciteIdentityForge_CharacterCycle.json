@@ -1,7 +1,7 @@
 {
  "id": "e8e9614f-4106-40f4-bc81-5057a81249fa",
  "revision": 0,
- "last_node_id": 63,
+ "last_node_id": 65,
  "last_link_id": 58,
  "nodes": [
   {
@@ -244,7 +244,7 @@
    "widgets_values": [
     "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture",
     "",
-    " . "
+    ", "
    ],
    "widgets_values_named": {
     "string_a": "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture",
@@ -300,9 +300,7 @@
     "ver": "0.28.0",
     "Node name for S&R": "CLIPTextEncode"
    },
-   "widgets_values": [
-    ""
-   ],
+   "widgets_values": [],
    "widgets_values_named": {
     "text": ""
    }
@@ -344,7 +342,8 @@
     "cnr_id": "comfy-core",
     "ver": "0.28.0",
     "Node name for S&R": "ConditioningZeroOut"
-   }
+   },
+   "widgets_values": []
   },
   {
    "id": 11,
@@ -465,6 +464,15 @@
       "name": "seed"
      },
      "link": null
+    },
+    {
+     "name": "control_after_generate",
+     "type": "STRING",
+     "widget": {
+      "name": "control_after_generate"
+     },
+     "link": null,
+     "localized_name": "control_after_generate"
     },
     {
      "localized_name": "steps",
@@ -590,125 +598,8 @@
     "cnr_id": "comfy-core",
     "ver": "0.28.0",
     "Node name for S&R": "VAEDecode"
-   }
-  },
-  {
-   "id": 14,
-   "type": "RegexReplace",
-   "pos": [
-    2570,
-    250
-   ],
-   "size": [
-    400,
-    310
-   ],
-   "flags": {},
-   "order": 15,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "string",
-     "name": "string",
-     "type": "STRING",
-     "widget": {
-      "name": "string"
-     },
-     "link": 29
-    },
-    {
-     "localized_name": "regex_pattern",
-     "name": "regex_pattern",
-     "type": "STRING",
-     "widget": {
-      "name": "regex_pattern"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "replace",
-     "name": "replace",
-     "type": "STRING",
-     "widget": {
-      "name": "replace"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "case_insensitive",
-     "name": "case_insensitive",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "case_insensitive"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "multiline",
-     "name": "multiline",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "multiline"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "dotall",
-     "name": "dotall",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "dotall"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "count",
-     "name": "count",
-     "shape": 7,
-     "type": "INT",
-     "widget": {
-      "name": "count"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "STRING",
-     "name": "STRING",
-     "type": "STRING",
-     "slot_index": 0,
-     "links": [
-      37
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfy-core",
-    "ver": "0.28.0",
-    "Node name for S&R": "RegexReplace"
    },
-   "widgets_values": [
-    "",
-    "[<>:\"/\\\\|?*]|[\\s.]+$",
-    "",
-    true,
-    false,
-    false,
-    0
-   ],
-   "widgets_values_named": {
-    "string": "",
-    "regex_pattern": "[<>:\"/\\\\|?*]|[\\s.]+$",
-    "replace": "",
-    "case_insensitive": true,
-    "multiline": false,
-    "dotall": false,
-    "count": 0
-   }
+   "widgets_values": []
   },
   {
    "id": 21,
@@ -749,115 +640,12 @@
     "ver": "1.2.5",
     "Node name for S&R": "ShowText|pysssss"
    },
-   "widgets_values": [
-    "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture . Cosplaying as Rorschach (Watchmen): a 48-year-old Tibetan man with an average build, average height, and bronze skin. He has a lightly active physique with average shoulders, a muscular chest, a slightly wide waist, average hips, a slender neck, and rigid posture. He has medium length natural nails. He has a white full-face mask covered in shifting black inkblot patterns. He wears a belted tan trench coat, a brown fedora, and fingerless gloves. He is sitting on the floor with knees drawn up. Set in a coastal lighthouse bluff, under club strobe lighting, during spring, the framing is straight-on eye level, composed with a high horizon line and a sliver of sky, and with a tense mood."
-   ],
+   "widgets_values": [],
    "widgets_values_named": {
     "text_0": "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture . Cosplaying as Rorschach (Watchmen): a 48-year-old Tibetan man with an average build, average height, and bronze skin. He has a lightly active physique with average shoulders, a muscular chest, a slightly wide waist, average hips, a slender neck, and rigid posture. He has medium length natural nails. He has a white full-face mask covered in shifting black inkblot patterns. He wears a belted tan trench coat, a brown fedora, and fingerless gloves. He is sitting on the floor with knees drawn up. Set in a coastal lighthouse bluff, under club strobe lighting, during spring, the framing is straight-on eye level, composed with a high horizon line and a sliver of sky, and with a tense mood."
    },
    "color": "#232",
    "bgcolor": "#353"
-  },
-  {
-   "id": 37,
-   "type": "WidgetToString",
-   "pos": [
-    1920,
-    330
-   ],
-   "size": [
-    300,
-    220
-   ],
-   "flags": {},
-   "order": 9,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "any_input",
-     "name": "any_input",
-     "shape": 7,
-     "type": "*",
-     "link": 57
-    },
-    {
-     "localized_name": "id",
-     "name": "id",
-     "type": "INT",
-     "widget": {
-      "name": "id"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "widget_name",
-     "name": "widget_name",
-     "type": "STRING",
-     "widget": {
-      "name": "widget_name"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "return_all",
-     "name": "return_all",
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "return_all"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "node_title",
-     "name": "node_title",
-     "shape": 7,
-     "type": "STRING",
-     "widget": {
-      "name": "node_title"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "allowed_float_decimals",
-     "name": "allowed_float_decimals",
-     "shape": 7,
-     "type": "INT",
-     "widget": {
-      "name": "allowed_float_decimals"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "STRING",
-     "name": "STRING",
-     "type": "STRING",
-     "slot_index": 0,
-     "links": [
-      28
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfyui-kjnodes",
-    "ver": "1.4.7",
-    "Node name for S&R": "WidgetToString"
-   },
-   "widgets_values": [
-    0,
-    "character",
-    false,
-    "",
-    2
-   ],
-   "widgets_values_named": {
-    "id": 0,
-    "widget_name": "character",
-    "return_all": false,
-    "node_title": "",
-    "allowed_float_decimals": 2
-   }
   },
   {
    "id": 38,
@@ -878,7 +666,7 @@
      "localized_name": "text",
      "name": "text",
      "type": "STRING",
-     "link": 28
+     "link": null
     }
    ],
    "outputs": [
@@ -898,317 +686,9 @@
     "ver": "1.2.5",
     "Node name for S&R": "ShowText|pysssss"
    },
-   "widgets_values": [
-    "Random \u2014 any"
-   ],
+   "widgets_values": [],
    "widgets_values_named": {
     "text_0": "Random \u2014 any"
-   }
-  },
-  {
-   "id": 42,
-   "type": "SaveImageWithMetaDataUniversal",
-   "pos": [
-    3470,
-    80
-   ],
-   "size": [
-    330,
-    650
-   ],
-   "flags": {},
-   "order": 23,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "images",
-     "name": "images",
-     "type": "IMAGE",
-     "link": 34
-    },
-    {
-     "localized_name": "extra_metadata",
-     "name": "extra_metadata",
-     "shape": 7,
-     "type": "EXTRA_METADATA",
-     "link": null
-    },
-    {
-     "localized_name": "filename_prefix",
-     "name": "filename_prefix",
-     "type": "STRING",
-     "widget": {
-      "name": "filename_prefix"
-     },
-     "link": 38
-    },
-    {
-     "localized_name": "sampler_selection_method",
-     "name": "sampler_selection_method",
-     "type": "COMBO",
-     "widget": {
-      "name": "sampler_selection_method"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "sampler_selection_node_id",
-     "name": "sampler_selection_node_id",
-     "type": "INT",
-     "widget": {
-      "name": "sampler_selection_node_id"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "file_format",
-     "name": "file_format",
-     "type": "COMBO",
-     "widget": {
-      "name": "file_format"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "lossless_webp",
-     "name": "lossless_webp",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "lossless_webp"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "quality",
-     "name": "quality",
-     "shape": 7,
-     "type": "INT",
-     "widget": {
-      "name": "quality"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "max_jpeg_exif_kb",
-     "name": "max_jpeg_exif_kb",
-     "shape": 7,
-     "type": "INT",
-     "widget": {
-      "name": "max_jpeg_exif_kb"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "save_workflow_json",
-     "name": "save_workflow_json",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "save_workflow_json"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "add_counter_to_filename",
-     "name": "add_counter_to_filename",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "add_counter_to_filename"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "civitai_sampler",
-     "name": "civitai_sampler",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "civitai_sampler"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "guidance_as_cfg",
-     "name": "guidance_as_cfg",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "guidance_as_cfg"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "save_workflow_image",
-     "name": "save_workflow_image",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "save_workflow_image"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "include_lora_summary",
-     "name": "include_lora_summary",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "include_lora_summary"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "suppress_missing_class_log",
-     "name": "suppress_missing_class_log",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "suppress_missing_class_log"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "model_hash_log",
-     "name": "model_hash_log",
-     "shape": 7,
-     "type": "COMBO",
-     "widget": {
-      "name": "model_hash_log"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "lora_strengths_in_prompt",
-     "name": "lora_strengths_in_prompt",
-     "shape": 7,
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "lora_strengths_in_prompt"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "images",
-     "name": "images",
-     "type": "IMAGE",
-     "slot_index": 0,
-     "links": []
-    }
-   ],
-   "properties": {
-    "cnr_id": "saveimagewithmetadatauniversal",
-    "ver": "1.4.3",
-    "Node name for S&R": "SaveImageWithMetaDataUniversal"
-   },
-   "widgets_values": [
-    "ComfyUI",
-    "Farthest",
-    0,
-    "jpeg",
-    true,
-    100,
-    60,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    true,
-    "none",
-    false
-   ],
-   "widgets_values_named": {
-    "filename_prefix": "ComfyUI",
-    "sampler_selection_method": "Farthest",
-    "sampler_selection_node_id": 0,
-    "file_format": "jpeg",
-    "lossless_webp": true,
-    "quality": 100,
-    "max_jpeg_exif_kb": 60,
-    "save_workflow_json": false,
-    "add_counter_to_filename": false,
-    "civitai_sampler": false,
-    "guidance_as_cfg": false,
-    "save_workflow_image": false,
-    "include_lora_summary": false,
-    "suppress_missing_class_log": true,
-    "model_hash_log": "none",
-    "lora_strengths_in_prompt": false
-   }
-  },
-  {
-   "id": 43,
-   "type": "StringConcatenate",
-   "pos": [
-    3020,
-    250
-   ],
-   "size": [
-    400,
-    230
-   ],
-   "flags": {},
-   "order": 17,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "string_a",
-     "name": "string_a",
-     "type": "STRING",
-     "widget": {
-      "name": "string_a"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "string_b",
-     "name": "string_b",
-     "type": "STRING",
-     "widget": {
-      "name": "string_b"
-     },
-     "link": 37
-    },
-    {
-     "localized_name": "delimiter",
-     "name": "delimiter",
-     "type": "STRING",
-     "widget": {
-      "name": "delimiter"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "STRING",
-     "name": "STRING",
-     "type": "STRING",
-     "slot_index": 0,
-     "links": [
-      38
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfy-core",
-    "ver": "0.28.0",
-    "Node name for S&R": "StringConcatenate"
-   },
-   "widgets_values": [
-    "identityforge\\",
-    "",
-    ""
-   ],
-   "widgets_values_named": {
-    "string_a": "identityforge\\",
-    "string_b": "",
-    "delimiter": ""
    }
   },
   {
@@ -1227,703 +707,562 @@
    "mode": 0,
    "inputs": [
     {
+     "name": "seed",
+     "type": "INT",
+     "link": null,
+     "localized_name": "seed"
+    },
+    {
+     "name": "gender",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "gender"
+    },
+    {
+     "name": "wardrobe",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "wardrobe"
+    },
+    {
+     "name": "wardrobe_level",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "wardrobe_level"
+    },
+    {
+     "name": "size_scale",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "size_scale"
+    },
+    {
+     "name": "hair_color_scope",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_color_scope"
+    },
+    {
+     "name": "accessory_density",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "accessory_density"
+    },
+    {
+     "name": "location_setting",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "location_setting"
+    },
+    {
+     "name": "set_all_fields",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "set_all_fields"
+    },
+    {
+     "name": "age",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "age"
+    },
+    {
+     "name": "ethnicity",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "ethnicity"
+    },
+    {
+     "name": "skin_tone",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "skin_tone"
+    },
+    {
+     "name": "body_type",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "body_type"
+    },
+    {
+     "name": "height",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "height"
+    },
+    {
+     "name": "bust",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "bust"
+    },
+    {
+     "name": "waist",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "waist"
+    },
+    {
+     "name": "hips",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hips"
+    },
+    {
+     "name": "face_shape",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "face_shape"
+    },
+    {
+     "name": "forehead",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "forehead"
+    },
+    {
+     "name": "cheekbones",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "cheekbones"
+    },
+    {
+     "name": "eyebrows",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "eyebrows"
+    },
+    {
+     "name": "eye_color",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "eye_color"
+    },
+    {
+     "name": "eye_shape",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "eye_shape"
+    },
+    {
+     "name": "nose",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "nose"
+    },
+    {
+     "name": "lips",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "lips"
+    },
+    {
+     "name": "smile_type",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "smile_type"
+    },
+    {
+     "name": "jawline",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "jawline"
+    },
+    {
+     "name": "chin",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "chin"
+    },
+    {
+     "name": "complexion",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "complexion"
+    },
+    {
+     "name": "skin_details",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "skin_details"
+    },
+    {
+     "name": "freckles_density",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "freckles_density"
+    },
+    {
+     "name": "hair_color",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_color"
+    },
+    {
+     "name": "hair_length",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_length"
+    },
+    {
+     "name": "hair_texture",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_texture"
+    },
+    {
+     "name": "hair_style",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_style"
+    },
+    {
+     "name": "facial_hair",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "facial_hair"
+    },
+    {
+     "name": "hair_accessory",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_accessory"
+    },
+    {
+     "name": "makeup_style",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "makeup_style"
+    },
+    {
+     "name": "eyebrow_makeup",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "eyebrow_makeup"
+    },
+    {
+     "name": "eye_makeup",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "eye_makeup"
+    },
+    {
+     "name": "eyeliner",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "eyeliner"
+    },
+    {
+     "name": "lashes",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "lashes"
+    },
+    {
+     "name": "contour",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "contour"
+    },
+    {
+     "name": "highlight",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "highlight"
+    },
+    {
+     "name": "blush",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "blush"
+    },
+    {
+     "name": "lips_makeup",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "lips_makeup"
+    },
+    {
+     "name": "skin_finish",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "skin_finish"
+    },
+    {
+     "name": "earrings",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "earrings"
+    },
+    {
+     "name": "necklace",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "necklace"
+    },
+    {
+     "name": "other_jewelry",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "other_jewelry"
+    },
+    {
+     "name": "piercings",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "piercings"
+    },
+    {
+     "name": "nails",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "nails"
+    },
+    {
+     "name": "outfit_style",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "outfit_style"
+    },
+    {
+     "name": "swimwear_style",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "swimwear_style"
+    },
+    {
+     "name": "lingerie_style",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "lingerie_style"
+    },
+    {
+     "name": "lingerie_color",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "lingerie_color"
+    },
+    {
+     "name": "topless_outfit",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "topless_outfit"
+    },
+    {
+     "name": "nude_outfit",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "nude_outfit"
+    },
+    {
+     "name": "bag",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "bag"
+    },
+    {
+     "name": "accessories",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "accessories"
+    },
+    {
+     "name": "expression",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "expression"
+    },
+    {
+     "name": "location",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "location"
+    },
+    {
+     "name": "lighting",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "lighting"
+    },
+    {
+     "name": "shot_type",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "shot_type"
+    },
+    {
+     "name": "shoulder_width",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "shoulder_width"
+    },
+    {
+     "name": "neck_length",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "neck_length"
+    },
+    {
+     "name": "posture",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "posture"
+    },
+    {
+     "name": "fitness_level",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "fitness_level"
+    },
+    {
+     "name": "hair_part",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_part"
+    },
+    {
+     "name": "hair_highlights",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "hair_highlights"
+    },
+    {
+     "name": "rings",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "rings"
+    },
+    {
+     "name": "bracelet",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "bracelet"
+    },
+    {
+     "name": "watch_type",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "watch_type"
+    },
+    {
+     "name": "footwear",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "footwear"
+    },
+    {
+     "name": "clothing_color",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "clothing_color"
+    },
+    {
+     "name": "clothing_pattern",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "clothing_pattern"
+    },
+    {
+     "name": "season",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "season"
+    },
+    {
+     "name": "mood",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "mood"
+    },
+    {
+     "name": "pose",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "pose"
+    },
+    {
+     "name": "explicit_act",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "explicit_act"
+    },
+    {
+     "name": "composition",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "composition"
+    },
+    {
+     "name": "nipple_appearance",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "nipple_appearance"
+    },
+    {
+     "name": "areola_appearance",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "areola_appearance"
+    },
+    {
+     "name": "labia_appearance",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "labia_appearance"
+    },
+    {
+     "name": "vulva_detail",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "vulva_detail"
+    },
+    {
+     "name": "anus_appearance",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "anus_appearance"
+    },
+    {
+     "name": "pubic_style",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "pubic_style"
+    },
+    {
+     "name": "pubic_color",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "pubic_color"
+    },
+    {
+     "name": "arousal_level",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "arousal_level"
+    },
+    {
+     "name": "tattoos",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "tattoos"
+    },
+    {
+     "name": "legwear",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "legwear"
+    },
+    {
+     "name": "tattoo_placement",
+     "type": "COMBO",
+     "link": null,
+     "localized_name": "tattoo_placement"
+    },
+    {
      "localized_name": "archetype_json",
      "name": "archetype_json",
      "shape": 7,
      "type": "STRING",
-     "link": 56
-    },
-    {
-     "localized_name": "seed",
-     "name": "seed",
-     "type": "INT",
-     "widget": {
-      "name": "seed"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "gender",
-     "name": "gender",
-     "type": "COMBO",
-     "widget": {
-      "name": "gender"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "wardrobe",
-     "name": "wardrobe",
-     "type": "COMBO",
-     "widget": {
-      "name": "wardrobe"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "size_scale",
-     "name": "size_scale",
-     "type": "COMBO",
-     "widget": {
-      "name": "size_scale"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_color_scope",
-     "name": "hair_color_scope",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_color_scope"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "accessory_density",
-     "name": "accessory_density",
-     "type": "COMBO",
-     "widget": {
-      "name": "accessory_density"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "location_setting",
-     "name": "location_setting",
-     "type": "COMBO",
-     "widget": {
-      "name": "location_setting"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "set_all_fields",
-     "name": "set_all_fields",
-     "type": "COMBO",
-     "widget": {
-      "name": "set_all_fields"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "age",
-     "name": "age",
-     "type": "COMBO",
-     "widget": {
-      "name": "age"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "ethnicity",
-     "name": "ethnicity",
-     "type": "COMBO",
-     "widget": {
-      "name": "ethnicity"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "skin_tone",
-     "name": "skin_tone",
-     "type": "COMBO",
-     "widget": {
-      "name": "skin_tone"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "body_type",
-     "name": "body_type",
-     "type": "COMBO",
-     "widget": {
-      "name": "body_type"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "height",
-     "name": "height",
-     "type": "COMBO",
-     "widget": {
-      "name": "height"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "bust",
-     "name": "bust",
-     "type": "COMBO",
-     "widget": {
-      "name": "bust"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "waist",
-     "name": "waist",
-     "type": "COMBO",
-     "widget": {
-      "name": "waist"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hips",
-     "name": "hips",
-     "type": "COMBO",
-     "widget": {
-      "name": "hips"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "face_shape",
-     "name": "face_shape",
-     "type": "COMBO",
-     "widget": {
-      "name": "face_shape"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "forehead",
-     "name": "forehead",
-     "type": "COMBO",
-     "widget": {
-      "name": "forehead"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "cheekbones",
-     "name": "cheekbones",
-     "type": "COMBO",
-     "widget": {
-      "name": "cheekbones"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "eyebrows",
-     "name": "eyebrows",
-     "type": "COMBO",
-     "widget": {
-      "name": "eyebrows"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "eye_color",
-     "name": "eye_color",
-     "type": "COMBO",
-     "widget": {
-      "name": "eye_color"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "eye_shape",
-     "name": "eye_shape",
-     "type": "COMBO",
-     "widget": {
-      "name": "eye_shape"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "nose",
-     "name": "nose",
-     "type": "COMBO",
-     "widget": {
-      "name": "nose"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "lips",
-     "name": "lips",
-     "type": "COMBO",
-     "widget": {
-      "name": "lips"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "smile_type",
-     "name": "smile_type",
-     "type": "COMBO",
-     "widget": {
-      "name": "smile_type"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "jawline",
-     "name": "jawline",
-     "type": "COMBO",
-     "widget": {
-      "name": "jawline"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "chin",
-     "name": "chin",
-     "type": "COMBO",
-     "widget": {
-      "name": "chin"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "complexion",
-     "name": "complexion",
-     "type": "COMBO",
-     "widget": {
-      "name": "complexion"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "skin_details",
-     "name": "skin_details",
-     "type": "COMBO",
-     "widget": {
-      "name": "skin_details"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "freckles_density",
-     "name": "freckles_density",
-     "type": "COMBO",
-     "widget": {
-      "name": "freckles_density"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_color",
-     "name": "hair_color",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_color"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_length",
-     "name": "hair_length",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_length"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_texture",
-     "name": "hair_texture",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_texture"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_style",
-     "name": "hair_style",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_style"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "facial_hair",
-     "name": "facial_hair",
-     "type": "COMBO",
-     "widget": {
-      "name": "facial_hair"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_accessory",
-     "name": "hair_accessory",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_accessory"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "makeup_style",
-     "name": "makeup_style",
-     "type": "COMBO",
-     "widget": {
-      "name": "makeup_style"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "eyebrow_makeup",
-     "name": "eyebrow_makeup",
-     "type": "COMBO",
-     "widget": {
-      "name": "eyebrow_makeup"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "eye_makeup",
-     "name": "eye_makeup",
-     "type": "COMBO",
-     "widget": {
-      "name": "eye_makeup"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "eyeliner",
-     "name": "eyeliner",
-     "type": "COMBO",
-     "widget": {
-      "name": "eyeliner"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "lashes",
-     "name": "lashes",
-     "type": "COMBO",
-     "widget": {
-      "name": "lashes"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "contour",
-     "name": "contour",
-     "type": "COMBO",
-     "widget": {
-      "name": "contour"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "highlight",
-     "name": "highlight",
-     "type": "COMBO",
-     "widget": {
-      "name": "highlight"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "blush",
-     "name": "blush",
-     "type": "COMBO",
-     "widget": {
-      "name": "blush"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "lips_makeup",
-     "name": "lips_makeup",
-     "type": "COMBO",
-     "widget": {
-      "name": "lips_makeup"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "skin_finish",
-     "name": "skin_finish",
-     "type": "COMBO",
-     "widget": {
-      "name": "skin_finish"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "earrings",
-     "name": "earrings",
-     "type": "COMBO",
-     "widget": {
-      "name": "earrings"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "necklace",
-     "name": "necklace",
-     "type": "COMBO",
-     "widget": {
-      "name": "necklace"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "other_jewelry",
-     "name": "other_jewelry",
-     "type": "COMBO",
-     "widget": {
-      "name": "other_jewelry"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "piercings",
-     "name": "piercings",
-     "type": "COMBO",
-     "widget": {
-      "name": "piercings"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "nails",
-     "name": "nails",
-     "type": "COMBO",
-     "widget": {
-      "name": "nails"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "outfit_style",
-     "name": "outfit_style",
-     "type": "COMBO",
-     "widget": {
-      "name": "outfit_style"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "bag",
-     "name": "bag",
-     "type": "COMBO",
-     "widget": {
-      "name": "bag"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "accessories",
-     "name": "accessories",
-     "type": "COMBO",
-     "widget": {
-      "name": "accessories"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "expression",
-     "name": "expression",
-     "type": "COMBO",
-     "widget": {
-      "name": "expression"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "location",
-     "name": "location",
-     "type": "COMBO",
-     "widget": {
-      "name": "location"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "lighting",
-     "name": "lighting",
-     "type": "COMBO",
-     "widget": {
-      "name": "lighting"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "shot_type",
-     "name": "shot_type",
-     "type": "COMBO",
-     "widget": {
-      "name": "shot_type"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "shoulder_width",
-     "name": "shoulder_width",
-     "type": "COMBO",
-     "widget": {
-      "name": "shoulder_width"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "neck_length",
-     "name": "neck_length",
-     "type": "COMBO",
-     "widget": {
-      "name": "neck_length"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "posture",
-     "name": "posture",
-     "type": "COMBO",
-     "widget": {
-      "name": "posture"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "fitness_level",
-     "name": "fitness_level",
-     "type": "COMBO",
-     "widget": {
-      "name": "fitness_level"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_part",
-     "name": "hair_part",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_part"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "hair_highlights",
-     "name": "hair_highlights",
-     "type": "COMBO",
-     "widget": {
-      "name": "hair_highlights"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "rings",
-     "name": "rings",
-     "type": "COMBO",
-     "widget": {
-      "name": "rings"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "bracelet",
-     "name": "bracelet",
-     "type": "COMBO",
-     "widget": {
-      "name": "bracelet"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "watch_type",
-     "name": "watch_type",
-     "type": "COMBO",
-     "widget": {
-      "name": "watch_type"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "footwear",
-     "name": "footwear",
-     "type": "COMBO",
-     "widget": {
-      "name": "footwear"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "clothing_color",
-     "name": "clothing_color",
-     "type": "COMBO",
-     "widget": {
-      "name": "clothing_color"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "clothing_pattern",
-     "name": "clothing_pattern",
-     "type": "COMBO",
-     "widget": {
-      "name": "clothing_pattern"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "season",
-     "name": "season",
-     "type": "COMBO",
-     "widget": {
-      "name": "season"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "mood",
-     "name": "mood",
-     "type": "COMBO",
-     "widget": {
-      "name": "mood"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "pose",
-     "name": "pose",
-     "type": "COMBO",
-     "widget": {
-      "name": "pose"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "composition",
-     "name": "composition",
-     "type": "COMBO",
-     "widget": {
-      "name": "composition"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "tattoos",
-     "name": "tattoos",
-     "type": "COMBO",
-     "widget": {
-      "name": "tattoos"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "legwear",
-     "name": "legwear",
-     "type": "COMBO",
-     "widget": {
-      "name": "legwear"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "tattoo_placement",
-     "name": "tattoo_placement",
-     "type": "COMBO",
-     "widget": {
-      "name": "tattoo_placement"
-     },
      "link": null
     }
    ],
@@ -1952,13 +1291,12 @@
    },
    "widgets_values": [
     34034292112676,
-    "randomize",
     "Female",
     "Feminine",
     "Lingerie",
     "Auto",
     "Natural only",
-    "None",
+    "Balanced",
     "Any indoor/outdoor",
     "Off",
     "Random",
@@ -2032,40 +1370,38 @@
     "Random",
     "Random",
     "Random",
-    null,
     "Random",
     "Random",
-    "Random"
+    "Random",
+    "Random",
+    "Random",
+    "Random",
+    "Random",
+    "Random",
+    "Random",
+    "Random",
+    "Random",
+    "Random",
+    ""
    ],
    "widgets_values_named": {
     "seed": 34034292112676,
-    "randomize": "randomize",
     "gender": "Female",
     "wardrobe": "Feminine",
-    "size_scale": "Lingerie",
-    "hair_color_scope": "Auto",
-    "accessory_density": "Natural only",
-    "location_setting": "None",
-    "set_all_fields": "Any indoor/outdoor",
-    "\ud83c\udfb2 Unlock all (set to Random)": "Off",
-    "\ud83d\udd12 Roll + lock all fields": "Random",
-    "\u25be Demographics": "Random",
+    "wardrobe_level": "Lingerie",
+    "size_scale": "Auto",
+    "hair_color_scope": "Natural only",
+    "accessory_density": "Balanced",
+    "location_setting": "Any indoor/outdoor",
+    "set_all_fields": "Off",
     "age": "Random",
     "ethnicity": "Random",
-    "\u25be Body": "Random",
     "skin_tone": "Random",
     "body_type": "Random",
     "height": "Random",
     "bust": "Random",
     "waist": "Random",
     "hips": "Random",
-    "shoulder_width": "Random",
-    "neck_length": "Random",
-    "posture": "Random",
-    "fitness_level": "Random",
-    "tattoos": "Random",
-    "tattoo_placement": "Random",
-    "\u25be Face": "Random",
     "face_shape": "Random",
     "forehead": "Random",
     "cheekbones": "Random",
@@ -2080,16 +1416,12 @@
     "complexion": "Random",
     "skin_details": "Random",
     "freckles_density": "Random",
-    "\u25be Hair": "Random",
     "hair_color": "Random",
     "hair_length": "Random",
     "hair_texture": "Random",
     "hair_style": "Random",
     "facial_hair": "Random",
     "hair_accessory": "Random",
-    "hair_part": "Random",
-    "hair_highlights": "Random",
-    "\u25be Makeup": "Random",
     "makeup_style": "Random",
     "eyebrow_makeup": "Random",
     "eye_makeup": "Random",
@@ -2100,87 +1432,51 @@
     "blush": "Random",
     "lips_makeup": "Random",
     "skin_finish": "Random",
-    "\u25be Jewelry & Nails": "Random",
     "earrings": "Random",
     "necklace": "Random",
     "other_jewelry": "Random",
     "piercings": "Random",
     "nails": "Random",
+    "outfit_style": "Random",
+    "swimwear_style": "Random",
+    "lingerie_style": "Random",
+    "lingerie_color": "Random",
+    "topless_outfit": "Random",
+    "nude_outfit": "Random",
+    "bag": "Random",
+    "accessories": "Random",
+    "expression": "Random",
+    "location": "Random",
+    "lighting": "Random",
+    "shot_type": "Random",
+    "shoulder_width": "Random",
+    "neck_length": "Random",
+    "posture": "Random",
+    "fitness_level": "Random",
+    "hair_part": "Random",
+    "hair_highlights": "Random",
     "rings": "Random",
     "bracelet": "Random",
     "watch_type": "Random",
-    "\u25be Clothing": "Random",
-    "outfit_style": "Random",
-    "bag": "Random",
-    "accessories": "Random",
     "footwear": "Random",
     "clothing_color": "Random",
     "clothing_pattern": "Random",
-    "legwear": "Random",
-    "\u25be Setting & Shot": "Random",
-    "expression": "Random",
-    "location": null,
-    "lighting": "Random",
-    "shot_type": "Random",
     "season": "Random",
     "mood": "Random",
     "pose": "Random",
-    "composition": "Random"
-   }
-  },
-  {
-   "id": 59,
-   "type": "ExpliciteIdentityForgeModifier",
-   "pos": [
-    250,
-    400
-   ],
-   "size": [
-    400,
-    200
-   ],
-   "flags": {},
-   "order": 10,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "upstream",
-     "name": "upstream",
-     "shape": 7,
-     "type": "STRING",
-     "link": 58
-    },
-    {
-     "localized_name": "style_modifiers",
-     "name": "style_modifiers",
-     "type": "STRING",
-     "widget": {
-      "name": "style_modifiers"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "character_json",
-     "name": "character_json",
-     "type": "STRING",
-     "slot_index": 0,
-     "links": [
-      56
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfyui-explicite-identity-forge",
-    "ver": "0485c03c3d657ba466c5d28583e5086eeddd28d8",
-    "Node name for S&R": "ExpliciteIdentityForgeModifier"
-   },
-   "widgets_values": [
-    "# Prepend a descriptor to ONE element (or a whole group).\n# One per line ->  key: descriptor      (delete the # to use a line)\n# key = a FIELD (footwear, skin_tone, hair_color, earrings, eye_color, ...)\n#    or a GROUP (Body, Face, Hair, Makeup, Jewelry & Nails, Clothing, Setting & Shot)\n# Field names are the same labels shown on the Identity Forge node.\n#\n# THE ONE RULE: the descriptor goes IN FRONT of the value, it does not\n# replace it. So keep it to a 1-3 word adjective that reads naturally there.\n#   good ->  hair_color: living-flame   (becomes 'living-flame auburn')\n#   bad  ->  hair_style: nest of vipers (becomes 'nest of vipers messy bun')\n#\n# --- materials -------------------------------------------------------\n# skin_tone: iridescent\n# skin_tone: cracked molten\n# skin_tone: carved marble\n# skin_tone: moss-and-lichen\n# hair_color: living-flame\n# eye_color: glowing\n#\n# --- genres (a whole group at once) ----------------------------------\n# Clothing: cyberpunk neon\n# Clothing: baroque gilded\n# Clothing: post-apocalyptic weathered\n# footwear: anti-gravity hover\n#\n# --- whimsy ----------------------------------------------------------\n# Makeup: galaxy-glitter\n# earrings: tiny caged\n# Setting & Shot: storm-lit\n"
-   ],
-   "widgets_values_named": {
-    "style_modifiers": "# Prepend a descriptor to ONE element (or a whole group).\n# One per line ->  key: descriptor      (delete the # to use a line)\n# key = a FIELD (footwear, skin_tone, hair_color, earrings, eye_color, ...)\n#    or a GROUP (Body, Face, Hair, Makeup, Jewelry & Nails, Clothing, Setting & Shot)\n# Field names are the same labels shown on the Identity Forge node.\n#\n# THE ONE RULE: the descriptor goes IN FRONT of the value, it does not\n# replace it. So keep it to a 1-3 word adjective that reads naturally there.\n#   good ->  hair_color: living-flame   (becomes 'living-flame auburn')\n#   bad  ->  hair_style: nest of vipers (becomes 'nest of vipers messy bun')\n#\n# --- materials -------------------------------------------------------\n# skin_tone: iridescent\n# skin_tone: cracked molten\n# skin_tone: carved marble\n# skin_tone: moss-and-lichen\n# hair_color: living-flame\n# eye_color: glowing\n#\n# --- genres (a whole group at once) ----------------------------------\n# Clothing: cyberpunk neon\n# Clothing: baroque gilded\n# Clothing: post-apocalyptic weathered\n# footwear: anti-gravity hover\n#\n# --- whimsy ----------------------------------------------------------\n# Makeup: galaxy-glitter\n# earrings: tiny caged\n# Setting & Shot: storm-lit\n"
+    "explicit_act": "Random",
+    "composition": "Random",
+    "nipple_appearance": "Random",
+    "areola_appearance": "Random",
+    "labia_appearance": "Random",
+    "vulva_detail": "Random",
+    "anus_appearance": "Random",
+    "pubic_style": "Random",
+    "pubic_color": "Random",
+    "arousal_level": "Random",
+    "tattoos": "Random",
+    "legwear": "Random",
+    "tattoo_placement": "Random"
    }
   },
   {
@@ -2262,120 +1558,6 @@
    "bgcolor": "#653"
   },
   {
-   "id": 63,
-   "type": "ExpliciteIdentityForgeCosplayer",
-   "pos": [
-    -100,
-    50
-   ],
-   "size": [
-    270,
-    230
-   ],
-   "flags": {},
-   "order": 7,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "upstream",
-     "name": "upstream",
-     "shape": 7,
-     "type": "STRING",
-     "link": null
-    },
-    {
-     "localized_name": "character",
-     "name": "character",
-     "type": "COMBO",
-     "widget": {
-      "name": "character"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "random_scope",
-     "name": "random_scope",
-     "type": "COMBO",
-     "widget": {
-      "name": "random_scope"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "look_level",
-     "name": "look_level",
-     "type": "COMBO",
-     "widget": {
-      "name": "look_level"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "mask",
-     "name": "mask",
-     "type": "COMBO",
-     "widget": {
-      "name": "mask"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "props",
-     "name": "props",
-     "type": "COMBO",
-     "widget": {
-      "name": "props"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "seed",
-     "name": "seed",
-     "type": "INT",
-     "widget": {
-      "name": "seed"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "character_json",
-     "name": "character_json",
-     "type": "STRING",
-     "links": [
-      57,
-      58
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfyui-explicite-identity-forge",
-    "ver": "66632622f97bc7fe217751793802f1f7fdd5359d",
-    "Node name for S&R": "ExpliciteIdentityForgeCosplayer"
-   },
-   "widgets_values": [
-    "Random \u2014 any",
-    "Any",
-    "Any",
-    "Full character",
-    "Default",
-    "Include signature prop",
-    824534143267077,
-    "randomize"
-   ],
-   "widgets_values_named": {
-    "character": "Random \u2014 any",
-    "franchise_filter": "Any",
-    "random_scope": "Any",
-    "look_level": "Full character",
-    "mask": "Default",
-    "props": "Include signature prop",
-    "seed": 824534143267077,
-    "randomize": "randomize"
-   }
-  },
-  {
    "id": 64,
    "type": "LoraLoader",
    "pos": [
@@ -2414,6 +1596,15 @@
      "link": null
     },
     {
+     "name": "strength_clip",
+     "type": "FLOAT",
+     "widget": {
+      "name": "strength_clip"
+     },
+     "link": null,
+     "localized_name": "strength_clip"
+    },
+    {
      "localized_name": "clip",
      "name": "clip",
      "type": "CLIP",
@@ -2448,6 +1639,52 @@
     1.0,
     1.0
    ]
+  },
+  {
+   "id": 65,
+   "type": "SaveImage",
+   "pos": [
+    3470,
+    80
+   ],
+   "size": [
+    220,
+    90
+   ],
+   "flags": {},
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 34,
+     "localized_name": "images"
+    },
+    {
+     "name": "filename_prefix",
+     "type": "STRING",
+     "widget": {
+      "name": "filename_prefix"
+     },
+     "link": null,
+     "localized_name": "filename_prefix"
+    }
+   ],
+   "outputs": [
+    {
+     "name": "_hidden",
+     "type": "hidden",
+     "links": [],
+     "slot_index": 0
+    }
+   ],
+   "widgets_values": [
+    "identityforge"
+   ],
+   "widgets_values_named": {
+    "filename_prefix": "cosplay"
+   },
+   "properties": {}
   }
  ],
  "links": [
@@ -2525,50 +1762,10 @@
   ],
   [
    19,
-   21,
+   8,
    0,
    9,
    1,
-   "STRING"
-  ],
-  [
-   28,
-   37,
-   0,
-   38,
-   0,
-   "STRING"
-  ],
-  [
-   29,
-   38,
-   0,
-   14,
-   0,
-   "STRING"
-  ],
-  [
-   34,
-   13,
-   0,
-   42,
-   0,
-   "IMAGE"
-  ],
-  [
-   37,
-   14,
-   0,
-   43,
-   1,
-   "STRING"
-  ],
-  [
-   38,
-   43,
-   0,
-   42,
-   2,
    "STRING"
   ],
   [
@@ -2580,35 +1777,11 @@
    "STRING"
   ],
   [
-   56,
-   59,
-   0,
-   50,
-   0,
-   "STRING"
-  ],
-  [
-   57,
-   63,
-   0,
-   37,
-   0,
-   "STRING"
-  ],
-  [
-   58,
-   63,
-   0,
-   59,
-   0,
-   "STRING"
-  ],
-  [
    60,
    5,
    0,
    64,
-   3,
+   4,
    "CLIP"
   ],
   [
@@ -2618,6 +1791,14 @@
    12,
    0,
    "MODEL"
+  ],
+  [
+   34,
+   13,
+   0,
+   65,
+   0,
+   "IMAGE"
   ]
  ],
  "groups": [
