@@ -55,6 +55,7 @@ import importlib.util
 import inspect
 import json
 import random
+import re
 import shutil
 import subprocess
 import sys
@@ -86,7 +87,7 @@ SEED_FORMULA = "int(sha256(name)[:15], 16)"
 #: workflow uses, so originals land beside their hand-run renders.
 ORIGINALS_PREFIX = "identityforge"
 
-KINDS = ("cosplay", "archetypes", "creatures")
+KINDS = ("cosplay", "archetypes", "creatures", "fetish", "nudity")
 
 #: The fork-ownership baseline. This gallery forked from the upstream project,
 #: whose images are still on the branch; the project rule is that ``gh-pages``
@@ -410,6 +411,19 @@ def entries_for(kind: str) -> dict[str, dict]:
         from data.creatures import CREATURES
 
         return CREATURES
+    if kind in ("fetish", "nudity"):
+        # Roster modules live in gallery/ (the site folders do too); they are
+        # shared with each kind's build_manifest.py, so the render and the
+        # published page can never disagree about the dropdown.
+        if str(ROOT / "gallery") not in sys.path:
+            sys.path.insert(0, str(ROOT / "gallery"))
+        if kind == "fetish":
+            import fetish_roster
+
+            return fetish_roster.entries()
+        import nudity_roster
+
+        return nudity_roster.entries()
     raise RenderError(f"Unknown kind: {kind!r}")
 
 
@@ -614,6 +628,287 @@ def _forge_kwargs(forge_class: Any, character_json: str, seed: int) -> dict[str,
     return kwargs
 
 
+# ---------------------------------------------------------------------------
+# Curated staging for the act/looks galleries (all values are the engine's
+# own pool entries -- nothing outside the field is invented)
+# ---------------------------------------------------------------------------
+
+#: act sentence -> (pose, framing). A camera-POV play gets a close or
+#: low-angle framing (the camera IS the object of the act), a breast play the
+#: chest framing, a crotch play the waist-down framing, and a slow/full-body
+#: play a pose that can actually be held while the act happens. Every value is
+#: a member of the engine's own pose / shot_type pools (data/fields.py).
+_FETISH_STAGING = {
+    # The body must be able to HOLD the act: the pose is the state the body
+    # has to be in while the act is possible, and the framing is where a
+    # staged picture of that act keeps the subject (face and mouth acts: a
+    # close POV at face height; breast acts: chest-framed; crotch and liquid
+    # acts: waist-down or low POV; slow plays: the whole body). The model is
+    # not trained on "fisting the camera" -- so we do not ask it to invent the
+    # act. We ask it for the body that is doing it and the framing that
+    # belongs to it; a fetish reads as a fetish from pose plus framing.
+    #
+    # Faces and mouth to the camera -- low, close, able to hold contact:
+    "face-sitting the camera, weight rolling slow side to side":
+        ("on hands and knees over the edge of the bed, face low toward the camera, weight rolling slow side to side",
+         "low angle looking up"),
+    "slowly working the camera with one fist, lips parted":
+        ("crouched low, one hand extended toward the camera, hips lifted",
+         "low angle looking up"),
+    "gathering spit and spitting it at the camera":
+        ("leaning low toward the camera, face close, mouth open",
+         "close-up portrait"),
+    "drooling, thick saliva trailing from her lips onto the camera":
+        ("leaning low toward the camera, face close, mouth slack",
+         "close-up portrait"),
+    "blowing hot breath on the camera, a long slow exhale":
+        ("leaning low toward the camera, face close, lips parted",
+         "close-up portrait"),
+    "kissing the camera open-mouthed, tongue slow":
+        ("leaning low toward the camera, face close, lips parted around the lens",
+         "close-up portrait"),
+    "biting the camera firmly, teeth sinking in":
+        ("leaning low toward the camera, face close, mouth wide open",
+         "close-up portrait"),
+    "moaning loudly at the camera, voice rough":
+        ("arching her back, head thrown back, mouth open mid-moan",
+         "close-up portrait"),
+    "biting her lower lip lightly":
+        ("face close to the camera, lower lip held between her teeth",
+         "close-up portrait"),
+    "sinking an ice cube between her lips":
+        ("face close to the camera, an ice cube held between her lips",
+         "close-up portrait"),
+    # The mouth travels to her own body -- the part has to be reachable:
+    "licking her own feet, slow and deliberate":
+        ("seated, one leg raised high, face at the toes",
+         "high angle looking down"),
+    "licking each fingertip in turn, mouth closing around each one":
+        ("seated, one hand at her mouth, fingers entering her lips",
+         "close-up portrait"),
+    "licking her own breasts, tongue tracing the areola in slow circles":
+        ("reclining on her hands, one breast exposed, tongue circling the areola",
+         "medium close-up from chest up"),
+    # Breast plays -- chest presented, a hand free:
+    "clenching her breast and milking through her knuckles":
+        ("reclining on her hands, chest presented, one fist at her breast",
+         "medium close-up from chest up"),
+    "sucking her own nipple hard into a peak":
+        ("reclining on her hands, chest up, one hand at her nipple",
+         "medium close-up from chest up"),
+    "bouncing her breasts, each bounce heavy":
+        ("bouncing, chest heavy and in motion, hands loose at her sides",
+         "medium close-up from chest up"),
+    "pressing a thin stream of breast milk onto the camera":
+        ("bent forward at the waist, chest presented toward the camera",
+         "medium close-up from chest up"),
+    # Crotch, liquid and pressing -- low, presented, hands free:
+    "urinating over the camera, a slow golden shower":
+        ("kneeling with her legs apart, hips forward, looking back at the camera",
+         "low angle looking up"),
+    "dripping, each drop landing on the camera":
+        ("sitting low with her legs apart, crotch toward the camera",
+         "medium shot from waist up"),
+    "squirt play, gushing clear fluid onto the camera":
+        ("sitting low, legs parted, crotch presented toward the camera",
+         "medium shot from waist up"),
+    "spreading her labia with her fingers, wet and dripping":
+        ("seated with her legs apart, both hands at her crotch",
+         "medium shot from waist up"),
+    "repeatedly slapping her own crotch, each slap echoing":
+        ("kneeling, hands on her thighs, hips forward",
+         "medium shot from waist up"),
+    "crotch pressing against the camera, hips rolling":
+        ("pressed low against the camera, crotch forward, hips rolling",
+         "low angle looking up"),
+    "fingering herself":
+        ("seated, one hand at her crotch",
+         "medium shot from waist up"),
+    "spanking herself":
+        ("turned away, leaning forward, one hand on her rear",
+         "medium shot from waist up"),
+    # Slow, full-body plays -- held by the body itself, all of it in frame:
+    "riding a fluffy pillow":
+        ("straddling the fluffy pillow, hips lifted, hands on its edges",
+         "medium shot from waist up"),
+    "running one hand slowly down her own torso":
+        ("standing, one hand sliding slowly down her side",
+         "cowboy shot from mid-thigh up"),
+    "arching backward with one hand behind her head":
+        ("reclining, arching her back, one hand behind her head, hips lifted",
+         "full body shot"),
+    "crouching over the edge of the bed, hips arched":
+        ("crouching low at the edge of the bed, hips arched",
+         "full body shot"),
+    "kneeling with her back to the camera, hips lifted":
+        ("kneeling on the bed with her back to the camera, hips lifted",
+         "full body shot"),
+    "sipping from a tall glass, lips parted around the rim":
+        ("sitting, a tall glass raised to her parted lips",
+         "medium close-up from chest up"),
+    "rolling in the sheets, half buried under the duvet":
+        ("rolling in the sheets, limbs loose under the duvet",
+         "full body shot"),
+}
+
+#: Intimate, neutral locations and moods for the act gallery -- the fair-draw
+#: setting pools (280 locations, including diners and gyms) contradict most
+#: acts. Rotated by roster index so the set reads as one shoot, not the same
+#: frame 32 times.
+_FETISH_LOCATIONS = [
+    "tidy bedroom with a neatly made bed",
+    "grand hotel suite",
+]
+_FETISH_MOODS = ["dreamy", "intense", "hushed", "enigmatic"]
+
+#: The engine's framing tail is a soft modifier inside a 1500-character
+#: portrait prompt, so the model defaults to a portrait anyway. For the act
+#: gallery each act gets a VISIBLE-IN-THE-FRAME sentence instead: it names
+#: what must be large in the frame and where the action happens, which is
+#: what the filename promises. This is renderer-side staging (the node itself
+#: keeps its fair-draw behavior): the focus sentence replaces the
+#: "the framing is ... composed with ..." tail and closes the prompt, keeping
+#: the engine's mood clause.
+_FETISH_FOCUS = {
+    "face-sitting the camera, weight rolling slow side to side":
+        "a low-angle POV shot looking up at her face, her body looming above and in front of the camera, her face large in the lower frame",
+    "urinating over the camera, a slow golden shower":
+        "a low-angle POV shot from below, the stream visible in the air between her and the lens, her body large in the frame",
+    "licking her own feet, slow and deliberate":
+        "a close-up of her face and one foot in the foreground, her mouth at the toes",
+    "licking each fingertip in turn, mouth closing around each one":
+        "a close-up of her face and hand, her lips around one finger",
+    "licking her own breasts, tongue tracing the areola in slow circles":
+        "a close-up of her breasts with her tongue visible on one, her face just below",
+    "gathering spit and spitting it at the camera":
+        "a close-up POV shot of her face, mouth open with spit clearly visible toward the lens",
+    "crotch pressing against the camera, hips rolling":
+        "a low-angle POV shot from below, her crotch large in the frame against the lens",
+    "slowly working the camera with one fist, lips parted":
+        "a low-angle close-up POV shot, her hand and fist entering from the bottom of the frame toward the lens",
+    "blowing hot breath on the camera, a long slow exhale":
+        "a close-up POV shot of her face inches from the lens, lips parted mid-exhale",
+    "drooling, thick saliva trailing from her lips onto the camera":
+        "a close-up POV shot, thick strands of saliva clearly visible falling from her lips toward the lens",
+    "kissing the camera open-mouthed, tongue slow":
+        "a close-up POV shot of her face, open lips pressed toward the lens",
+    "biting the camera firmly, teeth sinking in":
+        "a close-up POV shot of her face, teeth biting the lens with her lips parted around it",
+    "moaning loudly at the camera, voice rough":
+        "a close-up of her face with her mouth open mid-moan, head tilted back",
+    # breast plays
+    "clenching her breast and milking through her knuckles":
+        "a close-up of one breast with her hand milking it, knuckles visible in the frame",
+    "sucking her own nipple hard into a peak":
+        "a close-up of one breast, the nipple taut and prominent in the frame",
+    "bouncing her breasts, each bounce heavy":
+        "her chest filling the lower two thirds of the frame, breasts in motion",
+    "pressing a thin stream of breast milk onto the camera":
+        "a close-up of a breast pressed toward the lens, a thin stream of milk clearly visible",
+    # crotch/liquid plays
+    "dripping, each drop landing on the camera":
+        "a close-up of her crotch, drops clearly visible falling toward the lens",
+    "squirt play, gushing clear fluid onto the camera":
+        "a close-up of her crotch in the foreground, clear fluid gushing toward the lens",
+    "spreading her labia with her fingers, wet and dripping":
+        "a close-up of her spread labia with her fingers clearly visible, filling the lower frame",
+    "repeatedly slapping her own crotch, each slap echoing":
+        "her crotch and hand large in the lower frame, mid-slap with the hand visible",
+    # slow / full-body plays
+    "fingering herself":
+        "her seated figure from the waist up, one hand clearly visible at her crotch",
+    "riding a fluffy pillow":
+        "her straddling a fluffy pillow from the waist up, hips lifted in the frame",
+    "spanking herself":
+        "her standing figure from the waist up, one hand clearly visible at her hip",
+    "running one hand slowly down her own torso":
+        "her full torso in the frame, one hand clearly visible running down her side",
+    "biting her lower lip lightly":
+        "a close-up of her face, her lower lip clearly held between her teeth",
+    "sinking an ice cube between her lips":
+        "a close-up of her face, the ice cube clearly visible between her lips",
+    "arching backward with one hand behind her head":
+        "her full body in the frame, arching back with one hand behind her head",
+    "crouching over the edge of the bed, hips arched":
+        "her full body in the frame, crouched low at the edge of the bed with her hips arched",
+    "kneeling with her back to the camera, hips lifted":
+        "her full body seen from behind, kneeling with her hips lifted high in the frame",
+    "sipping from a tall glass, lips parted around the rim":
+        "her face and the glass in frame, sipping from a tall glass",
+    "rolling in the sheets, half buried under the duvet":
+        "her rolling in the sheets, most of her body and the duvet visible in the frame",
+}
+
+#: The committed style prefix ("professional photograph, DSLR quality, sharp
+#: focus, natural lighting, high detail skin texture") is a character-sheet
+#: recipe; the act gallery reads as a staged boudoir shoot and the looks
+#: gallery as a studio catalog, so each kind swaps in a genre-matched prefix.
+#: The prefix order in the graph is prefix-first (see positive_prompt), which
+#: is where Krea2 weighs prompt content most heavily.
+_KIND_STYLE_OVERRIDES = {
+    "fetish": ("explicit sensual photograph, intimate point of view, soft "
+               "warm light, sharp focus, high detail skin texture"),
+    "nudity": ("editorial studio photograph, fashion catalog, the model "
+               "filling most of the frame, soft even lighting, sharp focus, "
+               "high detail skin texture"),
+}
+
+#: Styled-catalog backdrops and calm, tier-matched moods for the looks gallery.
+_NUDITY_LOCATIONS = [
+    "photography studio with backdrop",
+    "seamless grey studio backdrop",
+    "grand hotel suite",
+]
+_NUDITY_MOODS = {
+    "Swimwear": "carefree",
+    "Lingerie": "dreamy",
+    "Topless": "tranquil",
+    "Fully nude": "tranquil",
+}
+
+
+def _stage_fetish(prose: str, act: str) -> str:
+    """Lead the prompt with the act, instead of burying it in the middle.
+
+    The engine's prose is a portrait recipe: identity, body, face, hair,
+    makeup, wardrobe, intimate detail, pose, then the act, then a soft framing
+    tail (``the framing is X, composed with Y, and with an {mood} mood``).
+    That order is right for a character sheet and wrong for an act: with the
+    subject description first and dominant, the model defaults to a portrait
+    and the act only tints it. So the staging sentence -- what must be
+    VISIBLE IN THE FRAME, per act -- goes first, the engine's own act sentence
+    second, the description third, and the engine's mood clause closes it.
+    Everything is still the engine's own text; this only reorders its
+    sentences and swaps the soft framing tail for the focus sentence.
+    """
+    staging = _FETISH_STAGING.get(act)
+    focus = _FETISH_FOCUS.get(act)
+    if not focus or not staging:
+        return prose
+    act_sent = f"She is {act}."
+    pose_sent = f"She is {staging[0]}."
+    # 1) Pull the act and pose sentences out of their mid-prompt positions --
+    #    they lead the prompt, where Krea2 weighs them most.
+    prose = prose.replace(f" {pose_sent} ", " ", 1)
+    prose = prose.replace(f" {act_sent} ", " ", 1)
+    # 2) Peel the soft framing tail; keep the engine's mood clause.
+    tail_text = "with the action clearly visible in the frame"
+    parts = prose.rsplit(", the framing is ", 1)
+    if len(parts) == 2:
+        head, tail = parts
+        m = re.match(
+            r"[^,]*, composed with [^,]*, and with ((?:an? )?[a-z]+) mood\.",
+            tail, re.S)
+        if m:
+            tail_text = f"and with {m.group(1)} mood"
+        else:
+            tail_text = f"{tail.rstrip('. ').rstrip()}, {tail_text}"
+        prose = head
+    prose = re.sub(r"\s+$", "", prose)
+    # 3) Focus + act + pose lead the prompt; the description follows.
+    return f"{focus}, {act_sent} {pose_sent} {prose}, {tail_text}."
+
+
 def resolve_prose(kind: str, name: str, reroll: int = 0) -> str:
     """The prose the node pack itself would emit for this entry.
 
@@ -649,6 +944,12 @@ def resolve_prose(kind: str, name: str, reroll: int = 0) -> str:
     elif kind == "creatures":
         _check_keywords(build_creature_json, CREATURE_WIDGETS, "creatures")
         preset = build_creature_json(name, seed, **CREATURE_WIDGETS)
+    elif kind in ("fetish", "nudity"):
+        # No preset node: the showcase is the engine itself, pinned per entry
+        # below (the act, or the tier + its pool value). The body, face and
+        # setting are the engine's own random draw, which is the point -- it is
+        # the node's own output, not a reimplementation.
+        preset = "{}"
     else:
         raise RenderError(f"Unknown kind: {kind!r}")
 
@@ -664,20 +965,75 @@ def resolve_prose(kind: str, name: str, reroll: int = 0) -> str:
     # The engine node stays a real class, so it keeps the original strict guard.
     _check_options(ExpliciteIdentityForge, FORGE_WIDGETS)
     shot = _gallery_shot(seed)
-    if shot:
+    if shot and kind not in ("fetish", "nudity"):
         forge_kwargs["shot_type"] = shot
-    forge_kwargs["wardrobe_level"] = _gallery_wardrobe(seed)
-    forge_kwargs["explicit_act"] = _gallery_act(seed)
+    if kind in ("cosplay", "archetypes", "creatures"):
+        forge_kwargs["wardrobe_level"] = _gallery_wardrobe(seed)
+        forge_kwargs["explicit_act"] = _gallery_act(seed)
+    elif kind == "fetish":
+        # The entry IS the act. Baseline tier is Lingerie: the engine's own
+        # minimum-undress rule then promotes a breast/vagina act to Fully nude
+        # (which is the state the showcase shows), while the camera-intimacy
+        # plays stay tier-neutral and keep the dressed body.
+        forge_kwargs["wardrobe_level"] = "Lingerie"
+        act = entries_for("fetish")[name]["act"]
+        forge_kwargs["explicit_act"] = act
+        # The engine's random setting pools are a fair draw for a character
+        # showcase, but they regularly contradict an act: face-sitting the
+        # camera got a wide off-center shot, "kneeling back to camera" got a
+        # reclining pose, and a golden shower was staged in a bicycle repair
+        # shop. For the act gallery the staging is curated PER ACT from the
+        # engine's own pools (pose, shot_type, location, mood are all regular
+        # lockable fields) -- the body, face and tier are still the engine.
+        pose, framing = _FETISH_STAGING.get(act, (None, None))
+        if pose:
+            forge_kwargs["pose"] = pose
+        if framing:
+            forge_kwargs["shot_type"] = framing
+        # One of two intimate locations + one of four sensual moods, rotated
+        # by roster position so the set stays cohesive but not monotone.
+        idx = list(entries_for("fetish")).index(name)
+        forge_kwargs["location"] = _FETISH_LOCATIONS[idx % len(_FETISH_LOCATIONS)]
+        forge_kwargs["mood"] = _FETISH_MOODS[idx % len(_FETISH_MOODS)]
+    elif kind == "nudity":
+        # The entry IS the tier: lock the tier and its own pool value, keep
+        # the act neutral so the body -- not an action -- is the subject.
+        entry = entries_for("nudity")[name]
+        forge_kwargs["wardrobe_level"] = entry["tier"]
+        forge_kwargs["explicit_act"] = "no explicit action"
+        for key, value in entry.items():
+            if key != "tier":
+                forge_kwargs[key] = value
+        # The looks catalog reads best styled, not staged: the body is the
+        # subject, so a neutral studio backdrop and a calm, non-theatrical
+        # mood keep the pool's 280 random locations (diners, gyms, bistros)
+        # from diluting it. Tier-matched mood: a swimsuit is carefree, a
+        # lingerie is dreamy, the bare looks stay serene.
+        idx = list(entries_for("nudity")).index(name)
+        forge_kwargs["location"] = _NUDITY_LOCATIONS[idx % len(_NUDITY_LOCATIONS)]
+        forge_kwargs["mood"] = _NUDITY_MOODS.get(entry["tier"], "tranquil")
+        # A looks catalog is a model, not a scene: keep the body the subject
+        # instead of the pool's "subject small against open negative space".
+        forge_kwargs["composition"] = "the subject filling most of the frame"
     forged = ExpliciteIdentityForge.execute(**forge_kwargs)
     prose = _unwrap(forged)[0]
     if not isinstance(prose, str) or not prose.strip():
         raise RenderError(f"{kind}/{name}: the engine produced no prose")
+    if kind == "fetish":
+        prose = _stage_fetish(prose, entries_for("fetish")[name]["act"])
     return prose
 
 
-def positive_prompt(prose: str, settings: dict[str, Any]) -> str:
-    """Style prefix first: a trailing noun-phrase style gets drawn as scene content."""
-    return f"{settings['style_prefix']}{settings['style_delimiter']}{prose}"
+def positive_prompt(prose: str, settings: dict[str, Any], kind: str | None = None) -> str:
+    """Style prefix first: a trailing noun-phrase style gets drawn as scene content.
+
+    The committed prefix ("professional photograph, DSLR quality...") is a
+    character-sheet recipe; the act and looks galleries are staged differently,
+    so their kind carries its own genre prefix. The committed prefix stays the
+    single source of truth for the character galleries.
+    """
+    prefix = _KIND_STYLE_OVERRIDES.get(kind or "", settings["style_prefix"])
+    return f"{prefix}{settings['style_delimiter']}{prose}"
 
 
 # ---------------------------------------------------------------------------
@@ -869,7 +1225,7 @@ def render_one(client: ComfyClient, kind: str, name: str, settings: dict[str, An
                reroll: int = 0) -> bool:
     stem = normalize_name(name)
     prose = resolve_prose(kind, name, reroll)
-    prompt = positive_prompt(prose, settings)
+    prompt = positive_prompt(prose, settings, kind)
     graph = build_graph(
         prompt, entry_seed(name, reroll), settings, save_originals, stem,
     )
@@ -1121,10 +1477,10 @@ def main(argv: list[str] | None = None) -> int:
             for kind, name in targets:
                 prose = resolve_prose(kind, name, args.reroll)
                 print(f"\n=== {kind} / {name}  (seed {entry_seed(name, args.reroll)}) ===")
-                print(positive_prompt(prose, settings))
+                print(positive_prompt(prose, settings, kind))
             print(f"\n--- graph for {targets[0][1]} ---")
             print(json.dumps(
-                build_graph(positive_prompt(resolve_prose(*targets[0], args.reroll), settings),
+                build_graph(positive_prompt(resolve_prose(*targets[0], args.reroll), settings, targets[0][0]),
                             entry_seed(targets[0][1], args.reroll), settings,
                             args.save_originals, targets[0][1]),
                 indent=2,
