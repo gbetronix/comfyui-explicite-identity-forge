@@ -652,8 +652,30 @@ FIELD_DEFINITIONS: OrderedDict[str, dict] = OrderedDict([
     # completes "She is ..." (same rule as the pose pool).
     ("explicit_act", {
         "group": 'Setting & Shot',
-        "female_options": ['no explicit action', 'fingering herself', 'riding a fluffy pillow', 'spanking herself', 'running one hand slowly down her own torso', "biting her lower lip lightly", 'sinking an ice cube between her lips', 'arching backward with one hand behind her head', 'crouching over the edge of the bed, hips arched', 'kneeling with her back to the camera, hips lifted', 'sipping from a tall glass, lips parted around the rim', 'rolling in the sheets, half buried under the duvet'],
-        "male_options": ['no explicit action', 'fingering herself', 'riding a fluffy pillow', 'spanking herself', 'running one hand slowly down her own torso', "biting her lower lip lightly", 'sinking an ice cube between her lips', 'arching backward with one hand behind her head', 'crouching over the edge of the bed, hips arched', 'kneeling with her back to the camera, hips lifted', 'sipping from a tall glass, lips parted around the rim', 'rolling in the sheets, half buried under the duvet'],
+        "female_options": ['no explicit action', 'fingering herself', 'riding a fluffy pillow', 'spanking herself', 'running one hand slowly down her own torso', "biting her lower lip lightly", 'sinking an ice cube between her lips', 'arching backward with one hand behind her head', 'crouching over the edge of the bed, hips arched', 'kneeling with her back to the camera, hips lifted', 'sipping from a tall glass, lips parted around the rim', 'rolling in the sheets, half buried under the duvet',
+
+            # Camera-POV fetish acts (2.2.0). Community wording: 'face sitting'
+            # (weight rolling), 'golden shower' (urination on the viewer),
+            # 'spit play' / 'spit shined'. Participial, like the rest of the pool,
+            # so the engine voices them as "She is ..." in every wardrobe tier.
+            'face-sitting the camera, weight rolling slow side to side',
+            'urinating over the camera, a slow golden shower',
+            'licking her own feet, slow and deliberate',
+            'licking each fingertip in turn, mouth closing around each one',
+            'licking her own breasts, tongue tracing the areola in slow circles',
+            'gathering spit and spitting it at the camera',
+            'crotch pressing against the camera, hips rolling',
+            'slowly working the camera with one fist, lips parted',],
+        "male_options": ['no explicit action', 'fingering herself', 'riding a fluffy pillow', 'spanking herself', 'running one hand slowly down her own torso', "biting her lower lip lightly", 'sinking an ice cube between her lips', 'arching backward with one hand behind her head', 'crouching over the edge of the bed, hips arched', 'kneeling with her back to the camera, hips lifted', 'sipping from a tall glass, lips parted around the rim', 'rolling in the sheets, half buried under the duvet',
+
+            'face-sitting the camera, weight rolling slow side to side',
+            'urinating over the camera, a slow golden shower',
+            'licking her own feet, slow and deliberate',
+            'licking each fingertip in turn, mouth closing around each one',
+            'licking her own breasts, tongue tracing the areola in slow circles',
+            'gathering spit and spitting it at the camera',
+            'crotch pressing against the camera, hips rolling',
+            'slowly working the camera with one fist, lips parted',],
         "optional": False,
         # Keep the neutral draw clearly the mode (1.0 against 0.5 each): an
         # explicit act appears on roughly a third of random draws, never by
@@ -667,7 +689,15 @@ FIELD_DEFINITIONS: OrderedDict[str, dict] = OrderedDict([
                     'crouching over the edge of the bed, hips arched': 0.5,
                     'kneeling with her back to the camera, hips lifted': 0.5,
                     'sipping from a tall glass, lips parted around the rim': 0.5,
-                    'rolling in the sheets, half buried under the duvet': 0.5}
+                    'rolling in the sheets, half buried under the duvet': 0.5,
+                    'face-sitting the camera, weight rolling slow side to side': 0.5,
+                    'urinating over the camera, a slow golden shower': 0.5,
+                    'licking her own feet, slow and deliberate': 0.5,
+                    'licking each fingertip in turn, mouth closing around each one': 0.5,
+                    'licking her own breasts, tongue tracing the areola in slow circles': 0.5,
+                    'gathering spit and spitting it at the camera': 0.5,
+                    'crotch pressing against the camera, hips rolling': 0.5,
+                    'slowly working the camera with one fist, lips parted': 0.5}
     }),
     ("held_item", {
         "group": 'Setting & Shot',
