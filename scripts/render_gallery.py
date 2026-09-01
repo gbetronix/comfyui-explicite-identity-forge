@@ -158,8 +158,8 @@ def _gallery_shot(seed: int) -> str | None:
     what the node CAN emit, not a canonical reproduction (the manifest hash
     tracks entry text, not render settings - see architecture.md).
     """
-    from nodes.identity_forge import IdentityForge
-    for spec in IdentityForge.define_schema().inputs:
+    from nodes.identity_forge import ExpliciteIdentityForge
+    for spec in ExpliciteIdentityForge.define_schema().inputs:
         if spec.id == "shot_type":
             # "Random" is the field's control value and "None" is its omit
             # sentinel -- neither is a shot; picking either would leak through
@@ -189,8 +189,8 @@ def _gallery_wardrobe(seed: int) -> str:
     gallery image is a sample of what the node CAN emit, not a canonical
     reproduction (the manifest hash tracks entry text, not render settings).
     """
-    from nodes.identity_forge import IdentityForge
-    for spec in IdentityForge.define_schema().inputs:
+    from nodes.identity_forge import ExpliciteIdentityForge
+    for spec in ExpliciteIdentityForge.define_schema().inputs:
         if spec.id == "wardrobe_level":
             pool = [(lvl, _WARDROBE_WEIGHTS[lvl]) for lvl in spec.options
                     if lvl in _WARDROBE_WEIGHTS]
@@ -201,7 +201,7 @@ def _gallery_wardrobe(seed: int) -> str:
             return random.Random(seed ^ 0x5A17C304).choices(
                 [lvl for lvl, _ in pool],
                 weights=[w for _, w in pool], k=1)[0]
-    raise RenderError("IdentityForge has no wardrobe_level input")
+    raise RenderError("ExpliciteIdentityForge has no wardrobe_level input")
 
 
 #: Fields a preset may lock that belong to the garment itself. Stripping them
@@ -249,8 +249,8 @@ def _gallery_act(seed: int) -> str:
     draw leaves the prose merely nude, not explicit. The gallery samples skip
     that: one of the eleven acts, seeded per entry on a dedicated stream.
     """
-    from nodes.identity_forge import IdentityForge
-    for spec in IdentityForge.define_schema().inputs:
+    from nodes.identity_forge import ExpliciteIdentityForge
+    for spec in ExpliciteIdentityForge.define_schema().inputs:
         if spec.id == "explicit_act":
             pool = [a for a in spec.options
                     if a not in ("Random", "None", "no explicit action")]
@@ -258,7 +258,7 @@ def _gallery_act(seed: int) -> str:
                 raise RenderError(
                     f"explicit_act options {spec.options} expose no acts")
             return random.Random(seed ^ 0x5A17C306).choice(pool)
-    raise RenderError("IdentityForge has no explicit_act input")
+    raise RenderError("ExpliciteIdentityForge has no explicit_act input")
 
 
 class RenderError(RuntimeError):
@@ -598,7 +598,7 @@ def _check_keywords(builder: Any, pinned: dict[str, Any], kind: str) -> None:
 
 
 def _forge_kwargs(forge_class: Any, character_json: str, seed: int) -> dict[str, Any]:
-    """Every IdentityForge widget, mirroring the workflows.
+    """Every ExpliciteIdentityForge widget, mirroring the workflows.
 
     Built from the node's own schema rather than a hand-kept list, so a field
     added to the pack is carried at its default of ``"Random"`` automatically.
@@ -623,7 +623,7 @@ def resolve_prose(kind: str, name: str, reroll: int = 0) -> str:
     image at all.
     """
     _register_comfy_stub()
-    from nodes.identity_forge import IdentityForge
+    from nodes.identity_forge import ExpliciteIdentityForge
     from nodes.identity_forge_archetype import build_archetype_json
     from nodes.identity_forge_cosplayer import build_cosplayer_json
     from nodes.identity_forge_creature import build_creature_json
@@ -658,15 +658,15 @@ def resolve_prose(kind: str, name: str, reroll: int = 0) -> str:
     # gets the seed's dress code. (The engine's own "locked outfit beats the
     # tier" rule still governs the node itself.)
     character_json = _strip_preset_clothing(character_json)
-    forge_kwargs = _forge_kwargs(IdentityForge, character_json, seed)
+    forge_kwargs = _forge_kwargs(ExpliciteIdentityForge, character_json, seed)
     # The engine node stays a real class, so it keeps the original strict guard.
-    _check_options(IdentityForge, FORGE_WIDGETS)
+    _check_options(ExpliciteIdentityForge, FORGE_WIDGETS)
     shot = _gallery_shot(seed)
     if shot:
         forge_kwargs["shot_type"] = shot
     forge_kwargs["wardrobe_level"] = _gallery_wardrobe(seed)
     forge_kwargs["explicit_act"] = _gallery_act(seed)
-    forged = IdentityForge.execute(**forge_kwargs)
+    forged = ExpliciteIdentityForge.execute(**forge_kwargs)
     prose = _unwrap(forged)[0]
     if not isinstance(prose, str) or not prose.strip():
         raise RenderError(f"{kind}/{name}: the engine produced no prose")

@@ -43,7 +43,7 @@ preserved) without setting dozens of fields to `None` by hand.
 After randomizing, an engine resolves coherence rules — a buzz cut never gets a braid,
 "no makeup" clears every cosmetic, an athletic outfit drops the handbag, a sedentary build is
 never "very muscular", and so on. A rule never overrides a field **you** locked; it logs an
-`[IdentityForge]` notice and keeps your value.
+`[ExpliciteIdentityForge]` notice and keeps your value.
 
 The `gender` toggle is a hard gate, not a coherence rule: gender-specific values (e.g. facial
 hair) are always validated against the chosen gender, even when they arrive locked from a preset.

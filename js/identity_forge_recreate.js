@@ -69,7 +69,7 @@ function warn(message, error) {
 
 function isIdentityForgeNode(node) {
   const type = node && (node.comfyClass || (node.constructor && node.constructor.type));
-  return Boolean(type) && String(type).startsWith("IdentityForge");
+  return Boolean(type) && String(type).startsWith("ExpliciteIdentityForge");
 }
 
 /** Resolve a link id to its link record across frontend versions. */

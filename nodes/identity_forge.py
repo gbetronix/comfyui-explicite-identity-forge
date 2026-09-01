@@ -1,4 +1,4 @@
-"""IdentityForge node — character description randomizer with constraint engine.
+"""ExpliciteIdentityForge node — character description randomizer with constraint engine.
 
 This module is split in two halves:
 
@@ -1787,7 +1787,7 @@ def _apply_constraints(
         key = (field, detail)
         if key not in warned:
             warned.add(key)
-            warnings.append(f"[IdentityForge] {detail}")
+            warnings.append(f"[ExpliciteIdentityForge] {detail}")
 
     for _ in range(_MAX_CONSTRAINT_ITERATIONS):
         changed = False
@@ -2610,7 +2610,7 @@ def _load_document(raw: str) -> dict:
     try:
         data = json.loads(raw)
     except (ValueError, TypeError):
-        print("[IdentityForge] Ignoring malformed preset JSON during merge.")
+        print("[ExpliciteIdentityForge] Ignoring malformed preset JSON during merge.")
         return {}
     return data if isinstance(data, dict) else {}
 
@@ -2630,7 +2630,7 @@ def merge_preset_documents(upstream_json: str, own_json: str) -> str:
 
     Lets the preset nodes chain: an upstream preset's ``character_json`` is merged
     *under* this node's own output, so wiring ``Archetype -> Cosplayer ->
-    IdentityForge`` keeps both connected. A node set to ``"None"`` emits ``"{}"``,
+    ExpliciteIdentityForge`` keeps both connected. A node set to ``"None"`` emits ``"{}"``,
     which here passes the upstream through unchanged. On overlap the downstream
     (own) document wins, field by field, including ``_meta`` keys. ``_meta`` is
     emitted first and groups follow :data:`_GROUP_ORDER` for readable output.
@@ -2998,7 +2998,7 @@ def generate_character(
         if phrase:
             locked_clean["height"] = phrase
         else:
-            print(f"[IdentityForge] Unknown size_scale {size_scale!r}; ignoring. "
+            print(f"[ExpliciteIdentityForge] Unknown size_scale {size_scale!r}; ignoring. "
                   f"Expected 'Auto' or one of: "
                   f"{', '.join(_SIZE_SCALE_PHRASES)}.")
 
@@ -3064,7 +3064,7 @@ def generate_character(
         ):
             continue
         del locked_clean[name]
-        print(f"[IdentityForge] '{name}={value}' is not valid for gender "
+        print(f"[ExpliciteIdentityForge] '{name}={value}' is not valid for gender "
               f"'{gender}'; re-randomizing within the {gender} pool.")
 
     resolved = _randomize_fields(
@@ -3437,7 +3437,7 @@ def _parse_archetype_json(raw: str) -> dict[str, str]:
     """Parse an optional archetype JSON string into a field→value dict.
 
     Accepts either a flat ``{field: value}`` mapping or the grouped document
-    produced by :class:`IdentityForge` / the archetype node (``_meta`` plus
+    produced by :class:`ExpliciteIdentityForge` / the archetype node (``_meta`` plus
     per-group sub-dicts). Returns ``{}`` on empty or malformed input.
     """
     raw = (raw or "").strip()
@@ -3446,7 +3446,7 @@ def _parse_archetype_json(raw: str) -> dict[str, str]:
     try:
         data = json.loads(raw)
     except (ValueError, TypeError):
-        print("[IdentityForge] Ignoring malformed archetype_json input.")
+        print("[ExpliciteIdentityForge] Ignoring malformed archetype_json input.")
         return {}
     if not isinstance(data, dict):
         return {}
@@ -3597,7 +3597,7 @@ def _parse_archetype_json(raw: str) -> dict[str, str]:
 
 if _COMFY_AVAILABLE:
 
-    class IdentityForge(io.ComfyNode):  # type: ignore[misc, valid-type]
+    class ExpliciteIdentityForge(io.ComfyNode):  # type: ignore[misc, valid-type]
         """Randomize a detailed character description with a constraint engine."""
 
         @classmethod
@@ -3734,7 +3734,7 @@ if _COMFY_AVAILABLE:
                     )
                 )
 
-            # Optional archetype JSON input socket (wire IdentityForgeArchetype's
+            # Optional archetype JSON input socket (wire ExpliciteIdentityForgeArchetype's
             # character_json here). force_input makes it a connectable socket
             # rather than a text widget.
             inputs.append(
@@ -3743,8 +3743,8 @@ if _COMFY_AVAILABLE:
                     default="",
                     optional=True,
                     force_input=True,
-                    tooltip="Connect an IdentityForgeArchetype, IdentityForgeCosplayer or "
-                            "IdentityForgeCreature here (chain several via their 'upstream' "
+                    tooltip="Connect an ExpliciteIdentityForgeArchetype, ExpliciteIdentityForgeCosplayer or "
+                            "ExpliciteIdentityForgeCreature here (chain several via their 'upstream' "
                             "inputs). Its fields seed the character; explicit non-'Random' "
                             "widgets still override it. Leave unconnected (or use 'None') "
                             "for no override.",
@@ -3752,7 +3752,7 @@ if _COMFY_AVAILABLE:
             )
 
             return io.Schema(
-                node_id="IdentityForge",
+                node_id="ExpliciteIdentityForge",
                 display_name="Explicite Prompt Generator",
                 category="conditioning/character",
                 description="Generates detailed prompts for an adult woman "

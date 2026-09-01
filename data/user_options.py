@@ -214,7 +214,7 @@ def apply_user_options(
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (ValueError, OSError) as exc:  # malformed JSON or unreadable
-        print(f"[IdentityForge] Ignoring {path.name}: {exc}")
+        print(f"[ExpliciteIdentityForge] Ignoring {path.name}: {exc}")
         return 0
     if not isinstance(data, dict):
         return 0
@@ -229,7 +229,7 @@ def apply_user_options(
         added += _apply_outfits(outfits, field_definitions, outfit_descriptions)
 
     if added:
-        print(f"[IdentityForge] Loaded {added} custom option(s) from {path.name}.")
+        print(f"[ExpliciteIdentityForge] Loaded {added} custom option(s) from {path.name}.")
     return added
 
 
@@ -244,7 +244,7 @@ def _load_user_section(path: Path, section: str) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (ValueError, OSError) as exc:
-        print(f"[IdentityForge] Ignoring {path.name}: {exc}")
+        print(f"[ExpliciteIdentityForge] Ignoring {path.name}: {exc}")
         return {}
     block = data.get(section) if isinstance(data, dict) else None
     return block if isinstance(block, dict) else {}
@@ -277,7 +277,7 @@ def apply_user_archetypes(archetypes: dict[str, dict], path: Path | None = None)
         archetypes[name] = cleaned
         added += 1
     if added:
-        print(f"[IdentityForge] Loaded {added} custom archetype(s) from {path.name}.")
+        print(f"[ExpliciteIdentityForge] Loaded {added} custom archetype(s) from {path.name}.")
     return added
 
 
@@ -320,10 +320,10 @@ def apply_user_creatures(creatures: dict[str, dict], path: Path | None = None) -
             creatures[name] = record
             added += 1
             continue
-        print(f"[IdentityForge] Skipping creature {name!r}: needs class, palette, "
+        print(f"[ExpliciteIdentityForge] Skipping creature {name!r}: needs class, palette, "
               f"head, eyes and integument.")
     if added:
-        print(f"[IdentityForge] Loaded {added} custom creature(s) from {path.name}.")
+        print(f"[ExpliciteIdentityForge] Loaded {added} custom creature(s) from {path.name}.")
     return added
 
 
@@ -375,5 +375,5 @@ def apply_user_cosplayers(cosplayers: dict[str, dict], path: Path | None = None)
         cosplayers[name] = record
         added += 1
     if added:
-        print(f"[IdentityForge] Loaded {added} custom cosplayer(s) from {path.name}.")
+        print(f"[ExpliciteIdentityForge] Loaded {added} custom cosplayer(s) from {path.name}.")
     return added

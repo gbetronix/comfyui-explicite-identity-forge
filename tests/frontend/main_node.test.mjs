@@ -34,10 +34,10 @@ test("registered as identity_forge.ui", () => {
 });
 
 test("every non-control fixture widget lands under a group header, in GROUP_ORDER order", async () => {
-  const fixtureNames = widgetsFor("IdentityForge").map((w) => w.name);
+  const fixtureNames = widgetsFor("ExpliciteIdentityForge").map((w) => w.name);
   const expectedFields = new Set(fixtureNames.filter((n) => !CONTROL_WIDGET_NAMES.includes(n)));
 
-  const node = await createNode(ext, "IdentityForge");
+  const node = await createNode(ext, "ExpliciteIdentityForge");
 
   let currentGroup = null;
   const seenGroupsInOrder = [];
@@ -64,8 +64,8 @@ test("every non-control fixture widget lands under a group header, in GROUP_ORDE
 });
 
 test("every original widget survives setup exactly once, plus only master buttons and headers added", async () => {
-  const originalNames = widgetsFor("IdentityForge").map((w) => w.name);
-  const node = await createNode(ext, "IdentityForge");
+  const originalNames = widgetsFor("ExpliciteIdentityForge").map((w) => w.name);
+  const node = await createNode(ext, "ExpliciteIdentityForge");
   const finalNames = node.widgets.map((w) => w.name);
 
   assert.equal(new Set(finalNames).size, finalNames.length, "no widget should appear twice");
@@ -82,7 +82,7 @@ test("every original widget survives setup exactly once, plus only master button
 });
 
 test("collapsing then re-expanding a group does not leave a stale computeSize stub", async () => {
-  const node = await createNode(ext, "IdentityForge");
+  const node = await createNode(ext, "ExpliciteIdentityForge");
   const header = node.widgets.find((w) => w.name === "▾ Body");
   const bodyField = node.widgets.find((w) => w.name === "height");
   assert.ok(header && bodyField);
@@ -107,14 +107,14 @@ test("collapsing then re-expanding a group does not leave a stale computeSize st
 });
 
 test("seed's control_after_generate sibling survives and stays immediately adjacent", async () => {
-  const node = await createNode(ext, "IdentityForge");
+  const node = await createNode(ext, "ExpliciteIdentityForge");
   const seedIndex = node.widgets.findIndex((w) => w.name === "seed");
   assert.notEqual(seedIndex, -1);
   assert.equal(node.widgets[seedIndex + 1]?.name, "control_after_generate");
 });
 
 test("every button widget is created with options.serialize === false", async () => {
-  const node = await createNode(ext, "IdentityForge");
+  const node = await createNode(ext, "ExpliciteIdentityForge");
   const buttons = node.widgets.filter((w) => w.type === "button");
   assert.ok(buttons.length >= 10, "expected 2 master buttons + one header per non-empty group");
   for (const b of buttons) {
@@ -123,7 +123,7 @@ test("every button widget is created with options.serialize === false", async ()
 });
 
 test("switching gender re-scopes gender-divergent option lists and resets an invalid lock", async () => {
-  const node = await createNode(ext, "IdentityForge");
+  const node = await createNode(ext, "ExpliciteIdentityForge");
   const genderW = node.widgets.find((w) => w.name === "gender");
   const facialHairW = node.widgets.find((w) => w.name === "facial_hair");
   assert.ok(genderW && facialHairW);
@@ -154,8 +154,8 @@ test("switching gender re-scopes gender-divergent option lists and resets an inv
    for the same node on some paths". The existing single-creation tests could not
    see it: on the first pass there is nothing to duplicate. */
 test("a second onNodeCreated adds no second set of buttons, headers or callbacks", async () => {
-  const once = await createNode(ext, "IdentityForge");
-  const twice = await createNodeTwice(ext, "IdentityForge");
+  const once = await createNode(ext, "ExpliciteIdentityForge");
+  const twice = await createNodeTwice(ext, "ExpliciteIdentityForge");
 
   assert.equal(twice.widgets.length, once.widgets.length,
     "re-entry duplicated widgets");
@@ -175,7 +175,7 @@ test("a second onNodeCreated adds no second set of buttons, headers or callbacks
 });
 
 test("a second onNodeCreated does not wrap the gender callback twice", async () => {
-  const node = await createNodeTwice(ext, "IdentityForge");
+  const node = await createNodeTwice(ext, "ExpliciteIdentityForge");
   const gender = node.widgets.find((w) => w.name === "gender");
   assert.ok(gender);
 

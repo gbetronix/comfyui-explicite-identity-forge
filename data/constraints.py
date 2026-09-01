@@ -1,4 +1,4 @@
-"""Constraint rules for IdentityForge randomization.
+"""Constraint rules for ExpliciteIdentityForge randomization.
 
 Each rule is a plain dict consumed by the engine in ``nodes/identity_forge.py``.
 

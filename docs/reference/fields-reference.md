@@ -3,7 +3,7 @@
 
 # Field and value reference
 
-**Every `IdentityForge` dropdown in node order**, with all options exactly as the node exposes them and the widget default. `Random` and `None` are real dropdown entries, not placeholders. This is a snapshot of `IdentityForge.define_schema()`; the pools live in `data/fields.py`, so a changed pool or default refreshes this table here.
+**Every `ExpliciteIdentityForge` dropdown in node order**, with all options exactly as the node exposes them and the widget default. `Random` and `None` are real dropdown entries, not placeholders. This is a snapshot of `ExpliciteIdentityForge.define_schema()`; the pools live in `data/fields.py`, so a changed pool or default refreshes this table here.
 
 | Label | Possible values | Default |
 |---|---|---|
@@ -101,4 +101,4 @@
 | tattoo_placement | Random, on one forearm, across the back of one hand, on the inner wrist, on the side of the neck, behind one ear, across the collarbone, on one upper arm, across one shoulder blade, down one thigh, on one calf, None | Random |
 | archetype_json | JSON preset document (empty) | — |
 
-*93 fields, from `IdentityForge.define_schema()`.
+*93 fields, from `ExpliciteIdentityForge.define_schema()`.

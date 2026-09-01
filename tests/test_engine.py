@@ -1,4 +1,4 @@
-"""Unit tests for the IdentityForge engine and archetype node.
+"""Unit tests for the ExpliciteIdentityForge engine and archetype node.
 
 Pure-stdlib ``unittest`` so it runs without ComfyUI installed:
 
@@ -1145,7 +1145,7 @@ class CosplayerTests(unittest.TestCase):
         self.assertEqual(json.loads(js)["_meta"]["cosplay_of"], "2B (NieR: Automata)")
 
     def test_costume_only_randomizes_the_person(self):
-        # Same character + different IdentityForge seeds = different people.
+        # Same character + different ExpliciteIdentityForge seeds = different people.
         locked, label, _ = self._locked_and_label("Ada Wong")
         a, _ = generate_character(10, "Female", locked, cosplay_label=label)
         b, _ = generate_character(20, "Female", locked, cosplay_label=label)
@@ -1351,7 +1351,7 @@ class PresetMergeTests(unittest.TestCase):
         )
 
     def test_essentials_archetype_randomizes_the_person(self):
-        # Same archetype + different IdentityForge seeds = different people.
+        # Same archetype + different ExpliciteIdentityForge seeds = different people.
         flat = _parse_archetype_json(build_archetype_json("Fairy Princess", 1, "Essentials"))
         locked = {k: v for k, v in flat.items() if k not in _CONTROL_FIELDS}
         a, _ = generate_character(10, flat.get("gender", "Any"), locked)
@@ -3910,7 +3910,7 @@ class ShellEthnicityTests(unittest.TestCase):
 
 
 def _node_locked(doc, **widgets):
-    """Reproduce IdentityForge.execute's locked-field build from a preset doc.
+    """Reproduce ExpliciteIdentityForge.execute's locked-field build from a preset doc.
 
     Mirrors the node path -- ``archetype_locked`` keeps every wired value except
     "Random" (so an explicit "None" omit survives), then ``resolve_locked_fields``
@@ -5151,7 +5151,7 @@ class SizeScaleSuppressionTests(unittest.TestCase):
 
     The builder is responsible for both: locking ``height`` to "None" so the
     engine drops it from prose and JSON, and writing ``size_scale`` into
-    ``_meta`` so the IdentityForge node can detect and present the scale. The
+    ``_meta`` so the ExpliciteIdentityForge node can detect and present the scale. The
     engine does NOT inject any size language itself -- the costume prose
     carries the scale.
     """
@@ -6187,7 +6187,7 @@ class CostumePronounTests(unittest.TestCase):
     """Costume prose must not hardcode a gendered pronoun (0.72.0).
 
     ``costume`` is voiced verbatim after "She/He wears ...", and the *person's*
-    gender is the IdentityForge widget, not the character's -- that is what makes
+    gender is the ExpliciteIdentityForge widget, not the character's -- that is what makes
     crossplay work. Ten entries carried "her"/"his"/"she"/"he" in the costume
     text, so a man cosplaying She-Hulk read "...covering her face and entire body".
     """

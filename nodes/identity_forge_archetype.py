@@ -1,9 +1,9 @@
-"""IdentityForgeArchetype node — themed character presets for IdentityForge.
+"""ExpliciteIdentityForgeArchetype node — themed character presets for ExpliciteIdentityForge.
 
 Pick (or randomize) an archetype and emit a JSON document of overrides. Wire its
 ``character_json`` output into the ``archetype_json`` input of an
-:class:`~nodes.identity_forge.IdentityForge` node: the archetype defines the
-*look* (costume, signature hair/makeup, setting) and IdentityForge randomizes the
+:class:`~nodes.identity_forge.ExpliciteIdentityForge` node: the archetype defines the
+*look* (costume, signature hair/makeup, setting) and ExpliciteIdentityForge randomizes the
 rest of the person, so every run is a different individual in the same getup.
 
 Presets chain: connect another preset's ``character_json`` into the optional

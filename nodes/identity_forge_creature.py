@@ -1,14 +1,14 @@
-"""IdentityForgeCreature node — a non-human *form* layer (animal / monster / alien).
+"""ExpliciteIdentityForgeCreature node — a non-human *form* layer (animal / monster / alien).
 
 Pick (or randomize) a creature and emit a ``Species & Anatomy`` JSON document that
-seeds an :class:`~nodes.identity_forge.IdentityForge` node: a creature head, eyes,
+seeds an :class:`~nodes.identity_forge.ExpliciteIdentityForge` node: a creature head, eyes,
 integument (skin / fur / scales / chitin / shell) and optional limbs, tail and wings.
-IdentityForge renders the chosen *form* and **suppresses** the human fields it
+ExpliciteIdentityForge renders the chosen *form* and **suppresses** the human fields it
 replaces (a creature head hides the face/hair, a creature integument hides the skin),
 while everything not replaced — a wired costume, the surviving body, the scene — still
-composes. Wire ``character_json`` into IdentityForge's ``archetype_json`` (or chain it
+composes. Wire ``character_json`` into ExpliciteIdentityForge's ``archetype_json`` (or chain it
 after an Archetype / Cosplayer via the optional ``upstream`` input; the node closest to
-IdentityForge wins on overlap).
+ExpliciteIdentityForge wins on overlap).
 
 **Only-one vs mix-everything.** The ``creature`` widget answers it in one dropdown:
 ``None`` (off), ``Random - any`` (across every class), ``Random - <class>`` (only
@@ -101,7 +101,7 @@ _FORM_LABEL_TO_TOKEN: dict[str, str] = {
 }
 
 #: Which human groups/fields a form (and its filled slots) suppress. Mirrors and
-#: generalizes IdentityForge's covers_face behaviour: the creature replaces them.
+#: generalizes ExpliciteIdentityForge's covers_face behaviour: the creature replaces them.
 _FORM_SUPPRESS_GROUPS: dict[str, set[str]] = {
     _FORM_ANTHRO: {"Demographics"},
     _FORM_FERAL: {"Demographics", "Makeup", "Jewelry & Nails", "Clothing"},
@@ -163,7 +163,7 @@ def _resolve_creature(creature: str, rng: random.Random) -> str | None:
     if creature in _RANDOM_CLASS_LABELS:
         pool = get_creature_names_by_class(_RANDOM_CLASS_LABELS[creature])
         if not pool:
-            print(f"[IdentityForgeCreature] No creatures available for '{creature}'.")
+            print(f"[ExpliciteIdentityForgeCreature] No creatures available for '{creature}'.")
             return None
         return rng.choice(pool)
     if creature == _NONE or creature not in CREATURES:

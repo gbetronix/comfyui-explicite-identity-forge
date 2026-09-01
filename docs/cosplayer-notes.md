@@ -19,8 +19,8 @@ An entry may set **`covers_face: True`** when the head is fully masked/helmeted
 (Spider-Man, a Mandalorian helmet, a ninja hood, a featureless chrome head). The
 head covering is stored in a separate **`mask`** string, kept *out* of `costume`.
 The Cosplayer node forwards the mask beside `covers_face` in its `_meta` (since
-0.90.0 — it is *not* glued onto the costume), and IdentityForge voices it as its
-own sentence ahead of the clothing; IdentityForge then drops the randomized
+0.90.0 — it is *not* glued onto the costume), and ExpliciteIdentityForge voices it as its
+own sentence ahead of the clothing; ExpliciteIdentityForge then drops the randomized
 **Face / Hair / Makeup** fields (plus earrings/piercings) from both the prose and
 JSON — so a random face never gets described fighting the mask. Leave both off
 whenever the face is visible (an open cowl, a domino mask, a body-painted but
@@ -84,7 +84,7 @@ idiom produced *"a 33-year-old Singaporean man ... He has a simple band, a cuff 
 
 Such an entry sets **`body_plan: "feral"`**. The node then emits the Creature node's
 `Species & Anatomy` payload instead of a costume — `mask` becomes the head, `costume`
-becomes the integument, and an optional `anatomy` map fills the rest — so IdentityForge
+becomes the integument, and an optional `anatomy` map fills the rest — so ExpliciteIdentityForge
 renders it through the species path and drops the human demographics, proportions,
 clothing, jewellery, skin tone and ethnicity. The prose leads with the character name
 apposed to the species rather than *"Cosplaying as"*, because that framing pushes a

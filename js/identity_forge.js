@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 
 /*
- * IdentityForge frontend extension.
+ * ExpliciteIdentityForge frontend extension.
  *
  * Data (GROUP_ORDER / FIELD_TO_GROUP / GENDER_POOLS) is generated from
  * data/fields.py by scripts/generate_js_data.py — do not edit the block between
@@ -856,14 +856,14 @@ function padLegacyWidgetValues(node, values) {
 app.registerExtension({
   name: "identity_forge.ui",
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== "IdentityForge") return;
+    if (nodeData.name !== "ExpliciteIdentityForge") return;
     const onNodeCreated = nodeType.prototype.onNodeCreated;
     nodeType.prototype.onNodeCreated = function () {
       const result = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;
       try {
         setupIdentityForge(this);
       } catch (err) {
-        console.error("[IdentityForge] frontend setup failed:", err);
+        console.error("[ExpliciteIdentityForge] frontend setup failed:", err);
       }
       return result;
     };
@@ -879,7 +879,7 @@ app.registerExtension({
           info = { ...info, widgets_values: padLegacyWidgetValues(this, info.widgets_values) };
         }
       } catch (err) {
-        console.error("[IdentityForge] legacy widget mapping failed:", err);
+        console.error("[ExpliciteIdentityForge] legacy widget mapping failed:", err);
       }
       return configure ? configure.apply(this, [info]) : undefined;
     };

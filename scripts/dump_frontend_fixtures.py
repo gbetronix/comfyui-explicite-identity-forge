@@ -40,21 +40,21 @@ if str(ROOT) not in sys.path:
 
 import tests  # noqa: E402,F401 — side effect only: registers the comfy_api stub
 
-from nodes.identity_forge import IdentityForge  # noqa: E402
-from nodes.identity_forge_turnaround import IdentityForgeTurnaround  # noqa: E402
+from nodes.identity_forge import ExpliciteIdentityForge  # noqa: E402
+from nodes.identity_forge_turnaround import ExpliciteIdentityForgeTurnaround  # noqa: E402
 from nodes.identity_forge_vault_load import (  # noqa: E402
-    IdentityForgeVaultLoad, _NO_CHARACTERS,
+    ExpliciteIdentityForgeVaultLoad, _NO_CHARACTERS,
 )
-from nodes.identity_forge_vault_save import IdentityForgeVaultSave  # noqa: E402
+from nodes.identity_forge_vault_save import ExpliciteIdentityForgeVaultSave  # noqa: E402
 
 _FIXTURE_PATH = ROOT / "tests" / "frontend" / "fixtures" / "nodes.json"
 
 # Order matches the four node_id values used across nodes/*.py.
 _NODE_CLASSES = {
-    "IdentityForge": IdentityForge,
-    "IdentityForgeTurnaround": IdentityForgeTurnaround,
-    "IdentityForgeVaultLoad": IdentityForgeVaultLoad,
-    "IdentityForgeVaultSave": IdentityForgeVaultSave,
+    "ExpliciteIdentityForge": ExpliciteIdentityForge,
+    "ExpliciteIdentityForgeTurnaround": ExpliciteIdentityForgeTurnaround,
+    "ExpliciteIdentityForgeVaultLoad": ExpliciteIdentityForgeVaultLoad,
+    "ExpliciteIdentityForgeVaultSave": ExpliciteIdentityForgeVaultSave,
 }
 
 # ComfyUI's standard control_after_generate combo, auto-added by the real
@@ -121,7 +121,7 @@ def _assert_no_private_data(fixture: dict[str, list[dict[str, Any]]]) -> None:
     Same class of trap `generate_js_data.py` documents at length, reached by a
     different route. That one is about importing the data layer (which merges the
     maintainer's `user_options.json`); this one needs no import at all —
-    `IdentityForgeVaultLoad.define_schema()` lists the characters actually saved
+    `ExpliciteIdentityForgeVaultLoad.define_schema()` lists the characters actually saved
     under ComfyUI's user directory, so running this script on the maintainer's own
     machine, with a real ComfyUI on `sys.path`, writes their saved character names
     straight into a committed, published file. Measured: a regeneration under the
@@ -131,11 +131,11 @@ def _assert_no_private_data(fixture: dict[str, list[dict[str, Any]]]) -> None:
     vault), which is exactly why it needs a guard rather than a convention — the
     gate that would catch it is the one that cannot run there.
     """
-    options = next((widget.get("options", []) for widget in fixture.get("IdentityForgeVaultLoad", [])
+    options = next((widget.get("options", []) for widget in fixture.get("ExpliciteIdentityForgeVaultLoad", [])
                     if widget.get("name") == "character"), [])
     if list(options) != [_EMPTY_VAULT_SENTINEL]:
         raise SystemExit(
-            "Refusing to touch the fixture: IdentityForgeVaultLoad lists "
+            "Refusing to touch the fixture: ExpliciteIdentityForgeVaultLoad lists "
             f"{len(options)} saved character(s) from a local vault, so live "
             "schema output is machine-specific and writing it would commit "
             "private data (--check would also report a false 'STALE').\n"

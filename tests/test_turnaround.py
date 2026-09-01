@@ -1,4 +1,4 @@
-"""Tests for the IdentityForgeTurnaround node.
+"""Tests for the ExpliciteIdentityForgeTurnaround node.
 
 The node's whole contract: take ONE resolved character and emit every camera
 view of it at once, with nothing but the camera moving between them. Every test
@@ -13,11 +13,11 @@ import re
 import unittest
 
 from data.fields import FIELD_DEFINITIONS
-from nodes.identity_forge import IdentityForge, _is_absent
+from nodes.identity_forge import ExpliciteIdentityForge, _is_absent
 from nodes.identity_forge_cosplayer import build_cosplayer_json
 from nodes.identity_forge_turnaround import (
     _FACE_ONLY_FIELDS, _FACE_OUT_OF_FRAME, _FRAMINGS, _KEEP_POSE, _NEUTRAL_POSES,
-    _REPLAYED_STEERING, _ROTATION_LABELS, _VIEW_SETS, IdentityForgeTurnaround,
+    _REPLAYED_STEERING, _ROTATION_LABELS, _VIEW_SETS, ExpliciteIdentityForgeTurnaround,
     compose_shot, replay_steering, resolve_turnaround,
 )
 
@@ -34,14 +34,14 @@ _ALL_SHOTS = sorted(
 
 def _forge(seed: int, **steer: str) -> tuple[str, str]:
     """Run the main node the way a user would, and return (prose, prompt_json)."""
-    kwargs: dict = {spec.id: "Random" for spec in IdentityForge.define_schema().inputs}
+    kwargs: dict = {spec.id: "Random" for spec in ExpliciteIdentityForge.define_schema().inputs}
     kwargs.update(
         seed=seed, archetype_json="", set_all_fields="Off", gender="Any",
         wardrobe="Match gender", size_scale="Auto", hair_color_scope="Natural only",
         accessory_density="Balanced", location_setting="Any indoor/outdoor",
     )
     kwargs.update(steer)
-    return IdentityForge.execute(**kwargs).args
+    return ExpliciteIdentityForge.execute(**kwargs).args
 
 
 def _cosplayer_document(name: str, seed: int = 7) -> str:
@@ -210,7 +210,7 @@ class TurnaroundStabilityTests(unittest.TestCase):
         # The engine logs and ignores an out-of-vocabulary control rather than
         # raising, so this is the only place the mistake is visible.
         from nodes.identity_forge import _CONTROL_FIELDS
-        forge_inputs = {spec.id: spec for spec in IdentityForge.define_schema().inputs}
+        forge_inputs = {spec.id: spec for spec in ExpliciteIdentityForge.define_schema().inputs}
         controls = [name for name in forge_inputs
                     if name in _CONTROL_FIELDS or name in _REPLAYED_STEERING
                     or name in ("gender", "size_scale", "set_all_fields")]
@@ -415,11 +415,11 @@ class ReplaySteeringTests(unittest.TestCase):
 class SchemaShapeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.schema = IdentityForgeTurnaround.define_schema()
+        cls.schema = ExpliciteIdentityForgeTurnaround.define_schema()
         cls.by_id = {spec.id: spec for spec in cls.schema.inputs}
 
     def test_node_registers_under_conditioning_character(self):
-        self.assertEqual(self.schema.node_id, "IdentityForgeTurnaround")
+        self.assertEqual(self.schema.node_id, "ExpliciteIdentityForgeTurnaround")
         self.assertEqual(self.schema.category, "conditioning/character")
 
     def test_both_outputs_are_lists(self):
@@ -433,16 +433,16 @@ class SchemaShapeTests(unittest.TestCase):
             )
 
     def test_it_exposes_only_camera_controls(self):
-        # The 0.98.0 draft re-exposed six IdentityForge steering widgets, so a
+        # The 0.98.0 draft re-exposed six ExpliciteIdentityForge steering widgets, so a
         # user could not tell which node's copy won and silently lost the other
         # ~75 fields. The character is configured upstream now; anything here
         # that names an engine field other than the two the camera owns is a
         # regression back to that.
         self.assertEqual(list(self.by_id), ["character_json", "views", "framing", "pose"])
-        forge_inputs = {spec.id for spec in IdentityForge.define_schema().inputs}
+        forge_inputs = {spec.id for spec in ExpliciteIdentityForge.define_schema().inputs}
         overlap = set(self.by_id) & forge_inputs
         self.assertEqual(overlap, {"pose"},
-                         "only 'pose' may share a name with an IdentityForge input")
+                         "only 'pose' may share a name with an ExpliciteIdentityForge input")
 
     def test_no_widget_auto_advances(self):
         # The corollary of having no fingerprint_inputs: this node is a pure
@@ -455,7 +455,7 @@ class SchemaShapeTests(unittest.TestCase):
         # fingerprint_inputs (raising NotImplementedError), so hasattr is True on
         # every node and would assert nothing. The stub declares no such method,
         # which is exactly how a hasattr check passes here and fails in ComfyUI.
-        self.assertNotIn("fingerprint_inputs", vars(IdentityForgeTurnaround))
+        self.assertNotIn("fingerprint_inputs", vars(ExpliciteIdentityForgeTurnaround))
 
     def test_character_json_is_a_required_socket_not_a_multiline_box(self):
         spec = self.by_id["character_json"]
@@ -479,7 +479,7 @@ class SchemaShapeTests(unittest.TestCase):
 
     def test_execute_returns_two_matching_lists(self):
         _, document = _forge(9)
-        prompts, labels = IdentityForgeTurnaround.execute(
+        prompts, labels = ExpliciteIdentityForgeTurnaround.execute(
             character_json=document, views="Turnaround (4)",
             framing="Full body", pose=_NEUTRAL_POSES[0],
         ).args

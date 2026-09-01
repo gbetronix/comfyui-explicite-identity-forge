@@ -1,5 +1,5 @@
 {
-  "IdentityForge": [
+  "ExpliciteIdentityForge": [
     {
       "name": "seed",
       "default": 0,
@@ -2303,7 +2303,7 @@
       ]
     }
   ],
-  "IdentityForgeTurnaround": [
+  "ExpliciteIdentityForgeTurnaround": [
     {
       "name": "views",
       "default": "Turnaround (6)",
@@ -2341,7 +2341,7 @@
       ]
     }
   ],
-  "IdentityForgeVaultLoad": [
+  "ExpliciteIdentityForgeVaultLoad": [
     {
       "name": "character",
       "default": "(no characters saved)",
@@ -2351,7 +2351,7 @@
       ]
     }
   ],
-  "IdentityForgeVaultSave": [
+  "ExpliciteIdentityForgeVaultSave": [
     {
       "name": "name",
       "default": "",

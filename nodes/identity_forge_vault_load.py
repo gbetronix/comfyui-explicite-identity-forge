@@ -1,12 +1,12 @@
-"""IdentityForgeVaultLoad node — recall a saved character from the local vault.
+"""ExpliciteIdentityForgeVaultLoad node — recall a saved character from the local vault.
 
 Pick a previously saved character and emit its resolved document as ``character_json``
 — the *same* output type the Cosplayer / Archetype / Modifier nodes emit — so it wires
-into IdentityForge's ``archetype_json`` and even stacks with other presets through the
+into ExpliciteIdentityForge's ``archetype_json`` and even stacks with other presets through the
 optional ``upstream`` input.
 
 Recall is deliberately a **string-preset merge**, not a per-widget round-trip: the saved
-document flows back through IdentityForge's ``archetype_json`` and is applied by the
+document flows back through ExpliciteIdentityForge's ``archetype_json`` and is applied by the
 existing ``_parse_archetype_json`` / ``merge_preset_documents`` machinery. Because no
 Combo widgets are re-populated, recall stays robust if field option lists change later —
 renamed / removed options or fields degrade gracefully instead of becoming invalid widget
@@ -174,14 +174,14 @@ if _COMFY_AVAILABLE:
         root.mkdir(parents=True, exist_ok=True)
         return root
 
-    class IdentityForgeVaultLoad(io.ComfyNode):  # type: ignore[misc, valid-type]
+    class ExpliciteIdentityForgeVaultLoad(io.ComfyNode):  # type: ignore[misc, valid-type]
         """Recall a saved character and emit it as a chainable character_json."""
 
         @classmethod
         def define_schema(cls) -> "io.Schema":
             names = list_character_names(_vault_root()) or [_NO_CHARACTERS]
             return io.Schema(
-                node_id="IdentityForgeVaultLoad",
+                node_id="ExpliciteIdentityForgeVaultLoad",
                 display_name="Character Vault Load",
                 category="conditioning/character",
                 description=(
@@ -217,7 +217,7 @@ if _COMFY_AVAILABLE:
             if character and character != _NO_CHARACTERS:
                 own, _ = load_character(_vault_root(), character)
                 if own == "{}":
-                    print(f"[IdentityForgeVaultLoad] Saved character {character!r} not "
+                    print(f"[ExpliciteIdentityForgeVaultLoad] Saved character {character!r} not "
                           f"found; passing upstream through.")
             character_json = merge_preset_documents(kwargs.get("upstream", ""), own)
             return io.NodeOutput(character_json)

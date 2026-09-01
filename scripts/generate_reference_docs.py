@@ -137,7 +137,7 @@ def build_archetypes_md() -> str:
 
 
 def build_fields_md() -> str:
-    """The IdentityForge dropdowns as a lookup table: label, every option, default."""
+    """The ExpliciteIdentityForge dropdowns as a lookup table: label, every option, default."""
     # Lazy: keep the module import-light; only this builder needs the live schema.
     import sys
     scripts = Path(__file__).resolve().parent
@@ -146,21 +146,21 @@ def build_fields_md() -> str:
     import render_gallery  # noqa: E402
 
     render_gallery._register_comfy_stub()
-    from nodes.identity_forge import IdentityForge  # noqa: E402
+    from nodes.identity_forge import ExpliciteIdentityForge  # noqa: E402
 
     lines = [_GENERATED_BANNER, "# Field and value reference", ""]
     lines.append(
-        "**Every `IdentityForge` dropdown in node order**, with all options "
+        "**Every `ExpliciteIdentityForge` dropdown in node order**, with all options "
         "exactly as the node exposes them and the widget default. "
         "`Random` and `None` are real dropdown entries, not placeholders. This is a "
-        "snapshot of `IdentityForge.define_schema()`; the pools live in "
+        "snapshot of `ExpliciteIdentityForge.define_schema()`; the pools live in "
         "`data/fields.py`, so a changed pool or default refreshes this table here."
     )
     lines.append("")
     lines.append("| Label | Possible values | Default |")
     lines.append("|---|---|---|")
     count = 0
-    for spec in IdentityForge.define_schema().inputs:
+    for spec in ExpliciteIdentityForge.define_schema().inputs:
         label = spec.display_name or spec.id
         opts = list(getattr(spec, "options", None) or [])
         if spec.id == "seed":
@@ -173,7 +173,7 @@ def build_fields_md() -> str:
         lines.append(f"| {label} | {values} | {default} |")
         count += 1
     lines.append("")
-    lines.append(f"*{count} fields, from `IdentityForge.define_schema()`." )
+    lines.append(f"*{count} fields, from `ExpliciteIdentityForge.define_schema()`." )
     return "\n".join(lines).rstrip() + "\n"
 
 
