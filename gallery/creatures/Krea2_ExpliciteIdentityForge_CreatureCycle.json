@@ -65,7 +65,7 @@
     "Node name for S&R": "CLIPLoader"
    },
    "widgets_values": [
-    "Krea2-Engineer-V1-bf16.safetensors",
+    "qwen3vl_4b_fp8_scaled.safetensors",
     "krea2",
     "default"
    ],
@@ -117,7 +117,7 @@
     "Node name for S&R": "VAELoader"
    },
    "widgets_values": [
-    "krea2RealVae_v10.safetensors"
+    "qwen_image_vae.safetensors"
    ],
    "widgets_values_named": {
     "vae_name": "krea2RealVae_v10.safetensors"
@@ -2120,7 +2120,7 @@
     "Node name for S&R": "UNETLoader"
    },
    "widgets_values": [
-    "krea2\\krea2_turbo_int8_convrot.safetensors",
+    "krea2_turbo_int8_convrot.safetensors",
     "default"
    ],
    "widgets_values_named": {
