@@ -143,7 +143,7 @@
      "name": "archetype_json",
      "shape": 7,
      "type": "STRING",
-     "link": 7
+     "link": null
     },
     {
      "localized_name": "seed",
