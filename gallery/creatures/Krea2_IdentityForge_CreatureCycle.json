@@ -2402,7 +2402,7 @@
   },
   {
    "id": 59,
-   "type": "LoraLoaderModelOnly",
+   "type": "LoraLoader",
    "pos": [
     1430,
     -120
@@ -2437,6 +2437,12 @@
       "name": "strength_model"
      },
      "link": null
+    },
+    {
+     "localized_name": "clip",
+     "name": "clip",
+     "type": "CLIP",
+     "link": 58
     }
    ],
    "outputs": [
@@ -2448,6 +2454,13 @@
      "links": [
       57
      ]
+    },
+    {
+     "localized_name": "CLIP",
+     "name": "CLIP",
+     "type": "CLIP",
+     "slot_index": 1,
+     "links": []
     }
    ],
    "properties": {
@@ -2457,6 +2470,7 @@
    },
    "widgets_values": [
     "krea2_nude.safetensors",
+    1.0,
     1.0
    ]
   }
@@ -2613,6 +2627,14 @@
    12,
    0,
    "MODEL"
+  ],
+  [
+   58,
+   5,
+   0,
+   59,
+   3,
+   "CLIP"
   ]
  ],
  "groups": [

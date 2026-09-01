@@ -183,97 +183,6 @@
    }
   },
   {
-   "id": 7,
-   "type": "LoraLoader",
-   "pos": [
-    1520,
-    460
-   ],
-   "size": [
-    250,
-    170
-   ],
-   "flags": {},
-   "order": 8,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "model",
-     "name": "model",
-     "type": "MODEL",
-     "link": 59
-    },
-    {
-     "localized_name": "clip",
-     "name": "clip",
-     "type": "CLIP",
-     "link": 4
-    },
-    {
-     "localized_name": "lora_name",
-     "name": "lora_name",
-     "type": "COMBO",
-     "widget": {
-      "name": "lora_name"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "strength_model",
-     "name": "strength_model",
-     "type": "FLOAT",
-     "widget": {
-      "name": "strength_model"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "strength_clip",
-     "name": "strength_clip",
-     "type": "FLOAT",
-     "widget": {
-      "name": "strength_clip"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "MODEL",
-     "name": "MODEL",
-     "type": "MODEL",
-     "slot_index": 0,
-     "links": [
-      53
-     ]
-    },
-    {
-     "localized_name": "CLIP",
-     "name": "CLIP",
-     "type": "CLIP",
-     "slot_index": 1,
-     "links": [
-      7
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfy-core",
-    "ver": "0.28.0",
-    "Node name for S&R": "LoraLoader"
-   },
-   "widgets_values": [
-    "krea2\\krea2_turbo_r64_bf16.safetensors",
-    0.6,
-    0.6
-   ],
-   "widgets_values_named": {
-    "lora_name": "krea2\\krea2_turbo_r64_bf16.safetensors",
-    "strength_model": 0.6,
-    "strength_clip": 0.6
-   }
-  },
-  {
    "id": 8,
    "type": "StringConcatenate",
    "pos": [
@@ -2325,7 +2234,7 @@
      "localized_name": "model",
      "name": "model",
      "type": "MODEL",
-     "link": 53
+     "link": 59
     },
     {
      "localized_name": "lora_name",
@@ -2620,7 +2529,7 @@
   },
   {
    "id": 64,
-   "type": "LoraLoaderModelOnly",
+   "type": "LoraLoader",
    "pos": [
     1430,
     -120
@@ -2655,6 +2564,12 @@
       "name": "strength_model"
      },
      "link": null
+    },
+    {
+     "localized_name": "clip",
+     "name": "clip",
+     "type": "CLIP",
+     "link": 60
     }
    ],
    "outputs": [
@@ -2666,6 +2581,13 @@
      "links": [
       59
      ]
+    },
+    {
+     "localized_name": "CLIP",
+     "name": "CLIP",
+     "type": "CLIP",
+     "slot_index": 1,
+     "links": []
     }
    ],
    "properties": {
@@ -2675,6 +2597,7 @@
    },
    "widgets_values": [
     "krea2_nude.safetensors",
+    1.0,
     1.0
    ]
   }
@@ -2689,16 +2612,8 @@
    "MODEL"
   ],
   [
-   4,
-   5,
-   0,
    7,
-   1,
-   "CLIP"
-  ],
-  [
-   7,
-   7,
+   64,
    1,
    9,
    0,
@@ -2825,14 +2740,6 @@
    "MODEL"
   ],
   [
-   53,
-   7,
-   0,
-   58,
-   0,
-   "MODEL"
-  ],
-  [
    54,
    58,
    0,
@@ -2868,9 +2775,17 @@
    59,
    64,
    0,
-   7,
+   58,
    0,
    "MODEL"
+  ],
+  [
+   60,
+   5,
+   0,
+   64,
+   3,
+   "CLIP"
   ]
  ],
  "groups": [

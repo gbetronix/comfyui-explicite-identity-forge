@@ -326,13 +326,11 @@ def read_render_settings(overrides: dict[str, Any] | None = None) -> dict[str, A
         "clip_type": _one(groups, "CLIPLoader", 1, "clip_type"),
         "clip_device": _one(groups, "CLIPLoader", 2, "clip_device"),
         "vae_name": _one(groups, "VAELoader", 0, "vae_name"),
-        # First LoRA stage: krea2_nude directly after the raw Krea model
-        # loader, model-only (LoraLoaderModelOnly -- it never touches CLIP).
+        # The one LoRA stage: krea2_nude directly after the raw Krea model
+        # loader, on a full LoraLoader -- it drives both the model and CLIP.
         "nude_lora_name": "krea2_nude.safetensors",
         "nude_lora_strength_model": 1.0,
-        "lora_name": _one(groups, "LoraLoader", 0, "lora_name"),
-        "lora_strength_model": _one(groups, "LoraLoader", 1, "lora_strength_model"),
-        "lora_strength_clip": _one(groups, "LoraLoader", 2, "lora_strength_clip"),
+        "nude_lora_strength_clip": 1.0,
         "width": _one(groups, "EmptyLatentImage", 0, "width"),
         "height": _one(groups, "EmptyLatentImage", 1, "height"),
         "steps": _one(groups, "KSampler", 2, "steps"),
@@ -698,17 +696,13 @@ def build_graph(positive: str, seed: int, settings: dict[str, Any],
                          "device": settings["clip_device"]}},
         "3": {"class_type": "VAELoader",
               "inputs": {"vae_name": settings["vae_name"]}},
-        "11": {"class_type": "LoraLoaderModelOnly",
+        "11": {"class_type": "LoraLoader",
                "inputs": {"lora_name": settings["nude_lora_name"],
                           "strength_model": settings["nude_lora_strength_model"],
-                          "model": ["1", 0]}},
-        "4": {"class_type": "LoraLoader",
-              "inputs": {"lora_name": settings["lora_name"],
-                         "strength_model": settings["lora_strength_model"],
-                         "strength_clip": settings["lora_strength_clip"],
-                         "model": ["11", 0], "clip": ["2", 0]}},
+                          "strength_clip": settings["nude_lora_strength_clip"],
+                          "model": ["1", 0], "clip": ["2", 0]}},
         "5": {"class_type": "CLIPTextEncode",
-              "inputs": {"text": positive, "clip": ["4", 1]}},
+              "inputs": {"text": positive, "clip": ["11", 1]}},
         # The negative is the zeroed positive conditioning, not a text string:
         # cfg is 1, so a second encode would be dead weight.
         "6": {"class_type": "ConditioningZeroOut",
@@ -722,7 +716,7 @@ def build_graph(positive: str, seed: int, settings: dict[str, Any],
                          "sampler_name": settings["sampler_name"],
                          "scheduler": settings["scheduler"],
                          "denoise": settings["denoise"],
-                         "model": ["4", 0], "positive": ["5", 0],
+                         "model": ["11", 0], "positive": ["5", 0],
                          "negative": ["6", 0], "latent_image": ["7", 0]}},
         "9": {"class_type": "VAEDecode",
               "inputs": {"samples": ["8", 0], "vae": ["3", 0]}},
@@ -832,8 +826,7 @@ def preflight(client: ComfyClient, settings: dict[str, Any]) -> bool:
         ("UNETLoader", "unet_name", settings["unet_name"]),
         ("CLIPLoader", "clip_name", settings["clip_name"]),
         ("VAELoader", "vae_name", settings["vae_name"]),
-        ("LoraLoaderModelOnly", "lora_name", settings["nude_lora_name"]),
-        ("LoraLoader", "lora_name", settings["lora_name"]),
+        ("LoraLoader", "lora_name", settings["nude_lora_name"]),
         ("KSampler", "sampler_name", settings["sampler_name"]),
         ("KSampler", "scheduler", settings["scheduler"]),
     ]
@@ -1148,8 +1141,7 @@ def main(argv: list[str] | None = None) -> int:
         running, pending = client.queue_depth()
         print(f"  queue: {running} running, {pending} pending "
               f"({'front' if not args.back else 'back'} of queue)")
-        print(f"  {settings['unet_name']} + {settings['nude_lora_name']}"
-              f" + {settings['lora_name']}, "
+        print(f"  {settings['unet_name']} + {settings['nude_lora_name']}, "
               f"{settings['steps']} steps, {settings['sampler_name']}/"
               f"{settings['scheduler']}, {settings['width']}x{settings['height']}")
         if args.save_originals:
@@ -1161,8 +1153,8 @@ def main(argv: list[str] | None = None) -> int:
         # the note on `render` below.
         manifest["render"] = {
             key: settings[key] for key in
-            ("unet_name", "nude_lora_name", "lora_name", "steps", "cfg",
-             "sampler_name", "scheduler", "width", "height")
+            ("unet_name", "nude_lora_name", "steps", "cfg", "sampler_name",
+             "scheduler", "width", "height")
         }
         today = _datetime.date.today().isoformat()
         done = failed = 0
