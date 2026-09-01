@@ -49,7 +49,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 GALLERY_KIND = "cosplay"
 GALLERY_TITLE = "cosplay character"
 PAGE_FILES = ["index.html", "style.css", "gallery.js",
-              "Krea2_IdentityForge_CharacterCycle.json"]
+              "Krea2_ExpliciteIdentityForge_CharacterCycle.json"]
 # ============================================================================
 
 from build_manifest import entry_names, generate_manifest, normalize_name  # noqa: E402

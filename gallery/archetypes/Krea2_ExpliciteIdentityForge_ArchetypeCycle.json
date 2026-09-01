@@ -1,68 +1,9 @@
 {
- "id": "e8e9614f-4106-40f4-bc81-5057a81249fa",
+ "id": "818cbce4-773a-4146-8907-47e6243571db",
  "revision": 0,
- "last_node_id": 63,
- "last_link_id": 58,
+ "last_node_id": 64,
+ "last_link_id": 60,
  "nodes": [
-  {
-   "id": 4,
-   "type": "UNETLoader",
-   "pos": [
-    1010,
-    80
-   ],
-   "size": [
-    260,
-    110
-   ],
-   "flags": {},
-   "order": 0,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "unet_name",
-     "name": "unet_name",
-     "type": "COMBO",
-     "widget": {
-      "name": "unet_name"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "weight_dtype",
-     "name": "weight_dtype",
-     "type": "COMBO",
-     "widget": {
-      "name": "weight_dtype"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "MODEL",
-     "name": "MODEL",
-     "type": "MODEL",
-     "slot_index": 0,
-     "links": [
-      3
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfy-core",
-    "ver": "0.28.0",
-    "Node name for S&R": "UNETLoader"
-   },
-   "widgets_values": [
-    "krea2\\krea2_raw_int8_convrot.safetensors",
-    "default"
-   ],
-   "widgets_values_named": {
-    "unet_name": "krea2\\krea2_raw_int8_convrot.safetensors",
-    "weight_dtype": "default"
-   }
-  },
   {
    "id": 5,
    "type": "CLIPLoader",
@@ -75,7 +16,7 @@
     140
    ],
    "flags": {},
-   "order": 1,
+   "order": 0,
    "mode": 0,
    "inputs": [
     {
@@ -114,7 +55,7 @@
      "type": "CLIP",
      "slot_index": 0,
      "links": [
-      4
+      59
      ]
     }
    ],
@@ -146,7 +87,7 @@
     90
    ],
    "flags": {},
-   "order": 2,
+   "order": 1,
    "mode": 0,
    "inputs": [
     {
@@ -194,7 +135,7 @@
     230
    ],
    "flags": {},
-   "order": 16,
+   "order": 10,
    "mode": 0,
    "inputs": [
     {
@@ -213,7 +154,7 @@
      "widget": {
       "name": "string_b"
      },
-     "link": 45
+     "link": 55
     },
     {
      "localized_name": "delimiter",
@@ -264,14 +205,14 @@
     170
    ],
    "flags": {},
-   "order": 19,
+   "order": 14,
    "mode": 0,
    "inputs": [
     {
      "localized_name": "clip",
      "name": "clip",
      "type": "CLIP",
-     "link": 7
+     "link": 59
     },
     {
      "localized_name": "text",
@@ -319,7 +260,7 @@
     70
    ],
    "flags": {},
-   "order": 20,
+   "order": 15,
    "mode": 0,
    "inputs": [
     {
@@ -358,7 +299,7 @@
     150
    ],
    "flags": {},
-   "order": 3,
+   "order": 2,
    "mode": 0,
    "inputs": [
     {
@@ -430,14 +371,14 @@
     300
    ],
    "flags": {},
-   "order": 21,
+   "order": 16,
    "mode": 0,
    "inputs": [
     {
      "localized_name": "model",
      "name": "model",
      "type": "MODEL",
-     "link": 52
+     "link": 61
     },
     {
      "localized_name": "positive",
@@ -529,7 +470,7 @@
     "Node name for S&R": "KSampler"
    },
    "widgets_values": [
-    623693313836938,
+    652950567345785,
     "randomize",
     10,
     1,
@@ -538,7 +479,7 @@
     1
    ],
    "widgets_values_named": {
-    "seed": 623693313836938,
+    "seed": 652950567345785,
     "control_after_generate": "randomize",
     "steps": 10,
     "cfg": 1,
@@ -559,7 +500,7 @@
     90
    ],
    "flags": {},
-   "order": 22,
+   "order": 17,
    "mode": 0,
    "inputs": [
     {
@@ -604,7 +545,7 @@
     310
    ],
    "flags": {},
-   "order": 15,
+   "order": 11,
    "mode": 0,
    "inputs": [
     {
@@ -722,7 +663,7 @@
     300
    ],
    "flags": {},
-   "order": 18,
+   "order": 12,
    "mode": 0,
    "inputs": [
     {
@@ -750,10 +691,10 @@
     "Node name for S&R": "ShowText|pysssss"
    },
    "widgets_values": [
-    "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture . Cosplaying as Rorschach (Watchmen): a 48-year-old Tibetan man with an average build, average height, and bronze skin. He has a lightly active physique with average shoulders, a muscular chest, a slightly wide waist, average hips, a slender neck, and rigid posture. He has medium length natural nails. He has a white full-face mask covered in shifting black inkblot patterns. He wears a belted tan trench coat, a brown fedora, and fingerless gloves. He is sitting on the floor with knees drawn up. Set in a coastal lighthouse bluff, under club strobe lighting, during spring, the framing is straight-on eye level, composed with a high horizon line and a sliver of sky, and with a tense mood."
+    "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture . A man with a plus size build. His skin shows a ruddy complexion. He wears grimy forest green coveralls streaked with coal dust, a battered hard hat with a headlamp, heavy canvas gloves, and steel-toe boots, the face smudged with soot. His expression is serious, set in a warehouse interior, under low key moody single light source, the framing is medium shot from waist up, and with a grim mood."
    ],
    "widgets_values_named": {
-    "text_0": "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture . Cosplaying as Rorschach (Watchmen): a 48-year-old Tibetan man with an average build, average height, and bronze skin. He has a lightly active physique with average shoulders, a muscular chest, a slightly wide waist, average hips, a slender neck, and rigid posture. He has medium length natural nails. He has a white full-face mask covered in shifting black inkblot patterns. He wears a belted tan trench coat, a brown fedora, and fingerless gloves. He is sitting on the floor with knees drawn up. Set in a coastal lighthouse bluff, under club strobe lighting, during spring, the framing is straight-on eye level, composed with a high horizon line and a sliver of sky, and with a tense mood."
+    "text_0": "professional photograph, DSLR quality, sharp focus, natural lighting, high detail skin texture . A man with a plus size build. His skin shows a ruddy complexion. He wears grimy forest green coveralls streaked with coal dust, a battered hard hat with a headlamp, heavy canvas gloves, and steel-toe boots, the face smudged with soot. His expression is serious, set in a warehouse interior, under low key moody single light source, the framing is medium shot from waist up, and with a grim mood."
    },
    "color": "#232",
    "bgcolor": "#353"
@@ -770,7 +711,7 @@
     220
    ],
    "flags": {},
-   "order": 9,
+   "order": 7,
    "mode": 0,
    "inputs": [
     {
@@ -778,7 +719,7 @@
      "name": "any_input",
      "shape": 7,
      "type": "*",
-     "link": 57
+     "link": 50
     },
     {
      "localized_name": "id",
@@ -846,14 +787,14 @@
    },
    "widgets_values": [
     0,
-    "character",
+    "archetype",
     false,
     "",
     2
    ],
    "widgets_values_named": {
     "id": 0,
-    "widget_name": "character",
+    "widget_name": "archetype",
     "return_all": false,
     "node_title": "",
     "allowed_float_decimals": 2
@@ -871,7 +812,7 @@
     130
    ],
    "flags": {},
-   "order": 12,
+   "order": 9,
    "mode": 0,
    "inputs": [
     {
@@ -899,10 +840,10 @@
     "Node name for S&R": "ShowText|pysssss"
    },
    "widgets_values": [
-    "Random \u2014 any"
+    "Random"
    ],
    "widgets_values_named": {
-    "text_0": "Random \u2014 any"
+    "text_0": "Random"
    }
   },
   {
@@ -917,7 +858,7 @@
     650
    ],
    "flags": {},
-   "order": 23,
+   "order": 18,
    "mode": 0,
    "inputs": [
     {
@@ -1153,7 +1094,7 @@
     230
    ],
    "flags": {},
-   "order": 17,
+   "order": 13,
    "mode": 0,
    "inputs": [
     {
@@ -1212,10 +1153,10 @@
    }
   },
   {
-   "id": 50,
+   "id": 60,
    "type": "ExpliciteIdentityForge",
    "pos": [
-    690,
+    660,
     80
    ],
    "size": [
@@ -1223,7 +1164,7 @@
     2170
    ],
    "flags": {},
-   "order": 13,
+   "order": 8,
    "mode": 0,
    "inputs": [
     {
@@ -1231,7 +1172,7 @@
      "name": "archetype_json",
      "shape": 7,
      "type": "STRING",
-     "link": 56
+     "link": 54
     },
     {
      "localized_name": "seed",
@@ -1934,7 +1875,7 @@
      "type": "STRING",
      "slot_index": 0,
      "links": [
-      45
+      55
      ]
     },
     {
@@ -1947,11 +1888,11 @@
    ],
    "properties": {
     "cnr_id": "comfyui-explicite-identity-forge",
-    "ver": "09ef54432fad122ebe9ef34727d57cc9d140752d",
+    "ver": "e31b356dc214f465587ab7cc151edd14dec49a95",
     "Node name for S&R": "ExpliciteIdentityForge"
    },
    "widgets_values": [
-    34034292112676,
+    509758536128382,
     "randomize",
     "Female",
     "Feminine",
@@ -1960,11 +1901,11 @@
     "Natural only",
     "None",
     "Any indoor/outdoor",
-    "Off",
+    "All to None",
     "Random",
     "Random",
     "Random",
-    "Random",
+    "plus size",
     "Random",
     "Random",
     "Random",
@@ -2038,7 +1979,7 @@
     "Random"
    ],
    "widgets_values_named": {
-    "seed": 34034292112676,
+    "seed": 509758536128382,
     "randomize": "randomize",
     "gender": "Any",
     "wardrobe": "Match gender",
@@ -2046,7 +1987,7 @@
     "hair_color_scope": "Natural only",
     "accessory_density": "None",
     "location_setting": "Any indoor/outdoor",
-    "set_all_fields": "Off",
+    "set_all_fields": "All to None",
     "\ud83c\udfb2 Unlock all (set to Random)": "Random",
     "\ud83d\udd12 Roll + lock all fields": "Random",
     "\u25be Demographics": "Random",
@@ -2054,7 +1995,7 @@
     "ethnicity": "Random",
     "\u25be Body": "Random",
     "skin_tone": "Random",
-    "body_type": "Random",
+    "body_type": "plus size",
     "height": "Random",
     "bust": "Random",
     "waist": "Random",
@@ -2129,128 +2070,35 @@
    }
   },
   {
-   "id": 57,
-   "type": "Krea2T-Enhancer-Advanced",
+   "id": 4,
+   "type": "UNETLoader",
    "pos": [
-    2270,
-    680
+    1010,
+    80
    ],
    "size": [
-    290,
-    130
+    260,
+    110
    ],
    "flags": {},
-   "order": 14,
+   "order": 3,
    "mode": 0,
    "inputs": [
     {
-     "localized_name": "model",
-     "name": "model",
-     "type": "MODEL",
-     "link": 54
-    },
-    {
-     "localized_name": "enabled",
-     "name": "enabled",
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "enabled"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "strength",
-     "name": "strength",
-     "type": "FLOAT",
-     "widget": {
-      "name": "strength"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "text_scale",
-     "name": "text_scale",
-     "type": "FLOAT",
-     "widget": {
-      "name": "text_scale"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "debug",
-     "name": "debug",
-     "type": "BOOLEAN",
-     "widget": {
-      "name": "debug"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "model",
-     "name": "model",
-     "type": "MODEL",
-     "slot_index": 0,
-     "links": [
-      52
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "ComfyUI-Krea2T-Enhancer",
-    "ver": "6666ffb729b2afc8ecdffd3cb6f121555ec948cb",
-    "Node name for S&R": "Krea2T-Enhancer-Advanced"
-   },
-   "widgets_values": [
-    true,
-    1.25,
-    1.5,
-    false
-   ],
-   "widgets_values_named": {
-    "enabled": true,
-    "strength": 1.25,
-    "text_scale": 1.5,
-    "debug": false
-   }
-  },
-  {
-   "id": 58,
-   "type": "LoraLoaderModelOnly",
-   "pos": [
-    1900,
-    660
-   ],
-   "size": [
-    270,
-    90
-   ],
-   "flags": {},
-   "order": 11,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "model",
-     "name": "model",
-     "type": "MODEL",
-     "link": 59
-    },
-    {
-     "localized_name": "lora_name",
-     "name": "lora_name",
+     "localized_name": "unet_name",
+     "name": "unet_name",
      "type": "COMBO",
      "widget": {
-      "name": "lora_name"
+      "name": "unet_name"
      },
      "link": null
     },
     {
-     "localized_name": "strength_model",
-     "name": "strength_model",
-     "type": "FLOAT",
+     "localized_name": "weight_dtype",
+     "name": "weight_dtype",
+     "type": "COMBO",
      "widget": {
-      "name": "strength_model"
+      "name": "weight_dtype"
      },
      "link": null
     }
@@ -2262,89 +2110,34 @@
      "type": "MODEL",
      "slot_index": 0,
      "links": [
-      54
+      60
      ]
     }
    ],
    "properties": {
     "cnr_id": "comfy-core",
-    "ver": "0.31.0",
-    "Node name for S&R": "LoraLoaderModelOnly"
+    "ver": "0.28.0",
+    "Node name for S&R": "UNETLoader"
    },
    "widgets_values": [
-    "krea2\\bypass\\Krea2__Refusal_Reduction.safetensors",
-    0.75
+    "krea2\\krea2_turbo_int8_convrot.safetensors",
+    "default"
    ],
    "widgets_values_named": {
-    "lora_name": "krea2\\bypass\\Krea2__Refusal_Reduction.safetensors",
-    "strength_model": 0.75
+    "unet_name": "krea2\\krea2_turbo_int8_convrot.safetensors",
+    "weight_dtype": "default"
    }
   },
   {
-   "id": 59,
-   "type": "ExpliciteIdentityForgeModifier",
-   "pos": [
-    250,
-    400
-   ],
-   "size": [
-    400,
-    200
-   ],
-   "flags": {},
-   "order": 10,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "upstream",
-     "name": "upstream",
-     "shape": 7,
-     "type": "STRING",
-     "link": 58
-    },
-    {
-     "localized_name": "style_modifiers",
-     "name": "style_modifiers",
-     "type": "STRING",
-     "widget": {
-      "name": "style_modifiers"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "character_json",
-     "name": "character_json",
-     "type": "STRING",
-     "slot_index": 0,
-     "links": [
-      56
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfyui-explicite-identity-forge",
-    "ver": "0485c03c3d657ba466c5d28583e5086eeddd28d8",
-    "Node name for S&R": "ExpliciteIdentityForgeModifier"
-   },
-   "widgets_values": [
-    "# Prepend a descriptor to ONE element (or a whole group).\n# One per line ->  key: descriptor      (delete the # to use a line)\n# key = a FIELD (footwear, skin_tone, hair_color, earrings, eye_color, ...)\n#    or a GROUP (Body, Face, Hair, Makeup, Jewelry & Nails, Clothing, Setting & Shot)\n# Field names are the same labels shown on the Identity Forge node.\n#\n# THE ONE RULE: the descriptor goes IN FRONT of the value, it does not\n# replace it. So keep it to a 1-3 word adjective that reads naturally there.\n#   good ->  hair_color: living-flame   (becomes 'living-flame auburn')\n#   bad  ->  hair_style: nest of vipers (becomes 'nest of vipers messy bun')\n#\n# --- materials -------------------------------------------------------\n# skin_tone: iridescent\n# skin_tone: cracked molten\n# skin_tone: carved marble\n# skin_tone: moss-and-lichen\n# hair_color: living-flame\n# eye_color: glowing\n#\n# --- genres (a whole group at once) ----------------------------------\n# Clothing: cyberpunk neon\n# Clothing: baroque gilded\n# Clothing: post-apocalyptic weathered\n# footwear: anti-gravity hover\n#\n# --- whimsy ----------------------------------------------------------\n# Makeup: galaxy-glitter\n# earrings: tiny caged\n# Setting & Shot: storm-lit\n"
-   ],
-   "widgets_values_named": {
-    "style_modifiers": "# Prepend a descriptor to ONE element (or a whole group).\n# One per line ->  key: descriptor      (delete the # to use a line)\n# key = a FIELD (footwear, skin_tone, hair_color, earrings, eye_color, ...)\n#    or a GROUP (Body, Face, Hair, Makeup, Jewelry & Nails, Clothing, Setting & Shot)\n# Field names are the same labels shown on the Identity Forge node.\n#\n# THE ONE RULE: the descriptor goes IN FRONT of the value, it does not\n# replace it. So keep it to a 1-3 word adjective that reads naturally there.\n#   good ->  hair_color: living-flame   (becomes 'living-flame auburn')\n#   bad  ->  hair_style: nest of vipers (becomes 'nest of vipers messy bun')\n#\n# --- materials -------------------------------------------------------\n# skin_tone: iridescent\n# skin_tone: cracked molten\n# skin_tone: carved marble\n# skin_tone: moss-and-lichen\n# hair_color: living-flame\n# eye_color: glowing\n#\n# --- genres (a whole group at once) ----------------------------------\n# Clothing: cyberpunk neon\n# Clothing: baroque gilded\n# Clothing: post-apocalyptic weathered\n# footwear: anti-gravity hover\n#\n# --- whimsy ----------------------------------------------------------\n# Makeup: galaxy-glitter\n# earrings: tiny caged\n# Setting & Shot: storm-lit\n"
-   }
-  },
-  {
-   "id": 62,
+   "id": 63,
    "type": "Note",
    "pos": [
-    270,
-    110
+    320,
+    -220
    ],
    "size": [
-    360,
-    200
+    300,
+    250
    ],
    "flags": {},
    "order": 4,
@@ -2353,79 +2146,27 @@
    "outputs": [],
    "properties": {},
    "widgets_values": [
-    "MODIFIER - tweak one field or group.\nPrepend a custom descriptor to a single field (footwear: sci-fi) or a whole group (Clothing: weathered).\nSet to None to pass upstream through unchanged."
+    "ARCHETYPE - themed look.\nMode 'Essentials' (default) sends only the look (costume, hair, makeup, accessories) so body/face/demographics keep randomizing.\n'Full preset' locks every field the archetype defines for a fixed, reproducible look.\nThe look stays here; the person randomizes on Identity Forge."
    ],
    "widgets_values_named": {
-    "text": "MODIFIER - tweak one field or group.\nPrepend a custom descriptor to a single field (footwear: sci-fi) or a whole group (Clothing: weathered).\nSet to None to pass upstream through unchanged."
+    "text": "ARCHETYPE - themed look.\nMode 'Essentials' (default) sends only the look (costume, hair, makeup, accessories) so body/face/demographics keep randomizing.\n'Full preset' locks every field the archetype defines for a fixed, reproducible look.\nThe look stays here; the person randomizes on Identity Forge."
    },
    "color": "#432",
    "bgcolor": "#653"
   },
   {
-   "id": 61,
-   "type": "Note",
+   "id": 54,
+   "type": "ExpliciteIdentityForgeArchetype",
    "pos": [
-    -100,
-    -250
-   ],
-   "size": [
-    440,
-    180
-   ],
-   "flags": {},
-   "order": 5,
-   "mode": 0,
-   "inputs": [],
-   "outputs": [],
-   "properties": {},
-   "widgets_values": [
-    "COSPLAYER - fictional character costume.\nMode 'Costume only' (default) sends costume + signature hair/eyes and lets the person randomize; 'Full character' also locks the physique for a faithful look.\nrandom_scope narrows Random picks to a franchise/category/attribute.\nCrossplay: set the person's gender independently of the character.\nUnmask toggle reveals the head under a full-mask suit.\nA named beast (Appa, Toothless...) renders as the animal, not a wearer."
-   ],
-   "widgets_values_named": {
-    "text": "COSPLAYER - fictional character costume.\nMode 'Costume only' (default) sends costume + signature hair/eyes and lets the person randomize; 'Full character' also locks the physique for a faithful look.\nrandom_scope narrows Random picks to a franchise/category/attribute.\nCrossplay: set the person's gender independently of the character.\nUnmask toggle reveals the head under a full-mask suit.\nA named beast (Appa, Toothless...) renders as the animal, not a wearer."
-   },
-   "color": "#432",
-   "bgcolor": "#653"
-  },
-  {
-   "id": 60,
-   "type": "Note",
-   "pos": [
-    700,
-    -230
-   ],
-   "size": [
-    480,
-    220
-   ],
-   "flags": {},
-   "order": 6,
-   "mode": 0,
-   "inputs": [],
-   "outputs": [],
-   "properties": {},
-   "widgets_values": [
-    "IDENTITY FORGE - the character engine.\nEvery field is Random (roll) / a value (lock) / None (omit).\nSeed auto-randomizes each queue; set fixed to reproduce.\naccessory_density: drop to Minimal/None for clean portraits.\nsize_scale: manual only (Auto default, never random) - force giant/tiny.\nPreset nodes (Cosplayer/Archetype/Creature/Modifier) feed this node's archetype_json; the node CLOSEST to Identity Forge wins on overlap.\nPreset modes: Cosplayer 'Full character' vs 'Costume only'; Archetype 'Essentials' (default) vs 'Full preset' - they decide how much of the person is built."
-   ],
-   "widgets_values_named": {
-    "text": "IDENTITY FORGE - the character engine.\nEvery field is Random (roll) / a value (lock) / None (omit).\nSeed auto-randomizes each queue; set fixed to reproduce.\naccessory_density: drop to Minimal/None for clean portraits.\nsize_scale: manual only (Auto default, never random) - force giant/tiny.\nPreset nodes (Cosplayer/Archetype/Creature/Modifier) feed this node's archetype_json; the node CLOSEST to Identity Forge wins on overlap.\nPreset modes: Cosplayer 'Full character' vs 'Costume only'; Archetype 'Essentials' (default) vs 'Full preset' - they decide how much of the person is built."
-   },
-   "color": "#432",
-   "bgcolor": "#653"
-  },
-  {
-   "id": 63,
-   "type": "ExpliciteIdentityForgeCosplayer",
-   "pos": [
-    -100,
-    50
+    320,
+    80
    ],
    "size": [
     270,
-    230
+    130
    ],
    "flags": {},
-   "order": 7,
+   "order": 5,
    "mode": 0,
    "inputs": [
     {
@@ -2436,47 +2177,20 @@
      "link": null
     },
     {
-     "localized_name": "character",
-     "name": "character",
+     "localized_name": "archetype",
+     "name": "archetype",
      "type": "COMBO",
      "widget": {
-      "name": "character"
+      "name": "archetype"
      },
      "link": null
     },
     {
-     "localized_name": "random_scope",
-     "name": "random_scope",
+     "localized_name": "lock_level",
+     "name": "lock_level",
      "type": "COMBO",
      "widget": {
-      "name": "random_scope"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "look_level",
-     "name": "look_level",
-     "type": "COMBO",
-     "widget": {
-      "name": "look_level"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "mask",
-     "name": "mask",
-     "type": "COMBO",
-     "widget": {
-      "name": "mask"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "props",
-     "name": "props",
-     "type": "COMBO",
-     "widget": {
-      "name": "props"
+      "name": "lock_level"
      },
      "link": null
     },
@@ -2495,40 +2209,59 @@
      "localized_name": "character_json",
      "name": "character_json",
      "type": "STRING",
+     "slot_index": 0,
      "links": [
-      57,
-      58
+      50,
+      54
      ]
     }
    ],
    "properties": {
     "cnr_id": "comfyui-explicite-identity-forge",
-    "ver": "66632622f97bc7fe217751793802f1f7fdd5359d",
-    "Node name for S&R": "ExpliciteIdentityForgeCosplayer"
+    "ver": "e31b356dc214f465587ab7cc151edd14dec49a95",
+    "Node name for S&R": "ExpliciteIdentityForgeArchetype"
    },
    "widgets_values": [
-    "Random \u2014 any",
-    "Any",
-    "Any",
-    "Full character",
-    "Default",
-    "Include signature prop",
-    824534143267077,
+    "Random",
+    "Full preset",
+    225768198819851,
     "randomize"
    ],
    "widgets_values_named": {
-    "character": "Random \u2014 any",
-    "franchise_filter": "Any",
-    "random_scope": "Any",
-    "look_level": "Full character",
-    "mask": "Default",
-    "props": "Include signature prop",
-    "seed": 824534143267077,
+    "archetype": "Random",
+    "lock_level": "Full preset",
+    "seed": 225768198819851,
     "randomize": "randomize"
    }
   },
   {
    "id": 64,
+   "type": "Note",
+   "pos": [
+    660,
+    -220
+   ],
+   "size": [
+    440,
+    230
+   ],
+   "flags": {},
+   "order": 6,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "properties": {},
+   "widgets_values": [
+    "IDENTITY FORGE - the character engine.\nEvery field is Random (roll) / a value (lock) / None (omit).\nSeed auto-randomizes each queue; set fixed to reproduce.\naccessory_density: drop to Minimal/None for clean portraits.\nsize_scale: manual only (Auto default, never random) - force giant/tiny.\nPreset nodes (Cosplayer/Archetype/Creature/Modifier) feed this node's archetype_json; the node CLOSEST to Identity Forge wins on overlap.\nPreset modes: Cosplayer 'Full character' vs 'Costume only'; Archetype 'Essentials' (default) vs 'Full preset' - they decide how much of the person is built."
+   ],
+   "widgets_values_named": {
+    "text": "IDENTITY FORGE - the character engine.\nEvery field is Random (roll) / a value (lock) / None (omit).\nSeed auto-randomizes each queue; set fixed to reproduce.\naccessory_density: drop to Minimal/None for clean portraits.\nsize_scale: manual only (Auto default, never random) - force giant/tiny.\nPreset nodes (Cosplayer/Archetype/Creature/Modifier) feed this node's archetype_json; the node CLOSEST to Identity Forge wins on overlap.\nPreset modes: Cosplayer 'Full character' vs 'Costume only'; Archetype 'Essentials' (default) vs 'Full preset' - they decide how much of the person is built."
+   },
+   "color": "#432",
+   "bgcolor": "#653"
+  },
+  {
+   "id": 65,
    "type": "LoraLoader",
    "pos": [
     1430,
@@ -2545,7 +2278,7 @@
      "localized_name": "model",
      "name": "model",
      "type": "MODEL",
-     "link": 3
+     "link": 60
     },
     {
      "localized_name": "lora_name",
@@ -2569,7 +2302,7 @@
      "localized_name": "clip",
      "name": "clip",
      "type": "CLIP",
-     "link": 60
+     "link": 62
     }
    ],
    "outputs": [
@@ -2579,7 +2312,7 @@
      "type": "MODEL",
      "slot_index": 0,
      "links": [
-      59
+      61
      ]
     },
     {
@@ -2603,22 +2336,6 @@
   }
  ],
  "links": [
-  [
-   3,
-   4,
-   0,
-   64,
-   0,
-   "MODEL"
-  ],
-  [
-   7,
-   64,
-   1,
-   9,
-   0,
-   "CLIP"
-  ],
   [
    8,
    9,
@@ -2724,66 +2441,58 @@
    "STRING"
   ],
   [
-   45,
    50,
-   0,
-   8,
-   1,
-   "STRING"
-  ],
-  [
-   52,
-   57,
-   0,
-   12,
-   0,
-   "MODEL"
-  ],
-  [
    54,
-   58,
-   0,
-   57,
-   0,
-   "MODEL"
-  ],
-  [
-   56,
-   59,
-   0,
-   50,
-   0,
-   "STRING"
-  ],
-  [
-   57,
-   63,
    0,
    37,
    0,
    "STRING"
   ],
   [
-   58,
-   63,
+   54,
+   54,
    0,
-   59,
+   60,
    0,
    "STRING"
   ],
   [
-   59,
-   64,
+   55,
+   60,
    0,
-   58,
+   8,
+   1,
+   "STRING"
+  ],
+  [
+   59,
+   5,
+   0,
+   9,
+   0,
+   "CLIP"
+  ],
+  [
+   60,
+   4,
+   0,
+   65,
    0,
    "MODEL"
   ],
   [
-   60,
+   61,
+   65,
+   0,
+   12,
+   0,
+   "MODEL"
+  ],
+  [
+   62,
    5,
    0,
-   64,
+   65,
    3,
    "CLIP"
   ]
@@ -2791,36 +2500,24 @@
  "groups": [
   {
    "id": 9000,
-   "title": "Identity Forge",
+   "title": "Archetype",
    "bounding": [
-    670,
+    300,
     -300,
     520,
-    2570
+    530
    ],
    "color": "#3f789e",
    "flags": {}
   },
   {
    "id": 9001,
-   "title": "Cosplayer",
+   "title": "Identity Forge",
    "bounding": [
-    -120,
-    -330,
+    640,
+    -300,
     520,
-    630
-   ],
-   "color": "#3f789e",
-   "flags": {}
-  },
-  {
-   "id": 9002,
-   "title": "Modifier",
-   "bounding": [
-    230,
-    20,
-    520,
-    600
+    2570
    ],
    "color": "#3f789e",
    "flags": {}
@@ -2829,13 +2526,13 @@
  "config": {},
  "extra": {
   "ds": {
-   "scale": 0.35505136986304997,
+   "scale": 0.5718137816781216,
    "offset": [
-    1108.6890391706802,
-    1026.498258749803
+    -157.84999819198174,
+    351.4772433308097
    ]
   },
-  "draftsman_title": "Krea2_IdentityForge_CharacterCycle"
+  "draftsman_title": "Krea2_ExpliciteIdentityForge_ArchetypeCycle"
  },
  "version": 0.4
 }

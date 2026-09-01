@@ -74,7 +74,7 @@ MANIFEST = ROOT / "gallery" / "render_manifest.json"
 RENDER_OUT = ROOT / "gallery" / ".render_out"
 #: Already committed and already published, so reading it publishes nothing new
 #: about the maintainer's setup - and updating that workflow updates this script.
-SETTINGS_WORKFLOW = ROOT / "gallery" / "cosplay" / "Krea2_IdentityForge_CharacterCycle.json"
+SETTINGS_WORKFLOW = ROOT / "gallery" / "cosplay" / "Krea2_ExpliciteIdentityForge_CharacterCycle.json"
 #: Gitignored. Overrides anything the workflow supplies.
 LOCAL_CONFIG = ROOT / "scripts" / "render_config.json"
 

@@ -49,7 +49,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 GALLERY_KIND = "archetypes"
 GALLERY_TITLE = "themed archetype"
 PAGE_FILES = ["index.html", "style.css", "gallery.js",
-              "Krea2_IdentityForge_ArchetypeCycle.json"]
+              "Krea2_ExpliciteIdentityForge_ArchetypeCycle.json"]
 # ============================================================================
 
 from build_manifest import entry_names, generate_manifest, normalize_name  # noqa: E402

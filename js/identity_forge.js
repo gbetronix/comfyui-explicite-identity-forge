@@ -705,7 +705,7 @@ function resize(node) {
 //: "Fix node (recreate)", which produces a genuinely new node object.
 const ALL_RANDOM_LABEL = "🎲 Unlock all (set to Random)";
 
-function setupIdentityForge(node) {
+function setupExpliciteIdentityForge(node) {
   const original = node.widgets ? node.widgets.slice() : [];
   if (!original.length) return;
   // Re-entry guard: onNodeCreated can fire again for the same node on some paths.
@@ -799,7 +799,7 @@ function applyGender(node, gender) {
  * **Why this exists.** `widgets_values` is a positional array and ComfyUI restores it
  * 1:1 against `node.widgets` -- INCLUDING the buttons and group headers this file
  * inserts, and regardless of `serialize: false`, which is honoured in neither
- * direction. `setupIdentityForge` then re-sorts `node.widgets` into group order, so a
+ * direction. `setupExpliciteIdentityForge` then re-sorts `node.widgets` into group order, so a
  * field appended at the end of FIELD_DEFINITIONS does NOT land at the end of the
  * array the loader indexes into: `tattoos` sits in Body, at position 25 of 88.
  *
@@ -861,7 +861,7 @@ app.registerExtension({
     nodeType.prototype.onNodeCreated = function () {
       const result = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;
       try {
-        setupIdentityForge(this);
+        setupExpliciteIdentityForge(this);
       } catch (err) {
         console.error("[ExpliciteIdentityForge] frontend setup failed:", err);
       }

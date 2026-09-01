@@ -140,7 +140,7 @@ def _register_vault_routes() -> None:
 _register_vault_routes()
 
 
-class IdentityForgeExtension(ComfyExtension):
+class ExpliciteIdentityForgeExtension(ComfyExtension):
     """Registers the ExpliciteIdentityForge node pack with ComfyUI."""
 
     async def get_node_list(self) -> list[type[io.ComfyNode]]:
@@ -148,5 +148,5 @@ class IdentityForgeExtension(ComfyExtension):
                 ExpliciteIdentityForgeVaultSave, ExpliciteIdentityForgeVaultLoad]
 
 
-async def comfy_entrypoint() -> IdentityForgeExtension:
-    return IdentityForgeExtension()
+async def comfy_entrypoint() -> ExpliciteIdentityForgeExtension:
+    return ExpliciteIdentityForgeExtension()

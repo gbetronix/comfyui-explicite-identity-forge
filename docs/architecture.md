@@ -143,7 +143,7 @@ so we always see the finished option list regardless of extension load order.
 **One addition beyond the Stylebook port, specific to this pack's widget shape.** The main
 node rebuilds `node.widgets` into ~66 field combos plus ten button widgets (two master
 buttons, one collapse header per field group — see `js/identity_forge.js`
-`setupIdentityForge`), and picking a `gender` swaps the option list of six other widgets
+`setupExpliciteIdentityForge`), and picking a `gender` swaps the option list of six other widgets
 via a wrapped callback. `copyWidgetValues` skips button widgets outright (a toggled
 collapse header's *name* changes at runtime, which would otherwise report every collapsed
 group as a dropped widget on every recreate), and after copying values the recreate
@@ -314,7 +314,7 @@ Adding a node class is not enough; it is invisible or half-tested until it is na
 each of these. The Turnaround shipped its first draft missing the last two.
 
 1. `__init__.py` — both the `try`/`except ImportError` import pair **and**
-   `IdentityForgeExtension.get_node_list()`. Miss the second and ComfyUI never loads it.
+   `ExpliciteIdentityForgeExtension.get_node_list()`. Miss the second and ComfyUI never loads it.
 2. `README.md`'s node table and `__init__.py`'s module docstring ("Exposes N nodes").
 3. `scripts/dump_frontend_fixtures.py` — `_NODE_CLASSES`. The fixture is what the jsdom
    suite builds fake nodes from, so a node absent from that map has **no** frontend
@@ -1030,7 +1030,7 @@ which also keeps a remote instance workable.
 
 **Render settings are read, not transcribed.** Model filenames, LoRA strengths, latent size,
 sampler, scheduler, steps, cfg and the photographic style prefix are all parsed out of
-`gallery/cosplay/Krea2_IdentityForge_CharacterCycle.json`, which is already committed and
+`gallery/cosplay/Krea2_ExpliciteIdentityForge_CharacterCycle.json`, which is already committed and
 already published. One source of truth, nothing new written down about anyone's local setup,
 and updating that workflow updates the renderer. A gitignored `scripts/render_config.json` and
 then CLI flags override it. A missing file or absent node fails loudly naming the exact key —
@@ -2597,7 +2597,7 @@ README gets a short "Using with Stylebook" section mirroring Stylebook's own, an
   containing none of this pack's nodes. It also removes any need to install or sync the pack onto
   the target instance. See "The gallery render pipeline" above.
 - **A committed workflow JSON's own `inputs` array is the authority on its widget order, not
-  `define_schema()` (0.87.0).** All three `Krea2_IdentityForge_*Cycle.json` downloads predated the
+  `define_schema()` (0.87.0).** All three `Krea2_ExpliciteIdentityForge_*Cycle.json` downloads predated the
   `composition` field, and each also carried ten stale trailing `widgets_values`. Aligning the
   value array against the *current* schema made `composition` appear to be present and correctly
   positioned in every one of them — it was not; the check that actually works is comparing the
