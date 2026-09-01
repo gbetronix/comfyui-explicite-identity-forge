@@ -10018,13 +10018,13 @@
       }
     }
   },
-  "generated": "2026-09-01T11:44:30",
+  "generated": "2026-09-01T11:58:06",
   "render": {
     "cfg": 1,
     "height": 2432,
     "nude_lora_name": "krea2_nude.safetensors",
-    "sampler_name": "er_sde",
-    "scheduler": "bong_tangent",
+    "sampler_name": "euler",
+    "scheduler": "simple",
     "steps": 10,
     "unet_name": "krea2_turbo_int8_convrot.safetensors",
     "width": 1664
