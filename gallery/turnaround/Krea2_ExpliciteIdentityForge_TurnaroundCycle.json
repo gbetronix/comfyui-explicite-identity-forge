@@ -70,7 +70,7 @@
     "default"
    ],
    "widgets_values_named": {
-    "clip_name": "Krea2-Engineer-V1-bf16.safetensors",
+    "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
     "type": "krea2",
     "device": "default"
    }
@@ -120,7 +120,7 @@
     "qwen_image_vae.safetensors"
    ],
    "widgets_values_named": {
-    "vae_name": "krea2RealVae_v10.safetensors"
+    "vae_name": "qwen_image_vae.safetensors"
    }
   },
   {
@@ -952,14 +952,14 @@
    "widgets_values_named": {
     "seed": 0,
     "randomize": "fixed",
-    "gender": "Any",
-    "wardrobe": "Match gender",
-    "size_scale": "Auto",
-    "hair_color_scope": "Natural only",
-    "accessory_density": "Balanced",
-    "location_setting": "Any indoor/outdoor",
-    "set_all_fields": "Off",
-    "\ud83c\udfb2 Unlock all (set to Random)": "Random",
+    "gender": "Female",
+    "wardrobe": "Feminine",
+    "size_scale": "Lingerie",
+    "hair_color_scope": "Auto",
+    "accessory_density": "Natural only",
+    "location_setting": "Balanced",
+    "set_all_fields": "Any indoor/outdoor",
+    "\ud83c\udfb2 Unlock all (set to Random)": "Off",
     "\ud83d\udd12 Roll + lock all fields": "Random",
     "\u25be Demographics": "Random",
     "age": "Random",
@@ -1029,9 +1029,9 @@
     "clothing_color": "Random",
     "clothing_pattern": "Random",
     "legwear": "Random",
-    "\u25be Setting & Shot": null,
+    "\u25be Setting & Shot": "Random",
     "expression": "Random",
-    "location": "Random",
+    "location": null,
     "lighting": "Random",
     "shot_type": "Random",
     "season": "Random",
@@ -1807,7 +1807,7 @@
     "default"
    ],
    "widgets_values_named": {
-    "unet_name": "krea2\\krea2_turbo_int8_convrot.safetensors",
+    "unet_name": "krea2_turbo_int8_convrot.safetensors",
     "weight_dtype": "default"
    }
   },
