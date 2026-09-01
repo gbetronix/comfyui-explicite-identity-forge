@@ -1,4 +1,4 @@
-"""Tests for the three gallery publishing pipelines.
+"""Tests for the five gallery publishing pipelines.
 
 The galleries are deliberately **copy-and-adapt**: `gallery/cosplay/`,
 `gallery/archetypes/` and `gallery/creatures/` each own their scripts rather than
@@ -37,7 +37,7 @@ except ImportError:
     PILImage = None
 
 GALLERY_ROOT = ROOT / "gallery"
-KINDS = ("cosplay", "archetypes", "creatures")
+KINDS = ("cosplay", "archetypes", "creatures", "fetish", "nudity")
 SCRIPTS = ("publish.py", "build_manifest.py", "build_gallery_images.py",
            "cross_reference.py")
 

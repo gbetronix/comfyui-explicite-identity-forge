@@ -64,11 +64,18 @@ SOURCES: dict[str, tuple[str, str]] = {
     "cosplayers": ("data/cosplayers.py", "COSPLAYERS"),
     "archetypes": ("data/templates.py", "ARCHETYPES"),
     "creatures": ("data/creatures.py", "CREATURES"),
+    # The fetish and nudity galleries showcase the engine itself (one render
+    # per explicit act / per tier pool value); their rosters are the gallery
+    # modules, keyed the same way (a module-level dict) as the rest.
+    "fetish": ("gallery/fetish_roster.py", "ENTRIES"),
+    "nudity": ("gallery/nudity_roster.py", "ENTRIES"),
 }
 
 #: gallery folder name -> key in :data:`SOURCES`. ``build_manifest.py`` uses this.
 GALLERY_KIND: dict[str, str] = {
     "cosplay": "cosplayers",
+    "fetish": "fetish",
+    "nudity": "nudity",
     "archetypes": "archetypes",
     "creatures": "creatures",
 }
