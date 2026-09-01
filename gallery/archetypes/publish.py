@@ -49,7 +49,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 GALLERY_KIND = "archetypes"
 GALLERY_TITLE = "themed archetype"
 PAGE_FILES = ["index.html", "style.css", "gallery.js",
-              "Krea2_IdentityForge_ArchetypeCycle.json"]
+              "Krea2_ExpliciteIdentityForge_ArchetypeCycle.json"]
 # ============================================================================
 
 from build_manifest import entry_names, generate_manifest, normalize_name  # noqa: E402
@@ -267,7 +267,9 @@ def main() -> int:
 
         # -A, not a bare add: a plain `git add` stages additions and
         # modifications but NOT deletions, so a prune would be silently undone.
-        run("git", "add", "-A", REL_DIR, cwd=worktree)
+        run("git", "add", "-f", "-A", REL_DIR, cwd=worktree)
+        # -f: gallery/.gitignore ignores images/ on main, so a plain add would
+        # silently skip NEW image files; overwrites of tracked files are unaffected.
         if not run("git", "status", "--porcelain", cwd=worktree):
             print("\nNothing changed on the branch.")
             return 0
@@ -284,7 +286,7 @@ def main() -> int:
         run("git", "push", "origin", BRANCH, cwd=worktree)
         print(f"\nDone. {written} image(s) published"
               + (f", {errors} error(s)" if errors else "") + ".")
-        print(f"https://gbetronix.github.io/comfyui-my-identity-forge/{REL_DIR}/")
+        print(f"https://gbetronix.github.io/comfyui-explicite-identity-forge/{REL_DIR}/")
         return 1 if errors else 0
 
     finally:

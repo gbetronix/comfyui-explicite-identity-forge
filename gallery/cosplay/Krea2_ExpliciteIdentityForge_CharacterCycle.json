@@ -2147,7 +2147,7 @@
      "localized_name": "model",
      "name": "model",
      "type": "MODEL",
-     "link": 54
+     "link": 59
     },
     {
      "localized_name": "enabled",
@@ -2213,71 +2213,6 @@
     "strength": 1.25,
     "text_scale": 1.5,
     "debug": false
-   }
-  },
-  {
-   "id": 58,
-   "type": "LoraLoaderModelOnly",
-   "pos": [
-    1900,
-    660
-   ],
-   "size": [
-    270,
-    90
-   ],
-   "flags": {},
-   "order": 11,
-   "mode": 0,
-   "inputs": [
-    {
-     "localized_name": "model",
-     "name": "model",
-     "type": "MODEL",
-     "link": 59
-    },
-    {
-     "localized_name": "lora_name",
-     "name": "lora_name",
-     "type": "COMBO",
-     "widget": {
-      "name": "lora_name"
-     },
-     "link": null
-    },
-    {
-     "localized_name": "strength_model",
-     "name": "strength_model",
-     "type": "FLOAT",
-     "widget": {
-      "name": "strength_model"
-     },
-     "link": null
-    }
-   ],
-   "outputs": [
-    {
-     "localized_name": "MODEL",
-     "name": "MODEL",
-     "type": "MODEL",
-     "slot_index": 0,
-     "links": [
-      54
-     ]
-    }
-   ],
-   "properties": {
-    "cnr_id": "comfy-core",
-    "ver": "0.31.0",
-    "Node name for S&R": "LoraLoaderModelOnly"
-   },
-   "widgets_values": [
-    "krea2\\bypass\\Krea2__Refusal_Reduction.safetensors",
-    0.75
-   ],
-   "widgets_values_named": {
-    "lora_name": "krea2\\bypass\\Krea2__Refusal_Reduction.safetensors",
-    "strength_model": 0.75
    }
   },
   {
@@ -2740,14 +2675,6 @@
    "MODEL"
   ],
   [
-   54,
-   58,
-   0,
-   57,
-   0,
-   "MODEL"
-  ],
-  [
    56,
    59,
    0,
@@ -2772,20 +2699,20 @@
    "STRING"
   ],
   [
-   59,
-   64,
-   0,
-   58,
-   0,
-   "MODEL"
-  ],
-  [
    60,
    5,
    0,
    64,
    3,
    "CLIP"
+  ],
+  [
+   59,
+   64,
+   0,
+   57,
+   0,
+   "MODEL"
   ]
  ],
  "groups": [
