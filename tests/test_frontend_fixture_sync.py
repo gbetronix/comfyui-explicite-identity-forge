@@ -34,7 +34,7 @@ class FrontendFixtureInSync(unittest.TestCase):
         live = _dump_frontend_fixtures.build_fixture()
         # The fixture is defined against an EMPTY vault, because that is what CI
         # (dependency-free, stub `folder_paths`) sees. Run on a maintainer's box
-        # with a real ComfyUI on sys.path, `IdentityForgeVaultLoad` instead lists
+        # with a real ComfyUI on sys.path, `ExpliciteIdentityForgeVaultLoad` instead lists
         # their actual saved characters, so this test failed and told them to
         # "regenerate" -- which would have committed those private names. Skip
         # instead: the fixture is not stale, the vault is simply not empty.

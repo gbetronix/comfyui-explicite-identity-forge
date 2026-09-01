@@ -1,6 +1,6 @@
 """Preview the Cosplayer node end-to-end without ComfyUI.
 
-Wires IdentityForgeCosplayer into IdentityForge exactly as the graph does, so you
+Wires ExpliciteIdentityForgeCosplayer into ExpliciteIdentityForge exactly as the graph does, so you
 can eyeball real output (prose + optional JSON) for any character.
 
 Examples (run from the repo root)::
@@ -38,7 +38,7 @@ def render(
     character: str, gender: str, look_level: str, seed: int, mask_mode: str = _MASK_DEFAULT,
     include_prop: bool = False,
 ) -> tuple[str, str]:
-    """Build the cosplay JSON and run it through the IdentityForge engine."""
+    """Build the cosplay JSON and run it through the ExpliciteIdentityForge engine."""
     flat = _parse_archetype_json(
         build_cosplayer_json(character, seed, look_level, mask_mode, include_prop)
     )
@@ -67,7 +67,7 @@ def render(
     # same class of preview gap as the 0.91.0 mask one directly above, and it would
     # misreport the very behaviour this path exists to fix.
     species = flat.pop(_SPECIES_KEY, None)
-    # The IdentityForge node forwards the parsed _meta gender; mirror that so the
+    # The ExpliciteIdentityForge node forwards the parsed _meta gender; mirror that so the
     # person defaults to the character's gender unless --male/--female overrides.
     resolved_gender = gender or flat.get("gender", "Any")
     locked = {k: v for k, v in flat.items()

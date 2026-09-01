@@ -41,7 +41,7 @@ async function setup(characters = SAMPLE_CHARACTERS) {
   resetDom();
   __resetApi();
   respondWithCharacters(characters);
-  const node = await createNode(ext, "IdentityForgeVaultLoad");
+  const node = await createNode(ext, "ExpliciteIdentityForgeVaultLoad");
   await flush(); // let the initial on-create refresh() settle
   return node;
 }
@@ -132,7 +132,7 @@ test("a second onNodeCreated adds no second Refresh, Manage or preview widget", 
   resetDom();
   __resetApi();
   respondWithCharacters();
-  const node = await createNodeTwice(ext, "IdentityForgeVaultLoad");
+  const node = await createNodeTwice(ext, "ExpliciteIdentityForgeVaultLoad");
   await flush();
   const names = node.widgets.map((w) => w.name);
   const dupes = names.filter((n, i) => names.indexOf(n) !== i);
@@ -146,7 +146,7 @@ test("an unreachable vault API is reported, not rendered as an empty vault", asy
   resetDom();
   __resetApi();
   __setFetchApiHandler(async () => { throw new Error("connection refused"); });
-  const node = await createNode(ext, "IdentityForgeVaultLoad");
+  const node = await createNode(ext, "ExpliciteIdentityForgeVaultLoad");
   await flush();
   const charW = node.widgets.find((w) => w.name === "character");
   assert.deepEqual(charW.options.values, ["(vault unavailable \u2014 press Refresh)"]);
@@ -158,7 +158,7 @@ test("a non-ok response is treated as unavailable, not as an empty vault", async
   resetDom();
   __resetApi();
   __setFetchApiHandler(async () => ({ ok: false, status: 500, json: async () => ({}) }));
-  const node = await createNode(ext, "IdentityForgeVaultLoad");
+  const node = await createNode(ext, "ExpliciteIdentityForgeVaultLoad");
   await flush();
   const charW = node.widgets.find((w) => w.name === "character");
   assert.deepEqual(charW.options.values, ["(vault unavailable \u2014 press Refresh)"]);
@@ -180,7 +180,7 @@ test("a failed delete surfaces the error instead of silently reloading", async (
     }
     return { ok: true, json: async () => ({}) };
   });
-  const node = await createNode(ext, "IdentityForgeVaultLoad");
+  const node = await createNode(ext, "ExpliciteIdentityForgeVaultLoad");
   await flush();
   const manage = node.widgets.find((w) => w.name === "\u{1F5C2} Manage Vault\u2026");
   assert.ok(manage, "Manage Vault button must exist");

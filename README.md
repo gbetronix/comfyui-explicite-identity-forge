@@ -38,10 +38,10 @@ sentence on a bare face, no jewelry on a fully nude body).
 
 | Node | What it does |
 | --- | --- |
-| **Explicite Prompt Generator** (`IdentityForge`) | The generator. All fields above, constraint engine, dual `prompt_text` / `prompt_json` output. |
-| **Turnaround** (`IdentityForgeTurnaround`) | Takes a resolved character's `prompt_json` and emits every camera view of it (front, three-quarter, profile, back) as a list — one queue renders the whole reference set. |
-| **Character Vault Save** (`IdentityForgeVaultSave`) | Save a generated character (prose + exact locks + thumbnail) to a local vault. |
-| **Character Vault Load** (`IdentityForgeVaultLoad`) | Recall a saved character; the document replays its exact controls, so a Nudist-l… wardrobe-level save comes back at the same wardrobe level. |
+| **Explicite Prompt Generator** (`ExpliciteIdentityForge`) | The generator. All fields above, constraint engine, dual `prompt_text` / `prompt_json` output. |
+| **Turnaround** (`ExpliciteIdentityForgeTurnaround`) | Takes a resolved character's `prompt_json` and emits every camera view of it (front, three-quarter, profile, back) as a list — one queue renders the whole reference set. |
+| **Character Vault Save** (`ExpliciteIdentityForgeVaultSave`) | Save a generated character (prose + exact locks + thumbnail) to a local vault. |
+| **Character Vault Load** (`ExpliciteIdentityForgeVaultLoad`) | Recall a saved character; the document replays its exact controls, so a Nudist-l… wardrobe-level save comes back at the same wardrobe level. |
 
 ### Sample prompts
 

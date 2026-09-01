@@ -2,7 +2,7 @@ import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 
 /*
- * IdentityForge Vault frontend extension (Vault Load node).
+ * ExpliciteIdentityForge Vault frontend extension (Vault Load node).
  *
  * Adds, all degrading gracefully (every entry point is wrapped so the node still
  * works headless / on older frontends):
@@ -19,7 +19,7 @@ import { api } from "../../scripts/api.js";
  *   POST /identity_forge/vault/rename  {from,to} -> { name } | { error }
  */
 
-const NODE = "IdentityForgeVaultLoad";
+const NODE = "ExpliciteIdentityForgeVaultLoad";
 const NO_CHARACTERS = "(no characters saved)";
 //: Shown when the vault API could not be reached at all. Distinct from
 //: NO_CHARACTERS on purpose: "the server is not answering" and "nothing is saved
@@ -52,7 +52,7 @@ async function fetchCharacters() {
     const data = await resp.json();
     return Array.isArray(data.characters) ? data.characters : [];
   } catch (e) {
-    console.error("[IdentityForge] vault list failed:", e);
+    console.error("[ExpliciteIdentityForge] vault list failed:", e);
     return null;
   }
 }
@@ -271,7 +271,7 @@ function openManager(node) {
         alert(`Delete failed: ${detail}`);
       }
     } catch (e) {
-      console.error("[IdentityForge] delete failed:", e);
+      console.error("[ExpliciteIdentityForge] delete failed:", e);
       alert("Delete failed — see console.");
     }
     await reload();
@@ -288,7 +288,7 @@ function openManager(node) {
       const data = await resp.json();
       if (!resp.ok) { alert(data.error || "Rename failed."); return; }
     } catch (e) {
-      console.error("[IdentityForge] rename failed:", e);
+      console.error("[ExpliciteIdentityForge] rename failed:", e);
       alert("Rename failed — see console.");
     }
     await reload();
@@ -309,7 +309,7 @@ function setupVaultLoad(node) {
   if ((node.widgets || []).some((w) => w.name === REFRESH_LABEL)) return;
   const refreshW = node.addWidget("button", REFRESH_LABEL, null, () => refresh(node), { serialize: false });
   const manageW = node.addWidget("button", "🗂 Manage Vault…", null, () => {
-    try { openManager(node); } catch (err) { console.error("[IdentityForge] manager failed:", err); }
+    try { openManager(node); } catch (err) { console.error("[ExpliciteIdentityForge] manager failed:", err); }
   }, { serialize: false });
 
   // Inline preview of the current selection (best-effort DOM widget).
@@ -349,7 +349,7 @@ app.registerExtension({
       try {
         setupVaultLoad(this);
       } catch (err) {
-        console.error("[IdentityForge] vault load setup failed:", err);
+        console.error("[ExpliciteIdentityForge] vault load setup failed:", err);
       }
       return result;
     };

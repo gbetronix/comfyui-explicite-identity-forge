@@ -107,7 +107,7 @@ function wireLink(graph, originNode, outputName, targetNode, inputName) {
 }
 
 // The one socket shape LiteGraph.createNode needs to know to build a
-// *fresh* IdentityForge node -- matches nodes/identity_forge.py's real
+// *fresh* ExpliciteIdentityForge node -- matches nodes/identity_forge.py's real
 // schema (one force_input socket in, two String outputs).
 const FRESH_SOCKETS = { inputs: ["archetype_json"], outputs: ["prompt_text", "prompt_json"] };
 
@@ -171,7 +171,7 @@ test("registered as identity_forge.recreate", () => {
 test("getExtraMenuOptions yields exactly one entry, replacing a pre-existing same-label one", async () => {
   const graph = makeGraph();
   const node = makeStubNode(graph, 1, {
-    comfyClass: "IdentityForge", widgets: [], inputs: ["archetype_json"], outputs: ["prompt_text", "prompt_json"],
+    comfyClass: "ExpliciteIdentityForge", widgets: [], inputs: ["archetype_json"], outputs: ["prompt_text", "prompt_json"],
   });
   await ext.nodeCreated(node);
 
@@ -192,7 +192,7 @@ test("a full recreate restores locked values by name, removes the original befor
   const graph = makeGraph();
   installLiteGraphStub();
 
-  const upstream = makeStubNode(graph, 10, { comfyClass: "IdentityForgeArchetype", outputs: ["character_json"] });
+  const upstream = makeStubNode(graph, 10, { comfyClass: "ExpliciteIdentityForgeArchetype", outputs: ["character_json"] });
   const downstream = makeStubNode(graph, 20, { comfyClass: "CLIPTextEncode", inputs: ["text"] });
 
   // Real, fixture-valid values -- copyWidgetValues checks the value against
@@ -200,7 +200,7 @@ test("a full recreate restores locked values by name, removes the original befor
   // value that isn't actually one of them would be legitimately dropped,
   // not a bug this test is trying to catch.
   const node = makeStubNode(graph, 30, {
-    comfyClass: "IdentityForge",
+    comfyClass: "ExpliciteIdentityForge",
     widgets: [
       { name: "age", type: "combo", value: "34" },
       { name: "composition", type: "combo", value: "the subject on a rule-of-thirds line" },
@@ -222,7 +222,7 @@ test("a full recreate restores locked values by name, removes the original befor
   assert.equal(graph.getNodeById(30), null, "the original node's id must no longer resolve");
   const freshNode = getFreshNode();
   assert.ok(freshNode, "expected the recreate to have added a fresh node");
-  assert.equal(freshNode.comfyClass, "IdentityForge");
+  assert.equal(freshNode.comfyClass, "ExpliciteIdentityForge");
 
   // Rule 2: values restored by name.
   const ageW = freshNode.widgets.find((w) => w.name === "age");
@@ -249,7 +249,7 @@ test("a button whose name changed at runtime (a collapsed header) is skipped, ne
   const graph = makeGraph();
   installLiteGraphStub();
   const node = makeStubNode(graph, 40, {
-    comfyClass: "IdentityForge",
+    comfyClass: "ExpliciteIdentityForge",
     widgets: [
       // Simulates a group collapsed by the user before recreate: the
       // header's *name* is "▸ Body", which will not exist verbatim on a
@@ -271,7 +271,7 @@ test("a saved value invalid for the fresh node's options falls back to default w
   const graph = makeGraph();
   installLiteGraphStub();
   const node = makeStubNode(graph, 50, {
-    comfyClass: "IdentityForge",
+    comfyClass: "ExpliciteIdentityForge",
     widgets: [
       { name: "size_scale", type: "combo", value: "Off", options: { values: ["Auto", "giant", "tiny"] } },
     ],
@@ -296,10 +296,10 @@ test("an input link the fresh node cannot resolve a matching slot for is not sil
   // widget, so `findInputSlot` fails and (before this revision's fix) the
   // link vanished with no message at all.
   const graph = makeGraph();
-  installLiteGraphStub(); // fresh IdentityForge nodes only ever expose archetype_json
-  const upstream = makeStubNode(graph, 70, { comfyClass: "IdentityForgeArchetype", outputs: ["character_json"] });
+  installLiteGraphStub(); // fresh ExpliciteIdentityForge nodes only ever expose archetype_json
+  const upstream = makeStubNode(graph, 70, { comfyClass: "ExpliciteIdentityForgeArchetype", outputs: ["character_json"] });
   const node = makeStubNode(graph, 80, {
-    comfyClass: "IdentityForge",
+    comfyClass: "ExpliciteIdentityForge",
     widgets: [],
     inputs: ["archetype_json", "gender"], // "gender" simulates the converted widget
     outputs: ["prompt_text", "prompt_json"],
@@ -328,7 +328,7 @@ test("an input link the fresh node cannot resolve a matching slot for is not sil
    is why this file ships without one. These two pin the properties that make
    that true, so a refactor that breaks either is caught. */
 test("nodeCreated running twice installs the menu entry only once", async () => {
-  const node = makeFakeNode("IdentityForge");
+  const node = makeFakeNode("ExpliciteIdentityForge");
   await ext.nodeCreated(node);
   await ext.nodeCreated(node);
   const options = [];
@@ -344,7 +344,7 @@ test("re-entry still runs an upstream menu handler exactly once", async () => {
   // the assignment, so a second wrapper calls the first, which calls the real
   // upstream -- once. If a refactor ever captured it after, or re-read it at
   // call time, the upstream handler would run once per re-entry and this fails.
-  const node = makeFakeNode("IdentityForge");
+  const node = makeFakeNode("ExpliciteIdentityForge");
   let upstreamCalls = 0;
   node.getExtraMenuOptions = function () { upstreamCalls += 1; };
 

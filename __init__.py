@@ -6,14 +6,14 @@ and a wardrobe ladder from Fully clothed down to Fully nude.
 
 Exposes four nodes:
 
-* ``IdentityForge`` — the generator itself: multi-field character prompts
+* ``ExpliciteIdentityForge`` — the generator itself: multi-field character prompts
   with the constraint engine and dual prose/JSON output, including the
   wardrobe level (Clothed / Swimwear / Lingerie / Topless / Fully nude) and
   an explicit-action sentence.
-* ``IdentityForgeTurnaround`` — takes a resolved character and emits every
+* ``ExpliciteIdentityForgeTurnaround`` — takes a resolved character and emits every
   camera view of it as a list, so one queue renders a whole reference set.
-* ``IdentityForgeVaultSave`` — save a generated character to a local vault.
-* ``IdentityForgeVaultLoad`` — recall a saved character as a chainable preset.
+* ``ExpliciteIdentityForgeVaultSave`` — save a generated character to a local vault.
+* ``ExpliciteIdentityForgeVaultLoad`` — recall a saved character as a chainable preset.
 
 Discovery uses the ComfyUI V3 ``comfy_entrypoint`` mechanism. Frontend widgets
 live in ``./js`` and are served via ``WEB_DIRECTORY``. The vault nodes also
@@ -24,15 +24,15 @@ from comfy_api.latest import ComfyExtension, io
 # Package-relative inside ComfyUI; absolute fallback keeps the entrypoint
 # importable in flatter layouts.
 try:
-    from .nodes.identity_forge import IdentityForge
-    from .nodes.identity_forge_turnaround import IdentityForgeTurnaround
-    from .nodes.identity_forge_vault_save import IdentityForgeVaultSave
-    from .nodes.identity_forge_vault_load import IdentityForgeVaultLoad
+    from .nodes.identity_forge import ExpliciteIdentityForge
+    from .nodes.identity_forge_turnaround import ExpliciteIdentityForgeTurnaround
+    from .nodes.identity_forge_vault_save import ExpliciteIdentityForgeVaultSave
+    from .nodes.identity_forge_vault_load import ExpliciteIdentityForgeVaultLoad
 except ImportError:  # pragma: no cover
-    from nodes.identity_forge import IdentityForge
-    from nodes.identity_forge_turnaround import IdentityForgeTurnaround
-    from nodes.identity_forge_vault_save import IdentityForgeVaultSave
-    from nodes.identity_forge_vault_load import IdentityForgeVaultLoad
+    from nodes.identity_forge import ExpliciteIdentityForge
+    from nodes.identity_forge_turnaround import ExpliciteIdentityForgeTurnaround
+    from nodes.identity_forge_vault_save import ExpliciteIdentityForgeVaultSave
+    from nodes.identity_forge_vault_load import ExpliciteIdentityForgeVaultLoad
 
 #: Tells ComfyUI where to find this pack's frontend JavaScript.
 WEB_DIRECTORY = "./js"
@@ -76,7 +76,7 @@ def _register_vault_routes() -> None:
             delete_characters, list_characters, rename_character,
         )
     except Exception as exc:  # noqa: BLE001 — never block node registration
-        print(f"[IdentityForge] Vault API routes not registered: {exc}")
+        print(f"[ExpliciteIdentityForge] Vault API routes not registered: {exc}")
         return
 
     routes = PromptServer.instance.routes
@@ -134,19 +134,19 @@ def _register_vault_routes() -> None:
             return web.json_response({"error": str(exc)}, status=400)
         return web.json_response({"name": new_name})
 
-    print("[IdentityForge] Vault API routes registered.")
+    print("[ExpliciteIdentityForge] Vault API routes registered.")
 
 
 _register_vault_routes()
 
 
-class IdentityForgeExtension(ComfyExtension):
-    """Registers the IdentityForge node pack with ComfyUI."""
+class ExpliciteIdentityForgeExtension(ComfyExtension):
+    """Registers the ExpliciteIdentityForge node pack with ComfyUI."""
 
     async def get_node_list(self) -> list[type[io.ComfyNode]]:
-        return [IdentityForge, IdentityForgeTurnaround,
-                IdentityForgeVaultSave, IdentityForgeVaultLoad]
+        return [ExpliciteIdentityForge, ExpliciteIdentityForgeTurnaround,
+                ExpliciteIdentityForgeVaultSave, ExpliciteIdentityForgeVaultLoad]
 
 
-async def comfy_entrypoint() -> IdentityForgeExtension:
-    return IdentityForgeExtension()
+async def comfy_entrypoint() -> ExpliciteIdentityForgeExtension:
+    return ExpliciteIdentityForgeExtension()

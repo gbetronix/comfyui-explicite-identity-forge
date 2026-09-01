@@ -1,9 +1,9 @@
-"""IdentityForgeCosplayer node — fictional characters as a worn cosplay look.
+"""ExpliciteIdentityForgeCosplayer node — fictional characters as a worn cosplay look.
 
 Pick (or randomize) a fictional character and emit a JSON document of overrides.
 Wire its ``character_json`` output into the ``archetype_json`` input of an
-:class:`~nodes.identity_forge.IdentityForge` node. The character's costume defines
-the *look* and IdentityForge randomizes the person underneath, so every run is a
+:class:`~nodes.identity_forge.ExpliciteIdentityForge` node. The character's costume defines
+the *look* and ExpliciteIdentityForge randomizes the person underneath, so every run is a
 different individual cosplaying the same character.
 
 Presets chain: connect another preset's ``character_json`` into the optional
@@ -36,7 +36,7 @@ coiled on a belt, swords sheathed at a hip), the entry also carries an optional
 on swaps it in, so the item moves from the belt to the hand instead of rendering
 twice. See ``build_cosplayer_json``.
 
-The *person's* gender is chosen on the IdentityForge node, independent of the
+The *person's* gender is chosen on the ExpliciteIdentityForge node, independent of the
 character's, so crossplay (e.g. a man cosplaying a female character) works: the
 downstream gender gate drops any value invalid for the chosen gender. The source
 character's gender here only scopes the "Random — female / male" picks.
@@ -60,7 +60,7 @@ try:
     )
     from ..data.fields import FIELD_DEFINITIONS
     from .identity_forge import (
-        group_fields, merge_preset_documents, _SPECIES_GROUP, _FORM_FERAL,
+        group_fields, _SPECIES_GROUP, _FORM_FERAL,
     )
     from .identity_forge_creature import _suppression
 except ImportError:  # pragma: no cover — standalone/test context
@@ -70,12 +70,12 @@ except ImportError:  # pragma: no cover — standalone/test context
     )
     from data.fields import FIELD_DEFINITIONS
     from nodes.identity_forge import (
-        group_fields, merge_preset_documents, _SPECIES_GROUP, _FORM_FERAL,
+        group_fields, _SPECIES_GROUP, _FORM_FERAL,
     )
     from nodes.identity_forge_creature import _suppression
 
 try:
-    from comfy_api.latest import io  # type: ignore[import-not-found]
+    from comfy_api.latest import io  # noqa: F401  # availability probe
     _COMFY_AVAILABLE: bool = True
 except ImportError:  # pragma: no cover — exercised only outside ComfyUI
     _COMFY_AVAILABLE = False
@@ -557,16 +557,16 @@ def _announce_scope(
     # characters") reproduces the pre-1.1.0 message text byte-for-byte.
     pool_note = f" + pool '{pool}'" if pool != _POOL_ALL else ""
     if outcome == _SCOPE_GENDER_RELAXED:
-        print(f"[IdentityForgeCosplayer] scope '{category}'{pool_note} has no "
+        print(f"[ExpliciteIdentityForgeCosplayer] scope '{category}'{pool_note} has no "
               f"{gender_word} characters; keeping the scope and picking from all "
               f"{count} character{plural} in it instead. Set the person's gender "
-              f"on the IdentityForge node for crossplay.")
+              f"on the ExpliciteIdentityForge node for crossplay.")
     elif outcome == _SCOPE_ABANDONED:
-        print(f"[IdentityForgeCosplayer] '{character}' + scope '{category}'{pool_note} "
+        print(f"[ExpliciteIdentityForgeCosplayer] '{character}' + scope '{category}'{pool_note} "
               f"matched no characters; falling back to the full {gender_word} pool "
               f"({count} characters). The result will be OUT OF SCOPE.")
     else:
-        print(f"[IdentityForgeCosplayer] '{character}' + scope '{category}'{pool_note}: "
+        print(f"[ExpliciteIdentityForgeCosplayer] '{character}' + scope '{category}'{pool_note}: "
               f"{count} character{plural} in scope.")
 
 
@@ -589,7 +589,7 @@ def _resolve_character(
     all-female cast) returns a Date A Live character rather than an out-of-scope one
     from the whole roster. Scope and pool are both deliberate, visible choices; the
     source gender only pre-filters the pool, and the *person* cosplaying is gendered
-    separately on the IdentityForge node, so crossplay already makes the relaxed
+    separately on the ExpliciteIdentityForge node, so crossplay already makes the relaxed
     pick valid. Only a combo that matches nothing at all falls back to the full
     roster, loudly.
     """
@@ -622,7 +622,7 @@ def _resolve_character(
             outcome = _SCOPE_ABANDONED if scoped else _SCOPE_OK
             candidates = get_cosplayer_names(gender=gender)
         if not candidates:
-            print(f"[IdentityForgeCosplayer] No characters available for '{character}'.")
+            print(f"[ExpliciteIdentityForgeCosplayer] No characters available for '{character}'.")
             return None
         if scoped:
             _announce_scope(character, category, gender, len(candidates), outcome, pool)
@@ -649,7 +649,7 @@ def build_cosplayer_json(
 
     ``mask_mode`` only affects full-mask characters (those with ``covers_face``
     and a ``mask`` clause). ``"Default"`` attaches the mask to the costume and
-    keeps ``covers_face`` set so IdentityForge drops the randomized face/hair.
+    keeps ``covers_face`` set so ExpliciteIdentityForge drops the randomized face/hair.
     ``"Unmask (show face)"`` omits the mask clause and clears ``covers_face`` so
     the randomized head/hair shows (a "helmet-off" look). It is a no-op for
     face-visible characters.
@@ -721,7 +721,7 @@ def build_cosplayer_json(
         # FeralBodyPlanTests.test_unmask_is_a_no_op_for_a_beast.
         unmask = False
 
-    # The costume drives IdentityForge's hidden outfit_description override; the
+    # The costume drives ExpliciteIdentityForge's hidden outfit_description override; the
     # signature look (hair/eyes) is always applied; physique only in Full mode.
     # A feral entry has no costume: its ``costume`` is the integument slot and goes to
     # the species group below, so nothing locks ``outfit_description`` (the Feral form

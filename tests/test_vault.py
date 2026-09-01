@@ -29,7 +29,7 @@ from nodes.identity_forge_vault_load import (
     rename_character,
 )
 
-#: A resolved document like IdentityForge emits — cosplay label in _meta.
+#: A resolved document like ExpliciteIdentityForge emits — cosplay label in _meta.
 SAMPLE_JSON = json.dumps({
     "_meta": {"cosplay_of": "2B (NieR: Automata)", "gender": "Female"},
     "Body": {"body_type": "slender"},
@@ -206,23 +206,23 @@ class VaultRecallControlDeferralTests(unittest.TestCase):
     """Regression for the 0.99.0 wardrobe/hair_color_scope recall hole.
 
     A character saved with wardrobe='Any' (and/or a full-spectrum hair colour)
-    rebuilt a *different* person on Vault Load, because IdentityForge read the
+    rebuilt a *different* person on Vault Load, because ExpliciteIdentityForge read the
     control values from its own widgets (default 'Match gender' / 'Natural only')
     and ignored the saved _meta. The fix adds an 'Auto (preset)' sentinel to
     both widgets: set it and recall honours the saved controls.
     """
 
     def _generate(self, seed, gender, wardrobe, hair_color_scope):
-        from nodes.identity_forge import IdentityForge
-        out = IdentityForge.execute(
+        from nodes.identity_forge import ExpliciteIdentityForge
+        out = ExpliciteIdentityForge.execute(
             seed=seed, gender=gender, wardrobe=wardrobe,
             hair_color_scope=hair_color_scope,
         )
         return out.args[1]
 
     def _recall(self, saved_json, seed, wardrobe, hair_color_scope, gender="Any"):
-        from nodes.identity_forge import IdentityForge
-        out = IdentityForge.execute(
+        from nodes.identity_forge import ExpliciteIdentityForge
+        out = ExpliciteIdentityForge.execute(
             seed=seed, archetype_json=saved_json, gender=gender,
             wardrobe=wardrobe, hair_color_scope=hair_color_scope,
         )
@@ -276,8 +276,8 @@ class VaultRecallControlDeferralTests(unittest.TestCase):
     def test_auto_preset_without_archetype_falls_back(self):
         # No wired character: 'Auto (preset)' must not leak the sentinel into
         # the engine, and must fall back to the widget defaults.
-        from nodes.identity_forge import IdentityForge
-        out = IdentityForge.execute(
+        from nodes.identity_forge import ExpliciteIdentityForge
+        out = ExpliciteIdentityForge.execute(
             seed=7, gender="Female", wardrobe="Auto (preset)",
             hair_color_scope="Auto (preset)",
         )

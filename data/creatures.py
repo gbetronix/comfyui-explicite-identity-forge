@@ -1,10 +1,10 @@
-"""Creature dataset for IdentityForge — a non-human *form* layer.
+"""Creature dataset for ExpliciteIdentityForge — a non-human *form* layer.
 
 Each entry describes a creature as a set of **anatomy slots** that can be worn by
 a character: a head, eyes, an integument (skin / fur / scales / chitin / shell), and
 optional limbs, tail, wings and extra features. The Creature node picks one creature
 (or hybridizes several — a praying-mantis body with a sloth's head) and emits a
-``Species & Anatomy`` JSON group plus suppression flags that tell IdentityForge which
+``Species & Anatomy`` JSON group plus suppression flags that tell ExpliciteIdentityForge which
 human fields to drop. Everything not replaced (a wired costume, the surviving human
 body, the scene) still composes.
 

@@ -117,7 +117,7 @@ class GalleryShotPoolTests(unittest.TestCase):
     ``shot_type``'s option list carries "Random" (its control value) and
     "None" (its omit sentinel) alongside actual framings. The pool filter
     excluded "Random" but not "None" -- so on the seeds that landed on it,
-    the gallery render passed shot_type="None" into IdentityForge.execute,
+    the gallery render passed shot_type="None" into ExpliciteIdentityForge.execute,
     which (a non-Random widget value always beats a preset lock) silently
     discarded whatever shot_type the archetype/cosplayer itself locked,
     with no framing at all. Caught via ``Kendo Practitioner`` (locked to

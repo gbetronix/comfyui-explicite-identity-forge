@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 
 /*
- * IdentityForge frontend extension.
+ * ExpliciteIdentityForge frontend extension.
  *
  * Data (GROUP_ORDER / FIELD_TO_GROUP / GENDER_POOLS) is generated from
  * data/fields.py by scripts/generate_js_data.py — do not edit the block between
@@ -705,7 +705,7 @@ function resize(node) {
 //: "Fix node (recreate)", which produces a genuinely new node object.
 const ALL_RANDOM_LABEL = "🎲 Unlock all (set to Random)";
 
-function setupIdentityForge(node) {
+function setupExpliciteIdentityForge(node) {
   const original = node.widgets ? node.widgets.slice() : [];
   if (!original.length) return;
   // Re-entry guard: onNodeCreated can fire again for the same node on some paths.
@@ -799,7 +799,7 @@ function applyGender(node, gender) {
  * **Why this exists.** `widgets_values` is a positional array and ComfyUI restores it
  * 1:1 against `node.widgets` -- INCLUDING the buttons and group headers this file
  * inserts, and regardless of `serialize: false`, which is honoured in neither
- * direction. `setupIdentityForge` then re-sorts `node.widgets` into group order, so a
+ * direction. `setupExpliciteIdentityForge` then re-sorts `node.widgets` into group order, so a
  * field appended at the end of FIELD_DEFINITIONS does NOT land at the end of the
  * array the loader indexes into: `tattoos` sits in Body, at position 25 of 88.
  *
@@ -856,14 +856,14 @@ function padLegacyWidgetValues(node, values) {
 app.registerExtension({
   name: "identity_forge.ui",
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== "IdentityForge") return;
+    if (nodeData.name !== "ExpliciteIdentityForge") return;
     const onNodeCreated = nodeType.prototype.onNodeCreated;
     nodeType.prototype.onNodeCreated = function () {
       const result = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;
       try {
-        setupIdentityForge(this);
+        setupExpliciteIdentityForge(this);
       } catch (err) {
-        console.error("[IdentityForge] frontend setup failed:", err);
+        console.error("[ExpliciteIdentityForge] frontend setup failed:", err);
       }
       return result;
     };
@@ -879,7 +879,7 @@ app.registerExtension({
           info = { ...info, widgets_values: padLegacyWidgetValues(this, info.widgets_values) };
         }
       } catch (err) {
-        console.error("[IdentityForge] legacy widget mapping failed:", err);
+        console.error("[ExpliciteIdentityForge] legacy widget mapping failed:", err);
       }
       return configure ? configure.apply(this, [info]) : undefined;
     };

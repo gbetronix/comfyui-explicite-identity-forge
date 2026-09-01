@@ -1,10 +1,10 @@
-"""Field definitions and option pools for IdentityForge."""
+"""Field definitions and option pools for ExpliciteIdentityForge."""
 from __future__ import annotations
 
 from collections import OrderedDict
 import re
 
-#: OrderedDict of all IdentityForge fields.
+#: OrderedDict of all ExpliciteIdentityForge fields.
 #: Each entry has: group, female_options, male_options, optional.
 FIELD_DEFINITIONS: OrderedDict[str, dict] = OrderedDict([
     ("gender", {

@@ -1,4 +1,4 @@
-"""IdentityForgeModifier node — prepend a custom descriptor to single elements.
+"""ExpliciteIdentityForgeModifier node — prepend a custom descriptor to single elements.
 
 Sometimes you want *one* element to get a stylistic tilt — sci-fi shoes, glowing
 earrings, iridescent skin — without theming the whole image. This node lets you
@@ -7,7 +7,7 @@ randomized value. The descriptor lands right before the noun, which is exactly h
 text-to-image models pick up textures / genres (great for alien / sci-fi looks).
 
 Wire its ``character_json`` output into the ``archetype_json`` input of an
-:class:`~nodes.identity_forge.IdentityForge` node (or chain it after an Archetype /
+:class:`~nodes.identity_forge.ExpliciteIdentityForge` node (or chain it after an Archetype /
 Cosplayer node via the optional ``upstream`` input — presets stack, this node only
 adds modifiers and never fights over field locks).
 
@@ -41,13 +41,13 @@ from typing import Any
 # Dual import: package-relative inside ComfyUI, absolute when run standalone.
 try:
     from ..data.fields import FIELD_DEFINITIONS
-    from .identity_forge import merge_preset_documents, _GROUP_ORDER, _MODIFIERS_DOC_KEY
+    from .identity_forge import _GROUP_ORDER, _MODIFIERS_DOC_KEY
 except ImportError:  # pragma: no cover — standalone/test context
     from data.fields import FIELD_DEFINITIONS
-    from nodes.identity_forge import merge_preset_documents, _GROUP_ORDER, _MODIFIERS_DOC_KEY
+    from nodes.identity_forge import _GROUP_ORDER, _MODIFIERS_DOC_KEY
 
 try:
-    from comfy_api.latest import io  # type: ignore[import-not-found]
+    from comfy_api.latest import io  # noqa: F401  # availability probe
     _COMFY_AVAILABLE: bool = True
 except ImportError:  # pragma: no cover — exercised only outside ComfyUI
     _COMFY_AVAILABLE = False
@@ -106,7 +106,7 @@ def _parse_modifier_text(text: str) -> "OrderedDict[str, str]":
         if not line or line.startswith("#"):
             continue
         if ":" not in line:
-            print(f"[IdentityForgeModifier] Skipping line without 'key: descriptor' -> {raw!r}")
+            print(f"[ExpliciteIdentityForgeModifier] Skipping line without 'key: descriptor' -> {raw!r}")
             continue
         key, _, descriptor = line.partition(":")
         key, descriptor = key.strip(), descriptor.strip()
@@ -114,7 +114,7 @@ def _parse_modifier_text(text: str) -> "OrderedDict[str, str]":
             continue
         canonical = field_by_lc.get(key.lower()) or group_by_lc.get(key.lower())
         if canonical is None:
-            print(f"[IdentityForgeModifier] Unknown key {key!r}; use a field name or a "
+            print(f"[ExpliciteIdentityForgeModifier] Unknown key {key!r}; use a field name or a "
                   f"group header. Skipping.")
             continue
         mods[canonical] = descriptor  # a later line for the same key wins

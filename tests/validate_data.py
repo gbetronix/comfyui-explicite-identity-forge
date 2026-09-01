@@ -1,4 +1,4 @@
-"""Static integrity checks for the IdentityForge data layer.
+"""Static integrity checks for the ExpliciteIdentityForge data layer.
 
 Run directly (``python tests/validate_data.py``) for a human-readable report,
 or import :func:`validate` from the unit tests. Exits non-zero on any failure.

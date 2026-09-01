@@ -1,4 +1,4 @@
-"""Cosplayer dataset for IdentityForge — fictional characters as a *worn look*.
+"""Cosplayer dataset for ExpliciteIdentityForge — fictional characters as a *worn look*.
 
 Each entry describes a character the way a **cosplayer** wears them: the costume
 (and any signature non-human features rendered as body paint / prosthetics /
@@ -16,7 +16,7 @@ Schema per entry (keyed by character name)::
         "mask":      "a full face mask ...",# REQUIRED when covers_face — the head covering,
                                           #   kept apart from costume so the node's "Unmask"
                                           #   toggle can drop it and reveal the random head
-        "costume":   "a gothic black ...",# → IdentityForge's hidden outfit_description
+        "costume":   "a gothic black ...",# → ExpliciteIdentityForge's hidden outfit_description
         "signature": {                    # iconic, field-mappable look — applied in BOTH modes
             "hair_color": "platinum blonde", "hair_length": "chin length bob",
             "hair_style": "blunt bangs",
@@ -79,7 +79,7 @@ Curation rules (so the data stays coherent with the engine):
   flame / ice / hard plating keep the legacy ``"an even, all-over coat of …"``
   wording. All three markers auto-trigger the builder's skin suppression.
 * **Full masks/helmets** (Spider-Man, a Mandalorian helmet, a ninja hood) set
-  ``"covers_face": True`` so IdentityForge drops the randomized face, hair and
+  ``"covers_face": True`` so ExpliciteIdentityForge drops the randomized face, hair and
   makeup that would otherwise be described fighting the mask. Omit it whenever
   the face is visible (an open cowl, body-painted-but-visible face, domino mask).
   Every ``covers_face`` entry also puts its head covering in a separate ``mask``
@@ -24338,7 +24338,7 @@ def get_cosplayer_names(gender: str | None = None, category: str | None = None) 
 
     ``gender`` (``"Female"``/``"Male"``) and ``category`` scope the node's "Random — …"
     picks; ``category`` of ``None``/``"Any"`` means no franchise limit. The *person's*
-    gender is chosen separately on the IdentityForge node.
+    gender is chosen separately on the ExpliciteIdentityForge node.
     """
     return sorted(
         name for name, entry in COSPLAYERS.items()

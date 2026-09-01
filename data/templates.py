@@ -1,4 +1,4 @@
-"""Archetype templates for IdentityForgeArchetype node.
+"""Archetype templates for ExpliciteIdentityForgeArchetype node.
 
 Each template is a dictionary of field names to concrete values.
 Fields not listed default to "Random" when the template is applied.

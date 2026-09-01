@@ -1,4 +1,4 @@
-"""Unit tests for the IdentityForgeCreature node and the species engine path.
+"""Unit tests for the ExpliciteIdentityForgeCreature node and the species engine path.
 
 Pure-stdlib ``unittest`` so it runs without ComfyUI installed:
 
@@ -35,7 +35,7 @@ def _doc(raw: str) -> dict:
 
 
 def _render(character_json: str, gender: str = "Any", seed: int = 7):
-    """Run a creature/merged document through IdentityForge; return (prose, json)."""
+    """Run a creature/merged document through ExpliciteIdentityForge; return (prose, json)."""
     flat = _parse_archetype_json(character_json)
     species = flat.pop(_SPECIES_KEY, None)
     cosplay_label = flat.pop(_COSPLAY_LABEL_KEY, None)

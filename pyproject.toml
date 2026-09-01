@@ -12,8 +12,8 @@ dependencies = []
 name = "gbetronix"
 
 [project.urls]
-Repository = "https://github.com/gbetronix/comfyui-my-identity-forge"
-"Bug Tracker" = "https://github.com/gbetronix/comfyui-my-identity-forge/issues"
+Repository = "https://github.com/gbetronix/comfyui-explicite-identity-forge"
+"Bug Tracker" = "https://github.com/gbetronix/comfyui-explicite-identity-forge/issues"
 
 [tool.comfy]
 PublisherId = "gbetronix"

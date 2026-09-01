@@ -74,7 +74,7 @@ MANIFEST = ROOT / "gallery" / "render_manifest.json"
 RENDER_OUT = ROOT / "gallery" / ".render_out"
 #: Already committed and already published, so reading it publishes nothing new
 #: about the maintainer's setup - and updating that workflow updates this script.
-SETTINGS_WORKFLOW = ROOT / "gallery" / "cosplay" / "Krea2_IdentityForge_CharacterCycle.json"
+SETTINGS_WORKFLOW = ROOT / "gallery" / "cosplay" / "Krea2_ExpliciteIdentityForge_CharacterCycle.json"
 #: Gitignored. Overrides anything the workflow supplies.
 LOCAL_CONFIG = ROOT / "scripts" / "render_config.json"
 
@@ -158,8 +158,8 @@ def _gallery_shot(seed: int) -> str | None:
     what the node CAN emit, not a canonical reproduction (the manifest hash
     tracks entry text, not render settings - see architecture.md).
     """
-    from nodes.identity_forge import IdentityForge
-    for spec in IdentityForge.define_schema().inputs:
+    from nodes.identity_forge import ExpliciteIdentityForge
+    for spec in ExpliciteIdentityForge.define_schema().inputs:
         if spec.id == "shot_type":
             # "Random" is the field's control value and "None" is its omit
             # sentinel -- neither is a shot; picking either would leak through
@@ -189,8 +189,8 @@ def _gallery_wardrobe(seed: int) -> str:
     gallery image is a sample of what the node CAN emit, not a canonical
     reproduction (the manifest hash tracks entry text, not render settings).
     """
-    from nodes.identity_forge import IdentityForge
-    for spec in IdentityForge.define_schema().inputs:
+    from nodes.identity_forge import ExpliciteIdentityForge
+    for spec in ExpliciteIdentityForge.define_schema().inputs:
         if spec.id == "wardrobe_level":
             pool = [(lvl, _WARDROBE_WEIGHTS[lvl]) for lvl in spec.options
                     if lvl in _WARDROBE_WEIGHTS]
@@ -201,7 +201,7 @@ def _gallery_wardrobe(seed: int) -> str:
             return random.Random(seed ^ 0x5A17C304).choices(
                 [lvl for lvl, _ in pool],
                 weights=[w for _, w in pool], k=1)[0]
-    raise RenderError("IdentityForge has no wardrobe_level input")
+    raise RenderError("ExpliciteIdentityForge has no wardrobe_level input")
 
 
 #: Fields a preset may lock that belong to the garment itself. Stripping them
@@ -249,8 +249,8 @@ def _gallery_act(seed: int) -> str:
     draw leaves the prose merely nude, not explicit. The gallery samples skip
     that: one of the eleven acts, seeded per entry on a dedicated stream.
     """
-    from nodes.identity_forge import IdentityForge
-    for spec in IdentityForge.define_schema().inputs:
+    from nodes.identity_forge import ExpliciteIdentityForge
+    for spec in ExpliciteIdentityForge.define_schema().inputs:
         if spec.id == "explicit_act":
             pool = [a for a in spec.options
                     if a not in ("Random", "None", "no explicit action")]
@@ -258,7 +258,7 @@ def _gallery_act(seed: int) -> str:
                 raise RenderError(
                     f"explicit_act options {spec.options} expose no acts")
             return random.Random(seed ^ 0x5A17C306).choice(pool)
-    raise RenderError("IdentityForge has no explicit_act input")
+    raise RenderError("ExpliciteIdentityForge has no explicit_act input")
 
 
 class RenderError(RuntimeError):
@@ -326,9 +326,11 @@ def read_render_settings(overrides: dict[str, Any] | None = None) -> dict[str, A
         "clip_type": _one(groups, "CLIPLoader", 1, "clip_type"),
         "clip_device": _one(groups, "CLIPLoader", 2, "clip_device"),
         "vae_name": _one(groups, "VAELoader", 0, "vae_name"),
-        "lora_name": _one(groups, "LoraLoader", 0, "lora_name"),
-        "lora_strength_model": _one(groups, "LoraLoader", 1, "lora_strength_model"),
-        "lora_strength_clip": _one(groups, "LoraLoader", 2, "lora_strength_clip"),
+        # The one LoRA stage: krea2_nude directly after the raw Krea model
+        # loader, on a full LoraLoader -- it drives both the model and CLIP.
+        "nude_lora_name": "krea2_nude.safetensors",
+        "nude_lora_strength_model": 1.0,
+        "nude_lora_strength_clip": 1.0,
         "width": _one(groups, "EmptyLatentImage", 0, "width"),
         "height": _one(groups, "EmptyLatentImage", 1, "height"),
         "steps": _one(groups, "KSampler", 2, "steps"),
@@ -598,7 +600,7 @@ def _check_keywords(builder: Any, pinned: dict[str, Any], kind: str) -> None:
 
 
 def _forge_kwargs(forge_class: Any, character_json: str, seed: int) -> dict[str, Any]:
-    """Every IdentityForge widget, mirroring the workflows.
+    """Every ExpliciteIdentityForge widget, mirroring the workflows.
 
     Built from the node's own schema rather than a hand-kept list, so a field
     added to the pack is carried at its default of ``"Random"`` automatically.
@@ -623,7 +625,7 @@ def resolve_prose(kind: str, name: str, reroll: int = 0) -> str:
     image at all.
     """
     _register_comfy_stub()
-    from nodes.identity_forge import IdentityForge
+    from nodes.identity_forge import ExpliciteIdentityForge
     from nodes.identity_forge_archetype import build_archetype_json
     from nodes.identity_forge_cosplayer import build_cosplayer_json
     from nodes.identity_forge_creature import build_creature_json
@@ -658,15 +660,15 @@ def resolve_prose(kind: str, name: str, reroll: int = 0) -> str:
     # gets the seed's dress code. (The engine's own "locked outfit beats the
     # tier" rule still governs the node itself.)
     character_json = _strip_preset_clothing(character_json)
-    forge_kwargs = _forge_kwargs(IdentityForge, character_json, seed)
+    forge_kwargs = _forge_kwargs(ExpliciteIdentityForge, character_json, seed)
     # The engine node stays a real class, so it keeps the original strict guard.
-    _check_options(IdentityForge, FORGE_WIDGETS)
+    _check_options(ExpliciteIdentityForge, FORGE_WIDGETS)
     shot = _gallery_shot(seed)
     if shot:
         forge_kwargs["shot_type"] = shot
     forge_kwargs["wardrobe_level"] = _gallery_wardrobe(seed)
     forge_kwargs["explicit_act"] = _gallery_act(seed)
-    forged = IdentityForge.execute(**forge_kwargs)
+    forged = ExpliciteIdentityForge.execute(**forge_kwargs)
     prose = _unwrap(forged)[0]
     if not isinstance(prose, str) or not prose.strip():
         raise RenderError(f"{kind}/{name}: the engine produced no prose")
@@ -694,13 +696,13 @@ def build_graph(positive: str, seed: int, settings: dict[str, Any],
                          "device": settings["clip_device"]}},
         "3": {"class_type": "VAELoader",
               "inputs": {"vae_name": settings["vae_name"]}},
-        "4": {"class_type": "LoraLoader",
-              "inputs": {"lora_name": settings["lora_name"],
-                         "strength_model": settings["lora_strength_model"],
-                         "strength_clip": settings["lora_strength_clip"],
-                         "model": ["1", 0], "clip": ["2", 0]}},
+        "11": {"class_type": "LoraLoader",
+               "inputs": {"lora_name": settings["nude_lora_name"],
+                          "strength_model": settings["nude_lora_strength_model"],
+                          "strength_clip": settings["nude_lora_strength_clip"],
+                          "model": ["1", 0], "clip": ["2", 0]}},
         "5": {"class_type": "CLIPTextEncode",
-              "inputs": {"text": positive, "clip": ["4", 1]}},
+              "inputs": {"text": positive, "clip": ["11", 1]}},
         # The negative is the zeroed positive conditioning, not a text string:
         # cfg is 1, so a second encode would be dead weight.
         "6": {"class_type": "ConditioningZeroOut",
@@ -714,7 +716,7 @@ def build_graph(positive: str, seed: int, settings: dict[str, Any],
                          "sampler_name": settings["sampler_name"],
                          "scheduler": settings["scheduler"],
                          "denoise": settings["denoise"],
-                         "model": ["4", 0], "positive": ["5", 0],
+                         "model": ["11", 0], "positive": ["5", 0],
                          "negative": ["6", 0], "latent_image": ["7", 0]}},
         "9": {"class_type": "VAEDecode",
               "inputs": {"samples": ["8", 0], "vae": ["3", 0]}},
@@ -824,7 +826,7 @@ def preflight(client: ComfyClient, settings: dict[str, Any]) -> bool:
         ("UNETLoader", "unet_name", settings["unet_name"]),
         ("CLIPLoader", "clip_name", settings["clip_name"]),
         ("VAELoader", "vae_name", settings["vae_name"]),
-        ("LoraLoader", "lora_name", settings["lora_name"]),
+        ("LoraLoader", "lora_name", settings["nude_lora_name"]),
         ("KSampler", "sampler_name", settings["sampler_name"]),
         ("KSampler", "scheduler", settings["scheduler"]),
     ]
@@ -1139,7 +1141,7 @@ def main(argv: list[str] | None = None) -> int:
         running, pending = client.queue_depth()
         print(f"  queue: {running} running, {pending} pending "
               f"({'front' if not args.back else 'back'} of queue)")
-        print(f"  {settings['unet_name']} + {settings['lora_name']}, "
+        print(f"  {settings['unet_name']} + {settings['nude_lora_name']}, "
               f"{settings['steps']} steps, {settings['sampler_name']}/"
               f"{settings['scheduler']}, {settings['width']}x{settings['height']}")
         if args.save_originals:
@@ -1151,7 +1153,7 @@ def main(argv: list[str] | None = None) -> int:
         # the note on `render` below.
         manifest["render"] = {
             key: settings[key] for key in
-            ("unet_name", "lora_name", "steps", "cfg", "sampler_name",
+            ("unet_name", "nude_lora_name", "steps", "cfg", "sampler_name",
              "scheduler", "width", "height")
         }
         today = _datetime.date.today().isoformat()

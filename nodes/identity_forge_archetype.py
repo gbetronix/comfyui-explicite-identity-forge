@@ -1,9 +1,9 @@
-"""IdentityForgeArchetype node — themed character presets for IdentityForge.
+"""ExpliciteIdentityForgeArchetype node — themed character presets for ExpliciteIdentityForge.
 
 Pick (or randomize) an archetype and emit a JSON document of overrides. Wire its
 ``character_json`` output into the ``archetype_json`` input of an
-:class:`~nodes.identity_forge.IdentityForge` node: the archetype defines the
-*look* (costume, signature hair/makeup, setting) and IdentityForge randomizes the
+:class:`~nodes.identity_forge.ExpliciteIdentityForge` node: the archetype defines the
+*look* (costume, signature hair/makeup, setting) and ExpliciteIdentityForge randomizes the
 rest of the person, so every run is a different individual in the same getup.
 
 Presets chain: connect another preset's ``character_json`` into the optional
@@ -38,16 +38,16 @@ try:
         ARCHETYPES, get_archetype_names, get_archetype_preset, fill_costume,
     )
     from ..data.fields import FIELD_DEFINITIONS
-    from .identity_forge import group_fields, merge_preset_documents
+    from .identity_forge import group_fields
 except ImportError:  # pragma: no cover — standalone/test context
     from data.templates import (
         ARCHETYPES, get_archetype_names, get_archetype_preset, fill_costume,
     )
     from data.fields import FIELD_DEFINITIONS
-    from nodes.identity_forge import group_fields, merge_preset_documents
+    from nodes.identity_forge import group_fields
 
 try:
-    from comfy_api.latest import io  # type: ignore[import-not-found]
+    from comfy_api.latest import io  # noqa: F401  # availability probe
     _COMFY_AVAILABLE: bool = True
 except ImportError:  # pragma: no cover — exercised only outside ComfyUI
     _COMFY_AVAILABLE = False

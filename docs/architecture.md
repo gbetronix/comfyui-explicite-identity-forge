@@ -143,7 +143,7 @@ so we always see the finished option list regardless of extension load order.
 **One addition beyond the Stylebook port, specific to this pack's widget shape.** The main
 node rebuilds `node.widgets` into ~66 field combos plus ten button widgets (two master
 buttons, one collapse header per field group — see `js/identity_forge.js`
-`setupIdentityForge`), and picking a `gender` swaps the option list of six other widgets
+`setupExpliciteIdentityForge`), and picking a `gender` swaps the option list of six other widgets
 via a wrapped callback. `copyWidgetValues` skips button widgets outright (a toggled
 collapse header's *name* changes at runtime, which would otherwise report every collapsed
 group as a dropped widget on every recreate), and after copying values the recreate
@@ -157,7 +157,7 @@ a widget has been right-click-converted to an input socket *and* has something w
 into it, the fresh node reverts that widget to its normal, unconverted form, so the link
 finds no matching socket and is silently dropped (no console warning — `snapshotLinks`'s
 reconnect loop only guards `slot >= 0`). Verified live against the `stylebook_with_
-identity_forge` example, whose `IdentityForge` node has `seed`/`gender`/`wardrobe`/
+identity_forge` example, whose `ExpliciteIdentityForge` node has `seed`/`gender`/`wardrobe`/
 `set_all_fields` converted this way (none actually linked in that file, so the case
 itself wasn't triggered, only confirmed by inspection). Not fixed here — Stylebook's own
 `stylebook_recreate.js` has the identical gap and it has not been a reported problem
@@ -166,16 +166,16 @@ there either.
 ## Nodes & data flow
 
 The four preset nodes each emit a grouped-JSON **`character_json`** string and chain through
-an optional **`upstream`** input. They wire into IdentityForge's single **`archetype_json`**
-socket. On overlap, the node **closest to IdentityForge wins** (downstream wins); a node set to
+an optional **`upstream`** input. They wire into ExpliciteIdentityForge's single **`archetype_json`**
+socket. On overlap, the node **closest to ExpliciteIdentityForge wins** (downstream wins); a node set to
 `None` emits `{}` and passes its upstream through. `merge_preset_documents` (deep-merge, incl.
 `_meta`) is the chaining primitive.
 
 ```
-Archetype ─▶ Cosplayer ─▶ Creature ─▶ Modifier ─▶ IdentityForge ─▶ prompt_text + prompt_json
+Archetype ─▶ Cosplayer ─▶ Creature ─▶ Modifier ─▶ ExpliciteIdentityForge ─▶ prompt_text + prompt_json
 ```
 
-- **IdentityForge** ([nodes/identity_forge.py](../nodes/identity_forge.py)) — the engine. Many
+- **ExpliciteIdentityForge** ([nodes/identity_forge.py](../nodes/identity_forge.py)) — the engine. Many
   lockable dropdowns + control toggles → randomize → constraints → prose + JSON. Entry point
   `generate_character(...)`; widget schema in `define_schema`.
 - **Cosplayer** → `build_cosplayer_json`: a character's `costume` becomes the hidden
@@ -197,7 +197,7 @@ Archetype ─▶ Cosplayer ─▶ Creature ─▶ Modifier ─▶ IdentityForge 
   unaffected. Graph execution never touches these routes.
 - **Turnaround** ([nodes/identity_forge_turnaround.py](../nodes/identity_forge_turnaround.py),
   rewritten 0.99.0) - a reference-set builder. It takes a **resolved** character
-  (`IdentityForge.prompt_json`) on `character_json` and emits every camera view of it as a
+  (`ExpliciteIdentityForge.prompt_json`) on `character_json` and emits every camera view of it as a
   **list**, so one queue renders the whole set. See "The Turnaround owns only the camera"
   below for why it is shaped that way.
 
@@ -272,7 +272,7 @@ Two engine-facing traps this rewrite hit, both silent, both now pinned by tests:
   every input looks right and is not: `"Random"` is nonsense to `size_scale` (logged and
   ignored) and, worse, is *not* `"Any"` to `gender` — so `execute` never falls through to the
   document's `_meta.gender` and re-rolled it, turning a woman into a man between the two nodes.
-  The node now builds its call from `IdentityForge.define_schema()`'s own **defaults**, which
+  The node now builds its call from `ExpliciteIdentityForge.define_schema()`'s own **defaults**, which
   gives every field `"Random"` and every control its defer value, and self-maintains when a
   control is added later.
 - **`_meta.wardrobe` is recorded but not honoured on the `archetype_json` path.** That is
@@ -282,7 +282,7 @@ Two engine-facing traps this rewrite hit, both silent, both now pinned by tests:
   steering a new one, and has no such widgets to override — so it restores both off `_meta`.
   Measured before the fix: a character generated with `wardrobe: "Any"` (which unlocks
   mixed-gender features) came back rebuilt under "Match gender" in **150 of 150** sampled seeds.
-  **The vault had the same hole; fixed at 0.102.0** — `IdentityForgeVaultLoad` recall of a
+  **The vault had the same hole; fixed at 0.102.0** — `ExpliciteIdentityForgeVaultLoad` recall of a
   `wardrobe: "Any"` character used to rebuild a different person for exactly this reason. Fixed
   by the "Auto (preset)" sentinel on the two widgets (see "Vault recall and the control
   sentinels"); the Turnaround did not wait, because it has no widget to add one to.
@@ -314,7 +314,7 @@ Adding a node class is not enough; it is invisible or half-tested until it is na
 each of these. The Turnaround shipped its first draft missing the last two.
 
 1. `__init__.py` — both the `try`/`except ImportError` import pair **and**
-   `IdentityForgeExtension.get_node_list()`. Miss the second and ComfyUI never loads it.
+   `ExpliciteIdentityForgeExtension.get_node_list()`. Miss the second and ComfyUI never loads it.
 2. `README.md`'s node table and `__init__.py`'s module docstring ("Exposes N nodes").
 3. `scripts/dump_frontend_fixtures.py` — `_NODE_CLASSES`. The fixture is what the jsdom
    suite builds fake nodes from, so a node absent from that map has **no** frontend
@@ -619,7 +619,7 @@ outlive any one candidate list.
 
 `COSPLAYERS: dict[name -> entry]`. Required: `franchise`, `gender` (`Female`/`Male` — SOURCE
 gender, used only to scope the `Random — female/male` picks; the *person's* gender is the
-IdentityForge widget, so crossplay works), `costume`. Optional: `signature` / `physique`
+ExpliciteIdentityForge widget, so crossplay works), `costume`. Optional: `signature` / `physique`
 `{field: value}` maps (values **must** be valid `FIELD_DEFINITIONS` options — `validate_data`
 enforces), `covers_face` + `mask`, `covers_hair`, `body_paint`, `prop`, `eyes` (free-text
 eye-colour override), and `skin` (free-text body-paint skin-colour anchor).
@@ -645,7 +645,7 @@ Conventions (keep the data coherent):
   alternate overrides `costume` without supplying its own, since it only ever describes the costume
   it ships with.
 - **Full masks/helmets:** `covers_face: True` **and** the head covering in a separate `mask`
-  string (kept out of `costume`) so the *Unmask* toggle can drop it. IdentityForge then
+  string (kept out of `costume`) so the *Unmask* toggle can drop it. ExpliciteIdentityForge then
   suppresses Face/Hair/Makeup (+ earrings/piercings). Omit both when the face shows.
 - **Bald / shaven-headed:** state it in `costume` (e.g. "…, and a clean-shaven bald head") — the
   builder auto-detects it and locks the scalp-hair (and, for "clean-shaven", facial-hair) fields
@@ -1009,7 +1009,7 @@ forgetting turns the build red.
 
 **Prompts are resolved in-process, and the posted graph contains none of this pack's nodes.**
 This is the load-bearing design decision, so it is worth stating why the obvious approach does
-not work. An entry name is a **dropdown widget value** on `IdentityForgeCosplayer` /
+not work. An entry name is a **dropdown widget value** on `ExpliciteIdentityForgeCosplayer` /
 `…Creature` / `…Archetype`, and ComfyUI caches its data layer at startup — a running instance
 would reject a brand-new name at `/prompt` validation until it was restarted, and would need
 this pack installed to know the name at all. So the script registers the `comfy_api` stub the
@@ -1030,7 +1030,7 @@ which also keeps a remote instance workable.
 
 **Render settings are read, not transcribed.** Model filenames, LoRA strengths, latent size,
 sampler, scheduler, steps, cfg and the photographic style prefix are all parsed out of
-`gallery/cosplay/Krea2_IdentityForge_CharacterCycle.json`, which is already committed and
+`gallery/cosplay/Krea2_ExpliciteIdentityForge_CharacterCycle.json`, which is already committed and
 already published. One source of truth, nothing new written down about anyone's local setup,
 and updating that workflow updates the renderer. A gitignored `scripts/render_config.json` and
 then CLI flags override it. A missing file or absent node fails loudly naming the exact key —
@@ -1073,7 +1073,7 @@ re-randomize the camera - caught at 0.98.0 when a seed drew it), on a dedicated 
 (`seed ^ 0x5A17C105`) so the choice never shifts
 the engine's RNG stream.
 Back-facing values stay available to users; only the sample images avoid them. The pin
-initially shipped DEAD: a leftover second `IdentityForge.execute(...)` line below the pin
+initially shipped DEAD: a leftover second `ExpliciteIdentityForge.execute(...)` line below the pin
 block overwrote the pinned result with an unpinned one, so every render used whatever the
 unpinned stream rolled - plausible output, silently wrong mechanism. It surfaced only when
 an entry whose seed rolled "from above and behind" hid its defining feature (the
@@ -2367,13 +2367,13 @@ README gets a short "Using with Stylebook" section mirroring Stylebook's own, an
   fields still win.
 - **A downstream Full-preset Archetype overrides a chained Cosplayer's costume/skin.** Presets
   merge with the *downstream* node winning field-by-field (`merge_preset_documents`), so
-  `Cosplayer -> Archetype (Full preset) -> IdentityForge` lets the archetype's `outfit_description`
+  `Cosplayer -> Archetype (Full preset) -> ExpliciteIdentityForge` lets the archetype's `outfit_description`
   (and any Body `skin_tone`) replace the cosplayer's -- e.g. She-Hulk chained into a "Tennis Player"
   Full preset comes out in tennis whites with a human tone, losing the green. To **layer** a tilt
   onto a cosplay instead of overwriting it, set the archetype (or cosplayer) to **Essentials** so it
   emits only the look groups and leaves the rest to flow through.
 - **Every node with an auto-advancing widget re-executes each queue via `fingerprint_inputs`.**
-  `IdentityForge`, `Archetype`, `Cosplayer` and `Creature` return `float("nan")` from
+  `ExpliciteIdentityForge`, `Archetype`, `Cosplayer` and `Creature` return `float("nan")` from
   `fingerprint_inputs`, forcing ComfyUI to re-execute them -- otherwise a widget advanced by
   `control_after_generate` can be served from cache and the output "sticks" (ComfyUI#11905).
   The trigger is the auto-advancing widget, not the seed as such. Pure cache control (no RNG):
@@ -2502,7 +2502,7 @@ README gets a short "Using with Stylebook" section mirroring Stylebook's own, an
   the lotus bracelet could be written in. Left out anyway — this is a content call, not a bug,
   and rewording a shipped costume changes that character's render for no functional gain.
 - **Costume prose must not hardcode a gendered pronoun (0.72.0).** `costume` is voiced verbatim
-  after "She/He wears …", and the *person's* gender is the IdentityForge widget, not the
+  after "She/He wears …", and the *person's* gender is the ExpliciteIdentityForge widget, not the
   character's — that is the whole basis of crossplay. Ten entries carried `her`/`his`/`she`/`he`
   (She-Hulk, Jolly Green Giant, Iori Yagami, Heihachi Mishima, Paul Phoenix, Medusa, Allen the
   Alien, Liz Sherman, Rumi, Zoey), so a man cosplaying She-Hulk rendered "…covering **her** face
@@ -2582,7 +2582,7 @@ README gets a short "Using with Stylebook" section mirroring Stylebook's own, an
   2×, so a femme male look lands ~1 in 3 bare-faced and never reaches glam by random draw. Bold
   glam still needs an explicit lock, which `_GENDER_FLEXIBLE_GROUPS` already honours.
   `PresentationGateTests` pins all three directions.
-- **Wired `"None"` is an explicit omit and survives to the engine.** `IdentityForge.execute`
+- **Wired `"None"` is an explicit omit and survives to the engine.** `ExpliciteIdentityForge.execute`
   builds `archetype_locked` from every wired value *except* `"Random"` — so a cosplayer/archetype
   field set to `"None"` (the builder's body-paint, bald, and free-text-eye suppressions) reaches
   the engine as an omit instead of being silently re-randomized by the default `"Random"` widget.
@@ -2597,7 +2597,7 @@ README gets a short "Using with Stylebook" section mirroring Stylebook's own, an
   containing none of this pack's nodes. It also removes any need to install or sync the pack onto
   the target instance. See "The gallery render pipeline" above.
 - **A committed workflow JSON's own `inputs` array is the authority on its widget order, not
-  `define_schema()` (0.87.0).** All three `Krea2_IdentityForge_*Cycle.json` downloads predated the
+  `define_schema()` (0.87.0).** All three `Krea2_ExpliciteIdentityForge_*Cycle.json` downloads predated the
   `composition` field, and each also carried ten stale trailing `widgets_values`. Aligning the
   value array against the *current* schema made `composition` appear to be present and correctly
   positioned in every one of them — it was not; the check that actually works is comparing the
@@ -2606,7 +2606,7 @@ README gets a short "Using with Stylebook" section mirroring Stylebook's own, an
 - **`dump_frontend_fixtures.py --check` goes stale on a pure content addition (0.87.0).** The
   fixture embeds the Cosplayer/Creature/Archetype dropdown option lists, so adding entries changes
   it even when no schema changed. That is expected: regenerate and commit it, then read the diff —
-  if the only change is names appended to `IdentityForgeCosplayer[0].options` and `random_scope` is
+  if the only change is names appended to `ExpliciteIdentityForgeCosplayer[0].options` and `random_scope` is
   untouched, no franchise crossed `_FRANCHISE_SCOPE_MINIMUM` and nothing breaking happened.
 - **A sealed-headgear archetype must pin `makeup_style: "no makeup"` (0.87.0).** Hazmat Technician
   first rendered heavy glam, a cat eye and a fade *under a full-face respirator and a sealed hood*.
@@ -2723,7 +2723,7 @@ must pass through untouched).
 
 ### `prompt_json` is what the vault stores, so it has to be self-describing (0.92.0)
 
-Vault Save writes IdentityForge's `prompt_json` to disk and Vault Load feeds it straight back
+Vault Save writes ExpliciteIdentityForge's `prompt_json` to disk and Vault Load feeds it straight back
 into `archetype_json` — the node's stated promise being that *"a single saved document captures
 the whole character regardless of how the graph was wired"*. It did not, for two reasons that
 compounded:
@@ -2966,7 +2966,7 @@ Three things about it are load-bearing:
 * **A generated file must never be able to see the maintainer's own data — and `ast` is
   not the only route in.** `scripts/dump_frontend_fixtures.py` imports nothing from the data
   layer, so the `ast` rule below did not apply to it, and it leaked anyway by a second route:
-  `IdentityForgeVaultLoad.define_schema()` lists the characters actually saved under ComfyUI's
+  `ExpliciteIdentityForgeVaultLoad.define_schema()` lists the characters actually saved under ComfyUI's
   user directory, so regenerating the fixture on a box with a real ComfyUI on `sys.path` wrote
   three private vault entries into a committed, published file (found at 0.99.0, by running the
   suite against the real `comfy_api` instead of the stub). CI cannot catch it — dependency-free,
@@ -3079,7 +3079,7 @@ and the exception set itself (so it cannot silently go stale).
 
 ### `random_pool` composes with `random_scope` instead of a seventh scope (1.1.0)
 
-`random_pool` is a third `io.Combo.Input` on `IdentityForgeCosplayer`, appended at the end of
+`random_pool` is a third `io.Combo.Input` on `ExpliciteIdentityForgeCosplayer`, appended at the end of
 `define_schema()` (after `upstream`, per the widget-append convention — see "Adding a field
 without breaking saved workflows"), offering three values: `All characters`, `People only — no
 mascot suits or beasts`, `Mascot suits and beasts only`.

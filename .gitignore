@@ -27,3 +27,4 @@ worklog-*.md
 
 # Local render config (this machine's ComfyUI models); see AGENTS.md
 scripts/render_config.json
+gallery/krea2_nude.safetensors

@@ -46,7 +46,7 @@ import { app } from "../../scripts/app.js";
  * One addition beyond the Stylebook port: this pack's main node rebuilds
  * `node.widgets` at creation time into ~66 field combos plus ten button
  * widgets (two master buttons, one collapse header per group — see
- * identity_forge.js `setupIdentityForge`), and `gender` swaps the option
+ * identity_forge.js `setupExpliciteIdentityForge`), and `gender` swaps the option
  * list of six other widgets via its wrapped callback. A plain by-name
  * value copy restores every field's *value* correctly, but does not
  * re-run that callback, so a restored non-default gender would leave the
@@ -67,9 +67,9 @@ function warn(message, error) {
   console.warn("[" + EXT_NAME + "] " + message, error || "");
 }
 
-function isIdentityForgeNode(node) {
+function isExpliciteIdentityForgeNode(node) {
   const type = node && (node.comfyClass || (node.constructor && node.constructor.type));
-  return Boolean(type) && String(type).startsWith("IdentityForge");
+  return Boolean(type) && String(type).startsWith("ExpliciteIdentityForge");
 }
 
 /** Resolve a link id to its link record across frontend versions. */
@@ -301,7 +301,7 @@ app.registerExtension({
 
   async nodeCreated(node) {
     try {
-      if (!isIdentityForgeNode(node)) return;
+      if (!isExpliciteIdentityForgeNode(node)) return;
       // NO re-entry guard here, deliberately. An audit listed this file with the
       // four setups that needed one at 0.97.0; measured, it does not. Re-entry
       // wraps our own wrapper, but `inherited` is captured before the assignment,

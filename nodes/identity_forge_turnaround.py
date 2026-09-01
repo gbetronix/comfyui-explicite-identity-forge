@@ -1,9 +1,9 @@
-"""IdentityForgeTurnaround node — one resolved character, every camera view at once.
+"""ExpliciteIdentityForgeTurnaround node — one resolved character, every camera view at once.
 
 A reference-set builder for image models that accept several views of the same
 character (a turnaround: front, three-quarters, profile, back). It takes a
 **resolved** character — the ``prompt_json`` output of
-:class:`~nodes.identity_forge.IdentityForge` — and emits the whole set of views
+:class:`~nodes.identity_forge.ExpliciteIdentityForge` — and emits the whole set of views
 as a **list**, so a single queue renders all of them.
 
 Wiring::
@@ -63,16 +63,16 @@ except ImportError:  # pragma: no cover — standalone/test context
 
 
 def _forge_class() -> type:
-    """The IdentityForge CLASS, resolved lazily.
+    """The ExpliciteIdentityForge CLASS, resolved lazily.
 
     It only exists when ``comfy_api`` is importable, so importing it at module
     scope would make this module unimportable outside ComfyUI.
     """
     try:
-        from .identity_forge import IdentityForge
+        from .identity_forge import ExpliciteIdentityForge
     except ImportError:  # pragma: no cover — standalone/test context
-        from nodes.identity_forge import IdentityForge
-    return IdentityForge
+        from nodes.identity_forge import ExpliciteIdentityForge
+    return ExpliciteIdentityForge
 
 
 #: The six rotations, as exact ``shot_type`` pool values. Each describes the
@@ -322,13 +322,13 @@ def _unwrap(output: Any) -> tuple:
 
 if _COMFY_AVAILABLE:
 
-    class IdentityForgeTurnaround(io.ComfyNode):  # type: ignore[misc, valid-type]
+    class ExpliciteIdentityForgeTurnaround(io.ComfyNode):  # type: ignore[misc, valid-type]
         """Emit every camera view of one resolved character, as a list."""
 
         @classmethod
         def define_schema(cls) -> "io.Schema":
             return io.Schema(
-                node_id="IdentityForgeTurnaround",
+                node_id="ExpliciteIdentityForgeTurnaround",
                 display_name="Turnaround - all views, one character",
                 category="conditioning/character",
                 description=(

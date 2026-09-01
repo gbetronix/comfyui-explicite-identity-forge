@@ -1,17 +1,17 @@
-"""IdentityForgeVaultSave node — save a generated character to the local vault.
+"""ExpliciteIdentityForgeVaultSave node — save a generated character to the local vault.
 
 A small terminal node, used like **Save Image**: branch the ``prompt_json`` output of
-an :class:`~nodes.identity_forge.IdentityForge` node into it (and, if you want a
+an :class:`~nodes.identity_forge.ExpliciteIdentityForge` node into it (and, if you want a
 thumbnail, the rendered ``image``). That's it — one required wire. It writes a
 self-contained vault entry you can recall later with
-:class:`~nodes.identity_forge_vault_load.IdentityForgeVaultLoad`. Mute the node
+:class:`~nodes.identity_forge_vault_load.ExpliciteIdentityForgeVaultLoad`. Mute the node
 (Ctrl+M) to skip saving without rewiring.
 
-Why ``prompt_json`` is all it needs: by the time IdentityForge emits it, any wired
+Why ``prompt_json`` is all it needs: by the time ExpliciteIdentityForge emits it, any wired
 Cosplayer / Archetype / Modifier preset has already been baked into the document
 (``_meta.cosplay_of``, the ``_modifiers`` section, every resolved field value). So a
 single saved document captures the whole character regardless of how the graph was
-wired, and recall feeds it straight back through IdentityForge's ``archetype_json``
+wired, and recall feeds it straight back through ExpliciteIdentityForge's ``archetype_json``
 string input — no fragile per-widget round-trip. (The prose is regenerated from the
 same fields on reload, so it isn't required here.)
 
@@ -253,13 +253,13 @@ if _COMFY_AVAILABLE:
         pil = PILImage.fromarray(arr)
         return pil if pil.mode == "RGB" else pil.convert("RGB")
 
-    class IdentityForgeVaultSave(io.ComfyNode):  # type: ignore[misc, valid-type]
+    class ExpliciteIdentityForgeVaultSave(io.ComfyNode):  # type: ignore[misc, valid-type]
         """Save a generated character to the local vault (terminal node)."""
 
         @classmethod
         def define_schema(cls) -> "io.Schema":
             return io.Schema(
-                node_id="IdentityForgeVaultSave",
+                node_id="ExpliciteIdentityForgeVaultSave",
                 display_name="Character Vault Save",
                 category="conditioning/character",
                 description=(
@@ -325,13 +325,13 @@ if _COMFY_AVAILABLE:
                 try:
                     thumbnail = _tensor_to_pil(image)
                 except Exception as exc:  # noqa: BLE001 — a bad image must not block saving
-                    print(f"[IdentityForgeVaultSave] Could not build thumbnail: {exc}")
+                    print(f"[ExpliciteIdentityForgeVaultSave] Could not build thumbnail: {exc}")
 
             try:
                 saved_as = save_character(root, name, prompt_json,
                                           on_existing=on_existing, thumbnail=thumbnail)
-                print(f"[IdentityForgeVaultSave] Saved character '{saved_as}'.")
+                print(f"[ExpliciteIdentityForgeVaultSave] Saved character '{saved_as}'.")
             except Exception as exc:  # noqa: BLE001 — saving must never break a run
-                print(f"[IdentityForgeVaultSave] Save failed: {exc}")
+                print(f"[ExpliciteIdentityForgeVaultSave] Save failed: {exc}")
 
             return io.NodeOutput()
