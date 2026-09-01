@@ -919,7 +919,7 @@
       },
       "Ukrainian Vyshyvanka": {
         "hash": "4e5bd5a6972f6d8e",
-        "rendered": "2026-08-31"
+        "rendered": "2026-09-01"
       },
       "Valkyrie": {
         "hash": "2b86f0a8b3c85cc5",
@@ -951,7 +951,7 @@
       },
       "Visual Kei": {
         "hash": "9e0c0c9fb7ed43f1",
-        "rendered": "2026-08-31"
+        "rendered": "2026-09-01"
       },
       "Volcanologist": {
         "hash": "05250ac9b040abae",
@@ -10018,11 +10018,12 @@
       }
     }
   },
-  "generated": "2026-09-01T02:03:20",
+  "generated": "2026-09-01T02:51:15",
   "render": {
     "cfg": 1,
     "height": 2432,
     "lora_name": "krea2_darkbrush.safetensors",
+    "nude_lora_name": "krea2_nude.safetensors",
     "sampler_name": "er_sde",
     "scheduler": "bong_tangent",
     "steps": 10,
