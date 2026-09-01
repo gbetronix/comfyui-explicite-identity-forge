@@ -10018,11 +10018,10 @@
       }
     }
   },
-  "generated": "2026-09-01T02:51:15",
+  "generated": "2026-09-01T11:23:36",
   "render": {
     "cfg": 1,
     "height": 2432,
-    "lora_name": "krea2_darkbrush.safetensors",
     "nude_lora_name": "krea2_nude.safetensors",
     "sampler_name": "er_sde",
     "scheduler": "bong_tangent",
